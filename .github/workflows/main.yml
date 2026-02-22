@@ -53,11 +53,25 @@ jobs:
 
     env:
       CLIENT_URL: ${{ secrets.CLIENT_URL }}
-      SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      CLERK_WEBHOOK_SECRET: ${{ secrets.CLERK_WEBHOOK_SECRET }}
+      VITE_SERVER_URL: ${{secrets.VITE_SERVER_URL }}
+      VITE_CLERK_PUBLISHABLE_KEY: ${{secrets.VITE_CLERK_PUBLISHABLE_KEY }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Run Prisma migrations
+        working-directory: server
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: pnpx prisma migrate deploy
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.0.0
@@ -76,6 +90,7 @@ jobs:
         run: |
           docker build \
             --build-arg VITE_SERVER_URL=${{ secrets.VITE_SERVER_URL }} \
+            --build-arg VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }} \
             -t ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/flashcard-repo/flashcard-generator:${{ github.sha }} .
           docker push ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/flashcard-repo/flashcard-generator:${{ github.sha }}
 
@@ -87,13 +102,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Deploy backend to Render
-        uses: JorgeLNJunior/render-deploy@v1.5.0
-        with:
-          service_id: ${{ secrets.RENDER_SERVICE_ID }}
-          api_key: ${{ secrets.RENDER_API_KEY }}
-          wait_deploy: true
 
       - name: Authenticate Google Cloud
         uses: google-github-actions/auth@v2
@@ -112,4 +120,5 @@ jobs:
           image: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/flashcard-repo/flashcard-generator:${{ github.sha }}
           flags: "--allow-unauthenticated"
           env_vars: |
-            VITE_SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
+            VITE_SERVER_URL = ${{ secrets.VITE_SERVER_URL }}
+            VITE_CLERK_PUBLISHABLE_KEY = ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
