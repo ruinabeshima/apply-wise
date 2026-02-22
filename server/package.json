@@ -18,7 +18,8 @@
     "@prisma/adapter-pg": "^7.4.1",
     "@prisma/client": "^7.4.1",
     "cors": "^2.8.6",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "svix": "^1.85.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
