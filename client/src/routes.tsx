@@ -7,8 +7,14 @@ import ProtectedRoute from "./protected_routes";
 const routes = (
   <Routes>
     <Route path="/" element={<Home />}></Route>
-    <Route path="/register" element={<SignUp signInUrl="/login" />}></Route>
-    <Route path="/login" element={<SignIn signUpUrl="/register" />}></Route>
+    <Route
+      path="/register"
+      element={<SignUp signInUrl="/login" forceRedirectUrl="/dashboard" />}
+    ></Route>
+    <Route
+      path="/login"
+      element={<SignIn signUpUrl="/register" forceRedirectUrl="/dashboard" />}
+    ></Route>
     <Route
       path="/dashboard"
       element={
