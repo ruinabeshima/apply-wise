@@ -53,7 +53,6 @@ jobs:
 
     env:
       CLIENT_URL: ${{ secrets.CLIENT_URL }}
-      SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
       CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
@@ -91,7 +90,7 @@ jobs:
         run: |
           docker build \
             --build-arg VITE_SERVER_URL=${{ secrets.VITE_SERVER_URL }} \
-            --build-arg VITE_CLERK_PUBLISHABLE_KEY=${{secrets.VITE_CLERK_PUBLISHABLE_KEY}}
+            --build-arg VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }} \
             -t ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/flashcard-repo/flashcard-generator:${{ github.sha }} .
           docker push ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/flashcard-repo/flashcard-generator:${{ github.sha }}
 
