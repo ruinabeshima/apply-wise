@@ -8,6 +8,15 @@ import { Webhook } from "svix";
 dotenv.config();
 const app = express();
 
+interface ClerkWebhookEvent {
+  type: string;
+  data: {
+    id: string;
+    email_addresses: { email_address: string }[];
+    image_url: string;
+  };
+}
+
 app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:5173",
@@ -29,13 +38,13 @@ app.post(
     const wh = new Webhook(secret);
 
     // Verify the webhook
-    let evt: any;
+    let evt: ClerkWebhookEvent;
     try {
       evt = wh.verify(req.body, {
         "svix-id": req.headers["svix-id"] as string,
         "svix-timestamp": req.headers["svix-timestamp"] as string,
         "svix-signature": req.headers["svix-signature"] as string,
-      });
+      }) as ClerkWebhookEvent;
     } catch (error) {
       res.status(400).json({ error: `Invalid signature: ${error}` });
       return;
