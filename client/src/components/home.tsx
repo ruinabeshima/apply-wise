@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const [apiValue, setApiValue] = useState("");
@@ -24,6 +25,9 @@ export default function Home() {
     <>
       <h1>API Value: </h1>
       <p>{apiValue}</p>
+
+      <Link to="/register">Register</Link>
+      <Link to="/login">Login</Link>
     </>
   );
 }
