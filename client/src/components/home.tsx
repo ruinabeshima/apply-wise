@@ -1,6 +1,18 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Home() {
+  const { isSignedIn } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      navigate("/dashboard");
+    }
+  }, [isSignedIn]);
+
   return (
     <div className="flex min-h-screen flex-col gap-5">
       <nav className="flex justify-between px-5 py-3 w-full">
