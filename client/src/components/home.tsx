@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import background from "../background.jpg";
+import background from "../background.png";
 import NavBar from "./navbar";
 
 export default function Home() {
@@ -16,10 +16,12 @@ export default function Home() {
   }, [isSignedIn]);
 
   return (
-    <div
-      style={{ backgroundImage: `url(${background})` }}
-      className="flex min-h-screen flex-col gap-5 bg-cover bg-center bg-no-repeat"
-    >
+    <div className="flex min-h-screen flex-col gap-5">
+      <div
+        style={{ backgroundImage: `url(${background})` }}
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat brightness-80 -z-10"
+      />
+
       <NavBar />
       <main>
         <section className="flex flex-col items-center justify-center text-center mt-20 px-15 gap-10">
@@ -34,7 +36,9 @@ export default function Home() {
             experience.
           </p>
           <Link to="/register">
-            <button>Get Started →</button>
+            <button className="btn btn-active btn-primary">
+              Get Started →
+            </button>
           </Link>
         </section>
       </main>

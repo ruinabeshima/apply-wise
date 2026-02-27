@@ -22,10 +22,10 @@ export default function NavBar() {
       ) : (
         <div className="flex gap-5">
           <Link to="/register" className="flex justify-center items-center">
-            <button>Get started</button>
+            <button className="btn btn-active btn-primary">Get started</button>
           </Link>
           <Link to="/login" className="flex justify-center items-center">
-            <button>Login</button>
+            <button className="btn btn-active btn-primary">Login</button>
           </Link>
         </div>
       )}
