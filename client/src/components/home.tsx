@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import background from "../background.jpg";
 import NavBar from "./navbar";
 
 export default function Home() {
@@ -15,7 +16,10 @@ export default function Home() {
   }, [isSignedIn]);
 
   return (
-    <div className="flex min-h-screen flex-col gap-5">
+    <div
+      style={{ backgroundImage: `url(${background})` }}
+      className="flex min-h-screen flex-col gap-5 bg-cover bg-center bg-no-repeat"
+    >
       <NavBar />
       <main>
         <section className="flex flex-col items-center justify-center text-center mt-20 px-15 gap-10">
