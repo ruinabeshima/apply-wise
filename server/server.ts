@@ -17,6 +17,7 @@ interface ClerkWebhookEvent {
   };
 }
 
+app.use(express.json());
 app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:5173",
@@ -70,6 +71,7 @@ app.post(
     if (evt.type == "user.deleted") {
       if (!evt.data.id) {
         res.status(400).json({ error: "Missing user ID" });
+        return;
       }
 
       await prisma.user.delete({
@@ -83,7 +85,6 @@ app.post(
   },
 );
 
-app.use(express.json());
 const port = process.env.PORT || 8080;
 
 app.listen(port, () => {
