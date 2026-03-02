@@ -75,6 +75,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.0.0
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install backend dependencies
+        working-directory: ./server
+        run: pnpm install
+
       - name: Run Prisma migrations
         working-directory: ./server
         run: pnpm exec prisma migrate deploy
