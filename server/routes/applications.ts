@@ -39,4 +39,36 @@ applicationRouter.get(
   },
 );
 
+applicationRouter.post(
+  "/add",
+  requireAuth(),
+  async (req: Request, res: Response) => {
+    const { userId } = req.auth;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { role, company, status, appliedDate, notes, jobUrl } = req.body;
+
+    try {
+      const application = await prisma.application.create({
+        data: {
+          role: role,
+          company: company,
+          status: status,
+          appliedDate: new Date(appliedDate),
+          notes: notes ?? null,
+          jobUrl: jobUrl ?? null,
+          userId: userId,
+        },
+      });
+
+      res.status(201).json(application);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
+
 export { applicationRouter };
