@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@clerk/clerk-react";
 
 interface Application {
+  id: string; 
   role: string;
   company: string;
   status: string;

@@ -20,6 +20,7 @@ applicationRouter.get(
       const applications = await prisma.application.findMany({
         where: { userId: userId },
         select: {
+          id: true, 
           role: true,
           company: true,
           status: true,
