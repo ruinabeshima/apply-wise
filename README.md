@@ -2,6 +2,8 @@
 
 A full-stack application where users can sign in, view their job applications and receive personalised insights.
 
+<img width="1470" height="921" alt="Screenshot 2026-03-04 at 10 14 19" src="https://github.com/user-attachments/assets/2bb2a298-403f-4d16-b910-d54f84cc11b2" />
+
 ## Tech Stack
 
 - **Languages:** Typescript, TailwindCSS
