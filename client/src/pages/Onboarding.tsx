@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 import ApplicationForm from "../components/ApplicationForm";
 
 export default function Onboarding() {
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const { getToken } = useAuth();
   const navigate = useNavigate();
@@ -56,8 +56,9 @@ export default function Onboarding() {
           <h1 className="text-4xl font-bold">Set up your account</h1>
         </div>
 
-        {page === 1 && <ResumeUpload isOnboarding={true}/>}
-        {page === 2 && <ApplicationForm isOnboarding={true}/>}
+        {page === 1 && <ResumeUpload isOnboarding={true} />}
+        {page === 2 && <ApplicationForm isOnboarding={true} />}
+        <p>{error}</p>
       </main>
     </div>
   );

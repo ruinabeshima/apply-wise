@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 type ResumeUploadProps = {
-  isOnboarding?: Boolean;
+  isOnboarding?: boolean;
 };
 
 export default function ResumeUpload(props: ResumeUploadProps) {

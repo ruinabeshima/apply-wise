@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 
 type ApplicationFormProps = {
-  isOnboarding?: Boolean;
+  isOnboarding?: boolean;
 };
 
 export default function ApplicationForm(props: ApplicationFormProps) {
