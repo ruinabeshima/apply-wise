@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-export default function ResumeUpload() {
+type ResumeUploadProps = {
+  isOnboarding?: Boolean;
+};
+
+export default function ResumeUpload(props: ResumeUploadProps) {
   const [file, setFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,10 +20,14 @@ export default function ResumeUpload() {
   };
 
   return (
-    <section className="p-5 flex flex-col justify-center items-center">
+    <section className="w-full p-5 flex flex-col justify-center items-center">
       <div className="w-2/5 flex flex-col gap-5 border border-dashed p-5 rounded-xl">
         <div className="flex flex-col items-center gap-2 text-center">
-          <h2 className="text-2xl font-bold">Upload Your Resume</h2>
+          {props.isOnboarding ? (
+            <h2 className="text-2xl font-bold">1. Upload Your Resume</h2>
+          ): (
+            <h2 className="text-2xl font-bold">Upload Your Resume</h2>
+          )}
           <p className="text-sm text-gray-500">Supported formats: PDF Only</p>
         </div>
 

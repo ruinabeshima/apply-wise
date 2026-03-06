@@ -2,7 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 
-export default function ApplicationForm() {
+type ApplicationFormProps = {
+  isOnboarding?: Boolean;
+};
+
+export default function ApplicationForm(props: ApplicationFormProps) {
   const { getToken } = useAuth();
   const navigate = useNavigate();
 
@@ -54,7 +58,12 @@ export default function ApplicationForm() {
   return (
     <div className="card card-border bg-base-100 w-140">
       <div className="card-body">
-        <h2 className="card-title">Add an Application</h2>
+        {props.isOnboarding ? (
+          <h2 className="card-title">2. Add an Application (Optional)</h2>
+        ) : (
+          <h2 className="card-title">Add an Application</h2>
+        )}
+
         <form className="space-y-4" onSubmit={handleSubmit}>
           <fieldset className="fieldset">
             <legend className="fieldset-legend">Role</legend>
@@ -156,9 +165,19 @@ export default function ApplicationForm() {
             <p className="validator-hint">Must be valid URL</p>
           </fieldset>
 
-          <button className="btn btn-primary w-full" type="submit">
-            Save Application
-          </button>
+          {props.isOnboarding ? (
+            <section className="flex gap-2">
+              <button className="btn btn-neutral">Skip</button>
+              <button className="btn btn-primary" type="submit">
+                Save
+              </button>
+            </section>
+          ) : (
+            <button className="btn btn-primary w-full" type="submit">
+              Save Application
+            </button>
+          )}
+
           <p>{error}</p>
         </form>
       </div>

@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import ResumeUpload from "../components/ResumeUpload";
+import Navbar from "../components/Navbar";
+import ApplicationForm from "../components/ApplicationForm";
 
 export default function Onboarding() {
+  const [page, setPage] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const { getToken } = useAuth();
   const navigate = useNavigate();
@@ -44,5 +47,18 @@ export default function Onboarding() {
     getOnboardingStatus();
   }, [getToken, navigate]);
 
-  return <ResumeUpload />;
+  return (
+    <div className="flex flex-col w-full min-h-screen gap-5">
+      <Navbar />
+
+      <main className="flex flex-col items-center gap-10">
+        <div className="flex justify-center items-center">
+          <h1 className="text-4xl font-bold">Set up your account</h1>
+        </div>
+
+        {page === 1 && <ResumeUpload isOnboarding={true}/>}
+        {page === 2 && <ApplicationForm isOnboarding={true}/>}
+      </main>
+    </div>
+  );
 }
