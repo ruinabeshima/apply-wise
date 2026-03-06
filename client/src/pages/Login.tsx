@@ -1,6 +1,6 @@
 import { SignIn } from "@clerk/clerk-react";
-import background from "../background.jpg";
-import FormNavBar from "./form_navbar";
+import background from "../assets/background.jpg";
+import AuthNavbar from "../components/AuthNavbar";
 
 export default function Login() {
   return (
@@ -10,8 +10,8 @@ export default function Login() {
         className="fixed inset-0 bg-cover bg-center bg-no-repeat brightness-80 -z-10"
       />
 
-      <FormNavBar />
-      <SignIn signUpUrl="/register" forceRedirectUrl="/dashboard" />
+      <AuthNavbar />
+      <SignIn signUpUrl="/register" forceRedirectUrl="/onboarding" />
     </div>
   );
 }
