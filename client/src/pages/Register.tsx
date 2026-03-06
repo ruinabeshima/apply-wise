@@ -1,6 +1,6 @@
 import { SignUp } from "@clerk/clerk-react";
 import background from "../assets/background.jpg";
-import AuthNavbar from "../components/authNavbar";
+import AuthNavbar from "../components/AuthNavbar";
 
 export default function Register() {
   return (

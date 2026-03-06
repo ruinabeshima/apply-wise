@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router-dom";
-import Dashboard from "./pages/dashboard";
-import Home from "./pages/home";
-import Login from "./pages/login";
-import Register from "./pages/register";
+import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import ProtectedRoute from "./protected_routes";
 import AddApplication from "./pages/AddApplication";
-import Onboarding from "./pages/onboarding";
+import Onboarding from "./pages/Onboarding";
 
 const routes = (
   <Routes>
