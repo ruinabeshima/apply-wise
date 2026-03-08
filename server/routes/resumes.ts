@@ -17,7 +17,7 @@ resumeRouter.post(
     const { file } = req;
 
     if (!file) {
-      res.status(400).json({ error: "No file uploaded" });
+      res.status(400).json({ message: "No file uploaded" });
       return;
     }
 
@@ -45,7 +45,7 @@ resumeRouter.post(
         .status(201)
         .json({ id: resume.id, message: "File sent successfully" });
     } catch {
-      res.status(500).json({ error: "Failed to upload file" });
+      res.status(500).json({ message: "Failed to upload file" });
     }
   },
 );
