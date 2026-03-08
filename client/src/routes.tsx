@@ -12,7 +12,14 @@ const routes = (
     <Route path="/" element={<Home />}></Route>
     <Route path="/register" element={<Register />}></Route>
     <Route path="/login" element={<Login />}></Route>
-    <Route path="/onboarding" element={<Onboarding />}></Route>
+    <Route
+      path="/onboarding"
+      element={
+        <ProtectedRoute>
+          <Onboarding />
+        </ProtectedRoute>
+      }
+    ></Route>
     <Route
       path="/dashboard"
       element={
