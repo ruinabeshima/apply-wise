@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import ProtectedRoute from "./protected_routes";
 import AddApplication from "./pages/AddApplication";
 import Onboarding from "./pages/Onboarding";
+import UserResume from "./pages/UserResume";
 
 const routes = (
   <Routes>
@@ -17,6 +18,14 @@ const routes = (
       element={
         <ProtectedRoute>
           <Onboarding />
+        </ProtectedRoute>
+      }
+    ></Route>
+    <Route
+      path="/your-resume"
+      element={
+        <ProtectedRoute>
+          <UserResume />
         </ProtectedRoute>
       }
     ></Route>
