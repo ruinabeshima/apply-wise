@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface Application {
   id: string;
@@ -13,6 +14,7 @@ interface Application {
 }
 
 export default function ApplicationList() {
+  const navigate = useNavigate();
   const [applications, setApplications] = useState<Application[]>([]);
   const [error, setError] = useState("");
   const { getToken } = useAuth();
@@ -88,6 +90,7 @@ export default function ApplicationList() {
               <div
                 key={application.id}
                 className="card bg-base-100 shadow-md border border-base-200 hover:shadow-lg transition-shadow"
+                onClick={() => navigate(`/applications/${application.id}`)}
               >
                 <div className="card-body gap-3">
                   <div className="flex items-start justify-between">

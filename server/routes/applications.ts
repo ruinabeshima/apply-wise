@@ -40,6 +40,41 @@ applicationRouter.get(
   },
 );
 
+applicationRouter.get(
+  "/:id",
+  requireAuth(),
+  async (req: Request<{ id: string }>, res: Response) => {
+    const { userId } = req.auth;
+    const { id } = req.params;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    try {
+      const application = await prisma.application.findUnique({
+        where: {
+          id: id,
+          userId: userId,
+        },
+        select: {
+          id: true,
+          role: true,
+          company: true,
+          status: true,
+          appliedDate: true,
+          notes: true,
+          jobUrl: true,
+        },
+      });
+
+      res.json(application);
+    } catch {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  },
+);
+
 applicationRouter.post(
   "/add",
   requireAuth(),
