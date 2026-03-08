@@ -9,6 +9,7 @@ type ResumeUploadProps = {
 export default function ResumeUpload(props: ResumeUploadProps) {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<null | string>();
+  const [loading, setLoading] = useState(false);
   const { getToken } = useAuth();
 
   const uploadFile = async (event: React.FormEvent) => {
@@ -40,6 +41,8 @@ export default function ResumeUpload(props: ResumeUploadProps) {
       } else {
         setError("An unknown error occured");
       }
+    } finally {
+      setLoading(true);
     }
   };
 
@@ -130,8 +133,12 @@ export default function ResumeUpload(props: ResumeUploadProps) {
           </div>
         )}
 
-        <button className="btn btn-primary" disabled={!file} type="submit">
-          Upload Resume
+        <button
+          className={`btn ${loading ? "btn-disabled" : "btn-primary"}`}
+          disabled={!file}
+          type="submit"
+        >
+          {loading ? "Loading..." : "Upload Resume"}
         </button>
 
         {error && <p className="text-sm text-red-500 text-center">{error}</p>}

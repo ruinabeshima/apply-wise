@@ -18,11 +18,14 @@ export default function ApplicationForm(props: ApplicationFormProps) {
   const [notes, setNotes] = useState("");
   const [link, setLink] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
     const token = await getToken();
     const appUrl = import.meta.env.VITE_SERVER_URL;
+
+    setLoading(true);
 
     try {
       const response = await fetch(`${appUrl}/applications/add`, {
@@ -53,6 +56,8 @@ export default function ApplicationForm(props: ApplicationFormProps) {
       } else {
         setError("An unknown error occured");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -181,8 +186,11 @@ export default function ApplicationForm(props: ApplicationFormProps) {
               </button>
             </section>
           ) : (
-            <button className="btn btn-primary w-full" type="submit">
-              Save Application
+            <button
+              className={`btn ${loading ? "btn-disabled" : "btn-primary"} w-full`}
+              type="submit"
+            >
+              {loading ? "Loading..." : "Save Application"}
             </button>
           )}
 
