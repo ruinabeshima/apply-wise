@@ -31,21 +31,14 @@ export default function ApplicationList() {
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(
-            errorData.message || "Failed to retrieve applications",
-          );
+          throw new Error("Failed to retrieve applications");
         }
 
         const data: Application[] = await response.json();
         console.log(data);
         setApplications(data);
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("An unknown error occured");
-        }
+        setError("Failed to retrieve applications");
       }
     };
 
@@ -53,9 +46,22 @@ export default function ApplicationList() {
   }, [getToken]);
 
   return (
-    <section className="px-8 py-4">
+    <section className="px-8 py-4 flex flex-col items-center">
       {error && (
-        <div role="alert" className="alert alert-error mb-4">
+        <div role="alert" className="alert alert-error mb-10 w-4/5">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 shrink-0 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
           <span>{error}</span>
         </div>
       )}

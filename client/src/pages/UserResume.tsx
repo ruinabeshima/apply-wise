@@ -23,21 +23,14 @@ export default function UserResume() {
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(
-            errorData.message || "Failed to retrieve resume link",
-          );
+          throw new Error("Failed to retrieve resume");
         }
 
         const { url } = await response.json();
         setUrl(url);
         console.log(url);
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("An unknown error occured");
-        }
+        setError("Failed to retreive resume");
       } finally {
         setLoading(false);
       }
@@ -50,7 +43,7 @@ export default function UserResume() {
     <div className="w-full min-h-screen flex flex-col gap-7 items-center">
       <Navbar />
       {error ? (
-        <div role="alert" className="alert alert-error">
+        <div role="alert" className="alert alert-error w-4/5">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6 shrink-0 stroke-current"
