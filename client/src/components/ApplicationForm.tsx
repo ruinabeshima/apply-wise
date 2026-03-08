@@ -69,6 +69,7 @@ export default function ApplicationForm(props: ApplicationFormProps) {
           <fieldset className="fieldset">
             <legend className="fieldset-legend">Role</legend>
             <input
+              required
               type="text"
               className="input w-full"
               placeholder="e.g. Sales Assistant"
@@ -77,11 +78,13 @@ export default function ApplicationForm(props: ApplicationFormProps) {
                 setRole(event.target.value);
               }}
             />
+            <p className="label">Required</p>
           </fieldset>
 
           <fieldset className="fieldset">
             <legend className="fieldset-legend">Company</legend>
             <input
+              required
               type="text"
               className="input w-full"
               placeholder="e.g. Acme Company Inc"
@@ -90,6 +93,7 @@ export default function ApplicationForm(props: ApplicationFormProps) {
                 setCompany(event.target.value);
               }}
             />
+            <p className="label">Required</p>
           </fieldset>
 
           <fieldset className="fieldset">
@@ -104,6 +108,7 @@ export default function ApplicationForm(props: ApplicationFormProps) {
               <option>Offer</option>
               <option>Rejected</option>
             </select>
+            <p className="label">Required</p>
           </fieldset>
 
           <fieldset className="fieldset">
