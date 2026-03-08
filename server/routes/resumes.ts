@@ -1,6 +1,10 @@
 import express, { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
-import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import {
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+} from "@aws-sdk/client-s3";
 import { r2 } from "../lib/r2";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { upload } from "../lib/multer";
@@ -59,6 +63,24 @@ resumeRouter.post(
     const key = `uploads/${uuidv4()}.${ext}`;
 
     try {
+      const existing = await prisma.resume.findUnique({
+        where: {
+          userId: userId,
+        },
+        select: {
+          key: true,
+        },
+      });
+
+      if (existing) {
+        await r2.send(
+          new DeleteObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME!,
+            Key: existing.key,
+          }),
+        );
+      }
+
       await r2.send(
         new PutObjectCommand({
           Bucket: process.env.R2_BUCKET_NAME!,
@@ -68,8 +90,14 @@ resumeRouter.post(
         }),
       );
 
-      const resume = await prisma.resume.create({
-        data: {
+      const resume = await prisma.resume.upsert({
+        where: {
+          userId: userId,
+        },
+        update: {
+          key,
+        },
+        create: {
           key: key!,
           userId: userId!,
         },
