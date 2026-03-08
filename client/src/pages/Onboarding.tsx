@@ -59,7 +59,12 @@ export default function Onboarding() {
         {page === 1 && (
           <ResumeUpload isOnboarding={true} onSuccess={() => setPage(2)} />
         )}
-        {page === 2 && <ApplicationForm isOnboarding={true} />}
+        {page === 2 && (
+          <ApplicationForm
+            isOnboarding={true}
+            onSkip={() => navigate("/dashboard")}
+          />
+        )}
         <p>{error}</p>
       </main>
     </div>

@@ -4,6 +4,7 @@ import { useAuth } from "@clerk/clerk-react";
 
 type ApplicationFormProps = {
   isOnboarding?: boolean;
+  onSkip?: () => void;
 };
 
 export default function ApplicationForm(props: ApplicationFormProps) {
@@ -167,7 +168,9 @@ export default function ApplicationForm(props: ApplicationFormProps) {
 
           {props.isOnboarding ? (
             <section className="flex gap-2">
-              <button className="btn btn-neutral">Skip</button>
+              <button className="btn btn-neutral" onClick={props.onSkip}>
+                Skip
+              </button>
               <button className="btn btn-primary" type="submit">
                 Save
               </button>
