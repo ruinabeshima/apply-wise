@@ -53,6 +53,15 @@ export default function ApplicationForm(props: ApplicationFormProps) {
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
+
+    if (props.isEdit) {
+      await handleEditSubmit();
+    } else {
+      await handleAddSubmit();
+    }
+  };
+
+  const handleAddSubmit = async () => {
     const token = await getToken();
     const appUrl = import.meta.env.VITE_SERVER_URL;
 
@@ -82,6 +91,41 @@ export default function ApplicationForm(props: ApplicationFormProps) {
       navigate("/dashboard");
     } catch (error: unknown) {
       setError("Error: Could not create application");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditSubmit = async () => {
+    const token = await getToken();
+    const appUrl = import.meta.env.VITE_SERVER_URL;
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${appUrl}/applications/${props.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          role: role,
+          company: company,
+          status: status.toUpperCase(),
+          appliedDate: appliedDate || null,
+          notes: notes || null,
+          jobUrl: link || null,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to edit application");
+      }
+
+      navigate(`/applications/${props.id}`);
+    } catch {
+      setError("Error: Could not edit application");
     } finally {
       setLoading(false);
     }
