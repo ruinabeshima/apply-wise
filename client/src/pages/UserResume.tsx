@@ -23,21 +23,15 @@ export default function UserResume() {
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(
-            errorData.message || "Failed to retrieve resume link",
-          );
+          setError("Failed to retrieve resume");
+          return;
         }
 
         const { url } = await response.json();
         setUrl(url);
         console.log(url);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("An unknown error occured");
-        }
+      } catch {
+        setError("Failed to retreive resume");
       } finally {
         setLoading(false);
       }
@@ -50,7 +44,7 @@ export default function UserResume() {
     <div className="w-full min-h-screen flex flex-col gap-7 items-center">
       <Navbar />
       {error ? (
-        <div role="alert" className="alert alert-error">
+        <div role="alert" className="alert alert-error w-4/5">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6 shrink-0 stroke-current"
@@ -67,9 +61,9 @@ export default function UserResume() {
           <span>{error}</span>
         </div>
       ) : loading ? (
-        <div className="w-full flex items-center justify-center">
-          <h1 className="text-5xl font-bold">Loading ... </h1>
-        </div>
+        <button className="btn btn-square">
+          <span className="loading loading-spinner"></span>
+        </button>
       ) : (
         <>
           <iframe src={url} className="w-4/5 h-screen" />

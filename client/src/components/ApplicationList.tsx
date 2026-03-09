@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface Application {
   id: string;
@@ -13,6 +14,7 @@ interface Application {
 }
 
 export default function ApplicationList() {
+  const navigate = useNavigate();
   const [applications, setApplications] = useState<Application[]>([]);
   const [error, setError] = useState("");
   const { getToken } = useAuth();
@@ -31,21 +33,15 @@ export default function ApplicationList() {
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(
-            errorData.message || "Failed to retrieve applications",
-          );
+          setError("Failed to retrieve applications");
+          return;
         }
 
         const data: Application[] = await response.json();
         console.log(data);
         setApplications(data);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("An unknown error occured");
-        }
+      } catch {
+        setError("Failed to retrieve applications");
       }
     };
 
@@ -53,9 +49,22 @@ export default function ApplicationList() {
   }, [getToken]);
 
   return (
-    <section className="px-8 py-4">
+    <section className="px-8 py-4 flex flex-col items-center">
       {error && (
-        <div role="alert" className="alert alert-error mb-4">
+        <div role="alert" className="alert alert-error mb-10 w-4/5">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 shrink-0 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
           <span>{error}</span>
         </div>
       )}
@@ -81,25 +90,26 @@ export default function ApplicationList() {
             {applications.map((application) => (
               <div
                 key={application.id}
-                className="card bg-base-100 shadow-md border border-base-200 hover:shadow-lg transition-shadow"
+                className="card bg-base-100 shadow-md border border-base-200 hover:shadow-lg hover:cursor-pointer transition-shadow"
+                onClick={() => navigate(`/applications/${application.id}`)}
               >
                 <div className="card-body gap-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h2 className="card-title text-lg">{application.role}</h2>
-                      <p className="text-base-content/70 font-medium">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <h2 className="card-title text-lg wrap-break-word">{application.role}</h2>
+                      <p className="text-base-content/70 font-medium truncate">
                         {application.company}
                       </p>
                     </div>
                     <div
-                      className={`badge badge-soft ${
-                        application.status === "Applied"
+                      className={`badge badge-soft shrink-0 ${
+                        application.status === "APPLIED"
                           ? "badge-info"
-                          : application.status === "Interview"
+                          : application.status === "INTERVIEW"
                             ? "badge-warning"
-                            : application.status === "Offer"
+                            : application.status === "OFFER"
                               ? "badge-success"
-                              : application.status === "Rejected"
+                              : application.status === "REJECTED"
                                 ? "badge-error"
                                 : "badge-neutral"
                       }`}

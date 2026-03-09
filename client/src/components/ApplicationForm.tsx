@@ -1,15 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 
 type ApplicationFormProps = {
   isOnboarding?: boolean;
+  isEdit?: boolean;
+  id?: string;
+  role?: string;
+  company?: string;
+  status?: string;
+  appliedDate?: string;
+  notes?: string | null;
+  jobUrl?: string | null;
   onSkip?: () => void;
 };
 
 export default function ApplicationForm(props: ApplicationFormProps) {
   const { getToken } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleEditApplication = () => {
+      if (!props.isEdit) return;
+
+      setRole(props.role ?? "");
+      setCompany(props.company ?? "");
+      setStatus(props.status ?? "APPLIED");
+      setAppliedDate(props.appliedDate ?? "");
+      setNotes(props.notes ?? "");
+      setLink(props.jobUrl ?? "");
+    };
+
+    handleEditApplication();
+  }, [
+    props.isEdit,
+    props.role,
+    props.company,
+    props.status,
+    props.appliedDate,
+    props.notes,
+    props.jobUrl,
+  ]);
 
   const [role, setRole] = useState("");
   const [company, setCompany] = useState("");
@@ -22,6 +53,15 @@ export default function ApplicationForm(props: ApplicationFormProps) {
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
+
+    if (props.isEdit) {
+      await handleEditSubmit();
+    } else {
+      await handleAddSubmit();
+    }
+  };
+
+  const handleAddSubmit = async () => {
     const token = await getToken();
     const appUrl = import.meta.env.VITE_SERVER_URL;
 
@@ -45,17 +85,49 @@ export default function ApplicationForm(props: ApplicationFormProps) {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to create item");
+        setError("Failed to create item");
+        return;
       }
 
       navigate("/dashboard");
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(`Error: ${error.message}`);
-      } else {
-        setError("An unknown error occured");
+    } catch {
+      setError("Error: Could not create application");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditSubmit = async () => {
+    const token = await getToken();
+    const appUrl = import.meta.env.VITE_SERVER_URL;
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${appUrl}/applications/${props.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          role: role,
+          company: company,
+          status: status.toUpperCase(),
+          appliedDate: appliedDate || null,
+          notes: notes || null,
+          jobUrl: link || null,
+        }),
+      });
+
+      if (!response.ok) {
+        setError("Failed to edit application");
+        return;
       }
+
+      navigate(`/applications/${props.id}`);
+    } catch {
+      setError("Error: Could not edit application");
     } finally {
       setLoading(false);
     }
@@ -66,6 +138,8 @@ export default function ApplicationForm(props: ApplicationFormProps) {
       <div className="card-body">
         {props.isOnboarding ? (
           <h2 className="card-title">2. Add an Application (Optional)</h2>
+        ) : props.isEdit ? (
+          <h2 className="card-title">Update Application</h2>
         ) : (
           <h2 className="card-title">Add an Application</h2>
         )}
@@ -109,7 +183,7 @@ export default function ApplicationForm(props: ApplicationFormProps) {
               onChange={(event) => setStatus(event.target.value)}
             >
               <option>Applied</option>
-              <option>Interviewing</option>
+              <option>Interview</option>
               <option>Offer</option>
               <option>Rejected</option>
             </select>
@@ -194,7 +268,24 @@ export default function ApplicationForm(props: ApplicationFormProps) {
             </button>
           )}
 
-          <p>{error}</p>
+          {error && (
+            <div role="alert" className="alert alert-error mb-10">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 shrink-0 stroke-current"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>{error}</span>
+            </div>
+          )}
         </form>
       </div>
     </div>
