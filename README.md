@@ -17,9 +17,16 @@ A full-stack application where users can sign in, view their job applications an
 - **CI/CD:** Github Actions
 - **Deployment:** Google Cloud Run for the frontend, Render for the backend
 
-## Background Image
+## Features
 
-Taken from: https://www.freepik.com/free-vector/abstract-elegant-geometric-shape-background-design_149441939.htm#fromView=keyword&page=1&position=0&uuid=42c7654b-6a10-4813-855b-c347f2986f8a&query=Background+shape
+- User registration and login via Clerk
+- Multi-step onboarding flow (upload resume + add first application)
+- Full CRUD for job applications
+- Application status tracking: `APPLIED`, `INTERVIEW`, `OFFER`, `REJECTED`
+- Paginated application list sorted by date applied
+- Resume upload and management; PDF only, stored on Cloudflare R2
+- Secure resume viewing via pre-signed URLs
+- Protected routes: unauthorised users are redirected to `/login`, and un-onboarded users are redirected to `/onboarding`
 
 ## Server API Routes
 
@@ -32,5 +39,45 @@ Taken from: https://www.freepik.com/free-vector/abstract-elegant-geometric-shape
 
 ## Database Models
 
-- `User`: id, clerkId, email, imageUrl, createdAt, updatedAt
+- `User`: id, clerkId, email, imageUrl, createdAt, updatedAt, onboarding_complete
 - `Application`: id, role, company, status, appliedDate, notes, jobUrl, userId, createdAt, updatedAt
+- `Resume`: id, key, userId, uploadedAt, updatedAt
+
+## Environment Variables
+
+### Client
+
+VITE_SERVER_URL
+VITE_CLERK_PUBLISHABLE_KEY
+
+### Server
+
+- PORT
+- CLIENT_URL
+- POSTGRES_USER
+- POSTGRES_PASSWORD
+- DATABASE_URL
+- CLERK_PUBLISHABLE_KEY
+- CLERK_SECRET_KEY
+- CLERK_WEBHOOK_SECRET
+- R2_ACCOUNT_ID
+- R2_ACCESS_KEY_ID
+- R2_SECRET_ACCESS_KEY
+- R2_BUCKET_NAME
+
+## Getting started
+
+- Install dependencies
+  - `cd client && pnpm install`
+  - `cd ../server && pnpm install`
+
+- Start server docker container
+  `docker-compose up -d` (from `/server`)
+
+- Start development servers
+  - `pnpm dev` (from `/client`)
+  - `pnpm dev` (from `/server`)
+
+## Background Image
+
+Taken from: https://www.freepik.com/free-vector/abstract-elegant-geometric-shape-background-design_149441939.htm#fromView=keyword&page=1&position=0&uuid=42c7654b-6a10-4813-855b-c347f2986f8a&query=Background+shape
