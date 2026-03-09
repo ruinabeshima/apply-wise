@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
 
 type ResumeUploadProps = {
   isOnboarding?: boolean;
@@ -12,10 +13,13 @@ export default function ResumeUpload(props: ResumeUploadProps) {
   const [error, setError] = useState<null | string>();
   const [loading, setLoading] = useState(false);
   const { getToken } = useAuth();
+  const navigate = useNavigate();
 
   const uploadFile = async (event: React.FormEvent) => {
     event.preventDefault();
     const appUrl = import.meta.env.VITE_SERVER_URL;
+
+    setLoading(true);
 
     try {
       const token = await getToken();
@@ -36,6 +40,10 @@ export default function ResumeUpload(props: ResumeUploadProps) {
       }
 
       props.onSuccess?.();
+
+      if (props.isUpdate) {
+        navigate("/dashboard");
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
@@ -43,7 +51,7 @@ export default function ResumeUpload(props: ResumeUploadProps) {
         setError("An unknown error occured");
       }
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
 
