@@ -75,6 +75,42 @@ applicationRouter.get(
   },
 );
 
+applicationRouter.patch(
+  "/:id",
+  requireAuth(),
+  async (req: Request<{ id: string }>, res: Response) => {
+    try {
+      const { userId } = req.auth;
+      const { id } = req.params;
+
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const { role, company, status, appliedDate, notes, jobUrl } = req.body;
+
+      const application = await prisma.application.update({
+        where: {
+          id: id,
+        },
+        data: {
+          role: role,
+          company: company,
+          status: status,
+          appliedDate: appliedDate ? new Date(appliedDate) : undefined,
+          notes: notes ?? null,
+          jobUrl: jobUrl ?? null,
+          userId: userId,
+        },
+      });
+
+      res.status(201).json(application);
+    } catch {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  },
+);
+
 applicationRouter.delete(
   "/:id",
   requireAuth(),

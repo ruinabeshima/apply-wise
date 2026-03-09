@@ -22,6 +22,7 @@ export default function ApplicationDetail() {
   const [application, setApplication] = useState<Application | null>(null);
   const [error, setError] = useState<null | string>(null);
   const [loading, setLoading] = useState(true);
+  const [edit, setEdit] = useState(false);
 
   useEffect(() => {
     const getIndividualApplication = async () => {
@@ -187,7 +188,12 @@ export default function ApplicationDetail() {
               )}
 
               <div className="flex gap-2 justify-end">
-                <button className="btn btn-xs btn-accent">Edit</button>
+                <button
+                  className="btn btn-xs btn-accent"
+                  onClick={() => navigate(`/applications/${id}/edit`)}
+                >
+                  Edit
+                </button>
                 <button
                   className="btn btn-xs btn-error"
                   onClick={handleApplicationDelete}
