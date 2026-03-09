@@ -30,12 +30,18 @@ A full-stack application where users can sign in, view their job applications an
 
 ## Server API Routes
 
-| Method | Endpoint            | Description                                                                       |
-| ------ | ------------------- | --------------------------------------------------------------------------------- |
-| GET    | `/applications`     | Paginated list of all job applications made by the user                           |
-| POST   | `/applications/add` | Create a new job application                                                      |
-| POST   | `webhooks/clerk`    | Receive Clerk webhook to update User table in database with corresponding ClerkId |
-| GET    | `auth/status`       | Receive Boolean value if the user has onboarding complete or not                  |
+| Method | Endpoint            | Description                                                                    |
+| ------ | ------------------- | ------------------------------------------------------------------------------ |
+| GET    | `/applications`     | Paginated list of user's job application (query params: `pageNum`, `pageSize`) |
+| POST   | `/applications/add` | Create a new ob application                                                    |
+| GET    | `/applications/:id` | Retrieve a specific application by ID                                          |
+| PATCH  | `/applications/:id` | Update application details                                                     |
+| DELETE | `/applications/:id` | Delete an application                                                          |
+| GET    | `/auth/status`      | Get user's onboarding status                                                   |
+| PATCH  | `/auth/status`      | Mark onboarding as complete                                                    |
+| GET    | `/resumes`          | Get pre-signed URL to view resume (expires in 1 hour)                          |
+| POST   | `/resumes/upload`   | Upload or replace user's resume (PDF only, max 10MB)                           |
+| POST   | `/webhooks/clerk`   | Receive Clerk webhook to sync user data with database                          |
 
 ## Database Models
 
