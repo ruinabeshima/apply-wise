@@ -7,7 +7,7 @@ import Register from "./pages/Register";
 import AddApplication from "./pages/AddApplication";
 import Onboarding from "./pages/Onboarding";
 import UserResume from "./pages/UserResume";
-import ApplicationDetail from "./components/ApplicationDetail";
+import ApplicationDetail from "./pages/ApplicationDetail";
 
 const routes = (
   <Routes>
