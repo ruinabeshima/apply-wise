@@ -60,9 +60,9 @@ export default function UserResume() {
           <span>{error}</span>
         </div>
       ) : loading ? (
-        <div className="w-full flex items-center justify-center">
-          <h1 className="text-5xl font-bold">Loading ... </h1>
-        </div>
+        <button className="btn btn-square">
+          <span className="loading loading-spinner"></span>
+        </button>
       ) : (
         <>
           <iframe src={url} className="w-4/5 h-screen" />

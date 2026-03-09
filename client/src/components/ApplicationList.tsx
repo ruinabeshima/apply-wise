@@ -102,13 +102,13 @@ export default function ApplicationList() {
                     </div>
                     <div
                       className={`badge badge-soft ${
-                        application.status === "Applied"
+                        application.status === "APPLIED"
                           ? "badge-info"
-                          : application.status === "Interview"
+                          : application.status === "INTERVIEWING"
                             ? "badge-warning"
-                            : application.status === "Offer"
+                            : application.status === "OFFER"
                               ? "badge-success"
-                              : application.status === "Rejected"
+                              : application.status === "REJECTED"
                                 ? "badge-error"
                                 : "badge-neutral"
                       }`}
