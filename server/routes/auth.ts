@@ -29,4 +29,29 @@ authRouter.get(
   },
 );
 
+authRouter.patch(
+  "/status",
+  requireAuth(),
+  async (req: Request, res: Response) => {
+    const { userId } = req.auth;
+
+    try {
+      await prisma.user.update({
+        where: {
+          clerkId: userId,
+        },
+        data: {
+          onboarding_complete: true,
+        },
+      });
+
+      return res
+        .status(200)
+        .json({ message: "Onboarding status updated successfully" });
+    } catch {
+      return res.status(500).json({ message: "Failed to update status" });
+    }
+  },
+);
+
 export { authRouter };

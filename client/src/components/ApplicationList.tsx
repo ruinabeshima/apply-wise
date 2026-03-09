@@ -49,7 +49,7 @@ export default function ApplicationList() {
   }, [getToken]);
 
   return (
-    <section className="px-8 py-4 flex flex-col items-center">
+    <section className="px-8 py-4 flex flex-col items-center w-full">
       {error && (
         <div role="alert" className="alert alert-error mb-10 w-4/5">
           <svg
@@ -70,7 +70,7 @@ export default function ApplicationList() {
       )}
 
       {applications.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 text-base-content/50">
+        <div className="flex flex-col items-center justify-center gap-3 text-base-content/50 w-full max-w-5xl">
           <p className="text-xl font-semibold">No applications yet</p>
           <p className="text-sm">Start tracking your job applications!</p>
           <Link to="/applications/add">
@@ -78,7 +78,7 @@ export default function ApplicationList() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4 w-full max-w-5xl">
           <div>
             <Link to="/applications/add">
               <button className="btn btn-neutral btn-dash">
@@ -86,7 +86,7 @@ export default function ApplicationList() {
               </button>
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
             {applications.map((application) => (
               <div
                 key={application.id}
@@ -96,7 +96,9 @@ export default function ApplicationList() {
                 <div className="card-body gap-3">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <h2 className="card-title text-lg wrap-break-word">{application.role}</h2>
+                      <h2 className="card-title text-lg wrap-break-word">
+                        {application.role}
+                      </h2>
                       <p className="text-base-content/70 font-medium truncate">
                         {application.company}
                       </p>
