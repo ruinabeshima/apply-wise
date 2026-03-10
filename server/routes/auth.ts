@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { requireAuth } from "@clerk/express";
+import logAudit from "../lib/audit";
 
 const authRouter = express.Router();
 
@@ -44,6 +45,14 @@ authRouter.patch(
           onboarding_complete: true,
         },
       });
+
+      logAudit(
+        userId!,
+        "ONBOARDING_COMPLETED",
+        undefined,
+        undefined,
+        undefined,
+      );
 
       return res
         .status(200)
