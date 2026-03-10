@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { Webhook } from "svix";
+import { logger } from "../lib/logger";
 import logAudit from "../lib/audit";
 
 const webhookRouter = express.Router();
@@ -32,67 +33,78 @@ webhookRouter.post(
         "svix-signature": req.headers["svix-signature"] as string,
       }) as ClerkWebhookEvent;
     } catch (error) {
+      logger.error("Invalid signature", { error });
       res.status(400).json({ message: `Invalid signature: ${error}` });
       return;
     }
 
-    // New user created or updated
-    if (evt.type === "user.created" || evt.type === "user.updated") {
-      await prisma.user.upsert({
-        where: { clerkId: evt.data.id },
-        create: {
-          clerkId: evt.data.id,
-          email: evt.data.email_addresses[0].email_address,
-          imageUrl: evt.data.image_url,
-        },
-        update: {
-          email: evt.data.email_addresses[0].email_address,
-          imageUrl: evt.data.image_url,
-        },
-      });
+    try {
+      // New user created or updated
+      if (evt.type === "user.created" || evt.type === "user.updated") {
+        await prisma.user.upsert({
+          where: { clerkId: evt.data.id },
+          create: {
+            clerkId: evt.data.id,
+            email: evt.data.email_addresses[0].email_address,
+            imageUrl: evt.data.image_url,
+          },
+          update: {
+            email: evt.data.email_addresses[0].email_address,
+            imageUrl: evt.data.image_url,
+          },
+        });
 
-      if (evt.type === "user.created") {
+        if (evt.type === "user.created") {
+          await logAudit(
+            evt.data.id,
+            "USER_CREATED",
+            undefined,
+            "User",
+            evt.data.id,
+          );
+        } else if (evt.type === "user.updated") {
+          await logAudit(
+            evt.data.id,
+            "USER_UPDATED",
+            undefined,
+            "User",
+            evt.data.id,
+          );
+        }
+      }
+
+      // User deleted
+      if (evt.type == "user.deleted") {
+        if (!evt.data.id) {
+          logger.warn("Webhook missing user ID", { eventType: evt.type });
+          res.status(400).json({ message: "Missing user ID" });
+          return;
+        }
+
+        await prisma.user.delete({
+          where: {
+            clerkId: evt.data.id,
+          },
+        });
+
         await logAudit(
           evt.data.id,
-          "USER_CREATED",
-          undefined,
-          "User",
-          evt.data.id,
-        );
-      } else if (evt.type === "user.updated") {
-        await logAudit(
-          evt.data.id,
-          "USER_UPDATED",
+          "USER_DELETED",
           undefined,
           "User",
           evt.data.id,
         );
       }
-    }
 
-    // User deleted
-    if (evt.type == "user.deleted") {
-      if (!evt.data.id) {
-        res.status(400).json({ message: "Missing user ID" });
-        return;
-      }
-
-      await prisma.user.delete({
-        where: {
-          clerkId: evt.data.id,
-        },
+      res.json({ received: true });
+    } catch (error) {
+      logger.error("Failed to process webhook", {
+        eventType: evt.type,
+        userId: evt.data.id,
+        error,
       });
-
-      await logAudit(
-        evt.data.id,
-        "USER_DELETED",
-        undefined,
-        "User",
-        evt.data.id,
-      );
+      res.status(500).json({ message: "Internal server error" });
     }
-
-    res.json({ received: true });
   },
 );
 
