@@ -81,8 +81,9 @@ model AuditLog{
   userId String
   user User @relation(fields: [userId], references:[clerkId])
 
-  event String 
+  event AuditEvent
   description String? 
+  entityType String?
   entityId String?
   createdAt DateTime @default(now())
 

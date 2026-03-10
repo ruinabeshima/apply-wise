@@ -787,6 +787,7 @@ export const AuditLogScalarFieldEnum = {
   userId: 'userId',
   event: 'event',
   description: 'description',
+  entityType: 'entityType',
   entityId: 'entityId',
   createdAt: 'createdAt'
 } as const
@@ -870,6 +871,20 @@ export type EnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
  * Reference to a field of type 'Status[]'
  */
 export type ListEnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Status[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AuditEvent'
+ */
+export type EnumAuditEventFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEvent'>
+    
+
+
+/**
+ * Reference to a field of type 'AuditEvent[]'
+ */
+export type ListEnumAuditEventFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEvent[]'>
     
 
 
