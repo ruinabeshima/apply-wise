@@ -107,7 +107,7 @@ resumeRouter.post(
       await logAudit(
         userId!,
         "RESUME_UPLOADED",
-        undefined,
+        existing ? "Resume replaced" : "Initial upload",
         "Resume",
         resume.id,
       );
