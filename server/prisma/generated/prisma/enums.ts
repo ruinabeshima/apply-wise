@@ -21,6 +21,7 @@ export type Status = (typeof Status)[keyof typeof Status]
 
 export const AuditEvent = {
   USER_CREATED: 'USER_CREATED',
+  USER_UPDATED: 'USER_UPDATED',
   USER_DELETED: 'USER_DELETED',
   ONBOARDING_COMPLETED: 'ONBOARDING_COMPLETED',
   APPLICATION_CREATED: 'APPLICATION_CREATED',
