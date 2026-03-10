@@ -51,13 +51,23 @@ webhookRouter.post(
         },
       });
 
-      await logAudit(
-        evt.data.id,
-        "USER_CREATED",
-        undefined,
-        "User",
-        evt.data.id,
-      );
+      if (evt.type === "user.created") {
+        await logAudit(
+          evt.data.id,
+          "USER_CREATED",
+          undefined,
+          "User",
+          evt.data.id,
+        );
+      } else if (evt.type === "user.updated") {
+        await logAudit(
+          evt.data.id,
+          "USER_UPDATED",
+          undefined,
+          "User",
+          evt.data.id,
+        );
+      }
     }
 
     // User deleted
