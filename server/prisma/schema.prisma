@@ -89,5 +89,6 @@ model AuditLog{
 
   @@index([userId])
   @@index([createdAt])
+  @@index([entityType])
   @@index([event])
 }
