@@ -12,6 +12,7 @@ import { requireAuth } from "@clerk/express";
 import { v4 as uuidv4 } from "uuid";
 import { logger } from "../lib/logger";
 import logAudit from "../lib/audit";
+import parsePDF from "../lib/parse";
 
 const resumeRouter = express.Router();
 
@@ -103,16 +104,24 @@ resumeRouter.post(
         }),
       );
 
+      const text = await parsePDF(file.buffer);
+      if (!text) {
+        logger.error("Failed to parse PDF", { userId });
+        return res.status(400).json({ message: "Failed to parse resume" });
+      }
+
       const resume = await prisma.resume.upsert({
         where: {
           userId: userId,
         },
         update: {
           key,
+          text,
         },
         create: {
           key: key!,
           userId: userId!,
+          text,
         },
       });
 
