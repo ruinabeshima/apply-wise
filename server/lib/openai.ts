@@ -49,7 +49,30 @@ export async function getApplicationInfo(
   }
 }
 
-export async function getTailoring() {
+export async function getResumeText(userId: string): Promise<string | null> {
+  try {
+    const resume = await prisma.resume.findUnique({
+      where: {
+        userId: userId,
+      },
+      select: {
+        text: true,
+      },
+    });
+
+    if (!resume) {
+      logger.error("Could not retreive resume text", { userId });
+      return null;
+    }
+
+    return resume.text;
+  } catch (error) {
+    logger.error("Failed to get resume details", { userId, error });
+    return null;
+  }
+}
+
+export async function getTailoring(application: string[], resumeText: string) {
   const response = await openai.responses.create({
     model: "gpt-4.1-nano",
     input: "",
