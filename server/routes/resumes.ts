@@ -5,14 +5,14 @@ import {
   GetObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
-import { r2 } from "../lib/r2";
+import { r2 } from "../lib/storage/r2";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { upload } from "../lib/multer";
+import { upload } from "../lib/storage/multer";
 import { requireAuth } from "@clerk/express";
 import { v4 as uuidv4 } from "uuid";
-import { logger } from "../lib/logger";
-import logAudit from "../lib/audit";
-import parsePDF from "../lib/parse";
+import { logger } from "../lib/monitoring/logger";
+import logAudit from "../lib/monitoring/audit";
+import parsePDF from "../lib/storage/parse";
 
 const resumeRouter = express.Router();
 

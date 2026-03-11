@@ -1,5 +1,5 @@
-import { prisma } from "../lib/prisma";
-import { logger } from "./logger";
+import { prisma } from "../prisma";
+import { logger } from "../monitoring/logger";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { r2 } from "./r2";
 

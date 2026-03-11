@@ -1,6 +1,6 @@
 import OpenAI from "openai";
-import { logger } from "./logger";
-import { prisma } from "../lib/prisma";
+import { logger } from "../monitoring/logger";
+import { prisma } from "../prisma";
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function getApplicationInfo(
