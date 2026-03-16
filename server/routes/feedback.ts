@@ -5,7 +5,7 @@ import { prisma } from "../lib/prisma";
 import {
   getApplicationInfo,
   getResumeText,
-  getTailoring,
+  getResumeSuggestions,
 } from "../lib/openai/openai";
 
 // TODO: Implement audit log
@@ -56,9 +56,10 @@ feedbackRouter.post("/", requireAuth(), async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Resume not found" });
     }
 
-    const feedback: TailoringFeedback | null = await getTailoring(
+    const feedback: TailoringFeedback | null = await getResumeSuggestions(
       application,
       resumeText,
+      userId,
     );
     if (!feedback) {
       logger.warn("Feedback was not received", { userId });

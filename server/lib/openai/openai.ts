@@ -72,60 +72,78 @@ export async function getResumeText(userId: string): Promise<string | null> {
   }
 }
 
-export async function getTailoring(application: string[], resumeText: string) {
+export async function getResumeSuggestions(
+  applicationInfo: string[],
+  resumeText: string,
+  userId: string,
+): Promise<{
+  miss: string[];
+  improve: string[];
+  add: string[];
+  weak: string[];
+} | null> {
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       response_format: { type: "json_object" },
+      max_tokens: 1000,
       messages: [
         {
           role: "system",
-          content: `
-Resume reviewer.
-
-Compare resume to job requirements.
-
-Return JSON:
-{
-  "miss": [],
-  "improve": [],
-  "add": [],
-  "weak": []
-}
-
-Rules:
-- Max 5 items each
-- Concise
-- JSON only
-`,
+          content: `You are a resume reviewer. Compare the resume against job requirements.
+Return ONLY this JSON structure:
+{"miss":[],"improve":[],"add":[],"weak":[]}
+- miss: job requirements absent from resume
+- improve: existing bullets needing metrics/stronger verbs  
+- add: relevant experience worth mentioning
+- weak: content misaligned with the role to cut or reframe
+- Max 5 items per category, be specific (e.g. "Quantify impact in Project X")`,
         },
         {
           role: "user",
-          content: `resume:\n${resumeText}\n\nrequirements:\n${application.join("\n")}`,
+          content: `Resume:\n${resumeText.trim()}\n\nJob Requirements:\n${applicationInfo.slice(0, 20).join("\n")}`,
         },
       ],
     });
 
-    const jsonText = response.choices[0]?.message?.content;
-    if (!jsonText) {
-      logger.error("No content in OpenAI response", { response });
+    const content = response.choices[0]?.message?.content;
+    if (!content) {
+      logger.error("Empty response from OpenAI", { userId });
       return null;
     }
 
     try {
-      return JSON.parse(jsonText);
+      const parsed = JSON.parse(content);
+
+      if (
+        !Array.isArray(parsed.miss) ||
+        !Array.isArray(parsed.improve) ||
+        !Array.isArray(parsed.add) ||
+        !Array.isArray(parsed.weak)
+      ) {
+        logger.error("Unexpected JSON shape from API", {
+          userId,
+          parsed,
+        });
+        return null;
+      }
+
+      return {
+        miss: parsed.miss,
+        improve: parsed.improve,
+        add: parsed.add,
+        weak: parsed.weak,
+      };
     } catch (parseError) {
       logger.error("Failed to parse OpenAI JSON response", {
-        jsonText,
+        userId,
+        content,
         parseError,
       });
       return null;
     }
   } catch (error) {
-    logger.error("Failed to generate tailoring feedback", {
-      error: error instanceof Error ? error.message : String(error),
-      errorStack: error instanceof Error ? error.stack : undefined,
-    });
+    logger.error("Could not get resume suggestions", { userId, error });
     return null;
   }
 }
