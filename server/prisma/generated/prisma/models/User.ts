@@ -200,6 +200,8 @@ export type UserWhereInput = {
   onboarding_complete?: Prisma.BoolFilter<"User"> | boolean
   applications?: Prisma.ApplicationListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  tailoringSessions?: Prisma.TailoringSessionListRelationFilter
+  tailoredResume?: Prisma.TailoredResumeListRelationFilter
   resume?: Prisma.XOR<Prisma.ResumeNullableScalarRelationFilter, Prisma.ResumeWhereInput> | null
 }
 
@@ -213,6 +215,8 @@ export type UserOrderByWithRelationInput = {
   onboarding_complete?: Prisma.SortOrder
   applications?: Prisma.ApplicationOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
+  tailoringSessions?: Prisma.TailoringSessionOrderByRelationAggregateInput
+  tailoredResume?: Prisma.TailoredResumeOrderByRelationAggregateInput
   resume?: Prisma.ResumeOrderByWithRelationInput
 }
 
@@ -229,6 +233,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   onboarding_complete?: Prisma.BoolFilter<"User"> | boolean
   applications?: Prisma.ApplicationListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  tailoringSessions?: Prisma.TailoringSessionListRelationFilter
+  tailoredResume?: Prisma.TailoredResumeListRelationFilter
   resume?: Prisma.XOR<Prisma.ResumeNullableScalarRelationFilter, Prisma.ResumeWhereInput> | null
 }, "id" | "clerkId" | "email">
 
@@ -268,6 +274,8 @@ export type UserCreateInput = {
   onboarding_complete?: boolean
   applications?: Prisma.ApplicationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  tailoringSessions?: Prisma.TailoringSessionCreateNestedManyWithoutUserInput
+  tailoredResume?: Prisma.TailoredResumeCreateNestedManyWithoutUserInput
   resume?: Prisma.ResumeCreateNestedOneWithoutUserInput
 }
 
@@ -281,6 +289,8 @@ export type UserUncheckedCreateInput = {
   onboarding_complete?: boolean
   applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  tailoringSessions?: Prisma.TailoringSessionUncheckedCreateNestedManyWithoutUserInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedCreateNestedManyWithoutUserInput
   resume?: Prisma.ResumeUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -294,6 +304,8 @@ export type UserUpdateInput = {
   onboarding_complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applications?: Prisma.ApplicationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  tailoringSessions?: Prisma.TailoringSessionUpdateManyWithoutUserNestedInput
+  tailoredResume?: Prisma.TailoredResumeUpdateManyWithoutUserNestedInput
   resume?: Prisma.ResumeUpdateOneWithoutUserNestedInput
 }
 
@@ -307,6 +319,8 @@ export type UserUncheckedUpdateInput = {
   onboarding_complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applications?: Prisma.ApplicationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  tailoringSessions?: Prisma.TailoringSessionUncheckedUpdateManyWithoutUserNestedInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedUpdateManyWithoutUserNestedInput
   resume?: Prisma.ResumeUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -433,6 +447,34 @@ export type UserUpdateOneRequiredWithoutAuditLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAuditLogsInput, Prisma.UserUpdateWithoutAuditLogsInput>, Prisma.UserUncheckedUpdateWithoutAuditLogsInput>
 }
 
+export type UserCreateNestedOneWithoutTailoringSessionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTailoringSessionsInput, Prisma.UserUncheckedCreateWithoutTailoringSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTailoringSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutTailoringSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTailoringSessionsInput, Prisma.UserUncheckedCreateWithoutTailoringSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTailoringSessionsInput
+  upsert?: Prisma.UserUpsertWithoutTailoringSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTailoringSessionsInput, Prisma.UserUpdateWithoutTailoringSessionsInput>, Prisma.UserUncheckedUpdateWithoutTailoringSessionsInput>
+}
+
+export type UserCreateNestedOneWithoutTailoredResumeInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTailoredResumeInput, Prisma.UserUncheckedCreateWithoutTailoredResumeInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTailoredResumeInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutTailoredResumeNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTailoredResumeInput, Prisma.UserUncheckedCreateWithoutTailoredResumeInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTailoredResumeInput
+  upsert?: Prisma.UserUpsertWithoutTailoredResumeInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTailoredResumeInput, Prisma.UserUpdateWithoutTailoredResumeInput>, Prisma.UserUncheckedUpdateWithoutTailoredResumeInput>
+}
+
 export type UserCreateWithoutApplicationsInput = {
   id?: string
   clerkId: string
@@ -442,6 +484,8 @@ export type UserCreateWithoutApplicationsInput = {
   updatedAt?: Date | string
   onboarding_complete?: boolean
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  tailoringSessions?: Prisma.TailoringSessionCreateNestedManyWithoutUserInput
+  tailoredResume?: Prisma.TailoredResumeCreateNestedManyWithoutUserInput
   resume?: Prisma.ResumeCreateNestedOneWithoutUserInput
 }
 
@@ -454,6 +498,8 @@ export type UserUncheckedCreateWithoutApplicationsInput = {
   updatedAt?: Date | string
   onboarding_complete?: boolean
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  tailoringSessions?: Prisma.TailoringSessionUncheckedCreateNestedManyWithoutUserInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedCreateNestedManyWithoutUserInput
   resume?: Prisma.ResumeUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -482,6 +528,8 @@ export type UserUpdateWithoutApplicationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   onboarding_complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  tailoringSessions?: Prisma.TailoringSessionUpdateManyWithoutUserNestedInput
+  tailoredResume?: Prisma.TailoredResumeUpdateManyWithoutUserNestedInput
   resume?: Prisma.ResumeUpdateOneWithoutUserNestedInput
 }
 
@@ -494,6 +542,8 @@ export type UserUncheckedUpdateWithoutApplicationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   onboarding_complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  tailoringSessions?: Prisma.TailoringSessionUncheckedUpdateManyWithoutUserNestedInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedUpdateManyWithoutUserNestedInput
   resume?: Prisma.ResumeUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -507,6 +557,8 @@ export type UserCreateWithoutResumeInput = {
   onboarding_complete?: boolean
   applications?: Prisma.ApplicationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  tailoringSessions?: Prisma.TailoringSessionCreateNestedManyWithoutUserInput
+  tailoredResume?: Prisma.TailoredResumeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutResumeInput = {
@@ -519,6 +571,8 @@ export type UserUncheckedCreateWithoutResumeInput = {
   onboarding_complete?: boolean
   applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  tailoringSessions?: Prisma.TailoringSessionUncheckedCreateNestedManyWithoutUserInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutResumeInput = {
@@ -547,6 +601,8 @@ export type UserUpdateWithoutResumeInput = {
   onboarding_complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applications?: Prisma.ApplicationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  tailoringSessions?: Prisma.TailoringSessionUpdateManyWithoutUserNestedInput
+  tailoredResume?: Prisma.TailoredResumeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutResumeInput = {
@@ -559,6 +615,8 @@ export type UserUncheckedUpdateWithoutResumeInput = {
   onboarding_complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applications?: Prisma.ApplicationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  tailoringSessions?: Prisma.TailoringSessionUncheckedUpdateManyWithoutUserNestedInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -570,6 +628,8 @@ export type UserCreateWithoutAuditLogsInput = {
   updatedAt?: Date | string
   onboarding_complete?: boolean
   applications?: Prisma.ApplicationCreateNestedManyWithoutUserInput
+  tailoringSessions?: Prisma.TailoringSessionCreateNestedManyWithoutUserInput
+  tailoredResume?: Prisma.TailoredResumeCreateNestedManyWithoutUserInput
   resume?: Prisma.ResumeCreateNestedOneWithoutUserInput
 }
 
@@ -582,6 +642,8 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   updatedAt?: Date | string
   onboarding_complete?: boolean
   applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutUserInput
+  tailoringSessions?: Prisma.TailoringSessionUncheckedCreateNestedManyWithoutUserInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedCreateNestedManyWithoutUserInput
   resume?: Prisma.ResumeUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -610,6 +672,8 @@ export type UserUpdateWithoutAuditLogsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   onboarding_complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applications?: Prisma.ApplicationUpdateManyWithoutUserNestedInput
+  tailoringSessions?: Prisma.TailoringSessionUpdateManyWithoutUserNestedInput
+  tailoredResume?: Prisma.TailoredResumeUpdateManyWithoutUserNestedInput
   resume?: Prisma.ResumeUpdateOneWithoutUserNestedInput
 }
 
@@ -622,6 +686,152 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   onboarding_complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
   applications?: Prisma.ApplicationUncheckedUpdateManyWithoutUserNestedInput
+  tailoringSessions?: Prisma.TailoringSessionUncheckedUpdateManyWithoutUserNestedInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedUpdateManyWithoutUserNestedInput
+  resume?: Prisma.ResumeUncheckedUpdateOneWithoutUserNestedInput
+}
+
+export type UserCreateWithoutTailoringSessionsInput = {
+  id?: string
+  clerkId: string
+  email: string
+  imageUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  onboarding_complete?: boolean
+  applications?: Prisma.ApplicationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  tailoredResume?: Prisma.TailoredResumeCreateNestedManyWithoutUserInput
+  resume?: Prisma.ResumeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutTailoringSessionsInput = {
+  id?: string
+  clerkId: string
+  email: string
+  imageUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  onboarding_complete?: boolean
+  applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedCreateNestedManyWithoutUserInput
+  resume?: Prisma.ResumeUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutTailoringSessionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTailoringSessionsInput, Prisma.UserUncheckedCreateWithoutTailoringSessionsInput>
+}
+
+export type UserUpsertWithoutTailoringSessionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTailoringSessionsInput, Prisma.UserUncheckedUpdateWithoutTailoringSessionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTailoringSessionsInput, Prisma.UserUncheckedCreateWithoutTailoringSessionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTailoringSessionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTailoringSessionsInput, Prisma.UserUncheckedUpdateWithoutTailoringSessionsInput>
+}
+
+export type UserUpdateWithoutTailoringSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  onboarding_complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  applications?: Prisma.ApplicationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  tailoredResume?: Prisma.TailoredResumeUpdateManyWithoutUserNestedInput
+  resume?: Prisma.ResumeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTailoringSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  onboarding_complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  applications?: Prisma.ApplicationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedUpdateManyWithoutUserNestedInput
+  resume?: Prisma.ResumeUncheckedUpdateOneWithoutUserNestedInput
+}
+
+export type UserCreateWithoutTailoredResumeInput = {
+  id?: string
+  clerkId: string
+  email: string
+  imageUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  onboarding_complete?: boolean
+  applications?: Prisma.ApplicationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  tailoringSessions?: Prisma.TailoringSessionCreateNestedManyWithoutUserInput
+  resume?: Prisma.ResumeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutTailoredResumeInput = {
+  id?: string
+  clerkId: string
+  email: string
+  imageUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  onboarding_complete?: boolean
+  applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  tailoringSessions?: Prisma.TailoringSessionUncheckedCreateNestedManyWithoutUserInput
+  resume?: Prisma.ResumeUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutTailoredResumeInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTailoredResumeInput, Prisma.UserUncheckedCreateWithoutTailoredResumeInput>
+}
+
+export type UserUpsertWithoutTailoredResumeInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTailoredResumeInput, Prisma.UserUncheckedUpdateWithoutTailoredResumeInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTailoredResumeInput, Prisma.UserUncheckedCreateWithoutTailoredResumeInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTailoredResumeInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTailoredResumeInput, Prisma.UserUncheckedUpdateWithoutTailoredResumeInput>
+}
+
+export type UserUpdateWithoutTailoredResumeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  onboarding_complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  applications?: Prisma.ApplicationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  tailoringSessions?: Prisma.TailoringSessionUpdateManyWithoutUserNestedInput
+  resume?: Prisma.ResumeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTailoredResumeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clerkId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  onboarding_complete?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  applications?: Prisma.ApplicationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  tailoringSessions?: Prisma.TailoringSessionUncheckedUpdateManyWithoutUserNestedInput
   resume?: Prisma.ResumeUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -633,11 +843,15 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
 export type UserCountOutputType = {
   applications: number
   auditLogs: number
+  tailoringSessions: number
+  tailoredResume: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   applications?: boolean | UserCountOutputTypeCountApplicationsArgs
   auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
+  tailoringSessions?: boolean | UserCountOutputTypeCountTailoringSessionsArgs
+  tailoredResume?: boolean | UserCountOutputTypeCountTailoredResumeArgs
 }
 
 /**
@@ -664,6 +878,20 @@ export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.AuditLogWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTailoringSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TailoringSessionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTailoredResumeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TailoredResumeWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -675,6 +903,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   onboarding_complete?: boolean
   applications?: boolean | Prisma.User$applicationsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
+  tailoringSessions?: boolean | Prisma.User$tailoringSessionsArgs<ExtArgs>
+  tailoredResume?: boolean | Prisma.User$tailoredResumeArgs<ExtArgs>
   resume?: boolean | Prisma.User$resumeArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -713,6 +943,8 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   applications?: boolean | Prisma.User$applicationsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
+  tailoringSessions?: boolean | Prisma.User$tailoringSessionsArgs<ExtArgs>
+  tailoredResume?: boolean | Prisma.User$tailoredResumeArgs<ExtArgs>
   resume?: boolean | Prisma.User$resumeArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -724,6 +956,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     applications: Prisma.$ApplicationPayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+    tailoringSessions: Prisma.$TailoringSessionPayload<ExtArgs>[]
+    tailoredResume: Prisma.$TailoredResumePayload<ExtArgs>[]
     resume: Prisma.$ResumePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1130,6 +1364,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   applications<T extends Prisma.User$applicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tailoringSessions<T extends Prisma.User$tailoringSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tailoringSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TailoringSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tailoredResume<T extends Prisma.User$tailoredResumeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tailoredResumeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TailoredResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   resume<T extends Prisma.User$resumeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resumeArgs<ExtArgs>>): Prisma.Prisma__ResumeClient<runtime.Types.Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1363,6 +1599,11 @@ export type UserFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Skip the first `n` Users.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Users.
+   */
   distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
 }
 
@@ -1600,6 +1841,54 @@ export type User$auditLogsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.AuditLogScalarFieldEnum | Prisma.AuditLogScalarFieldEnum[]
+}
+
+/**
+ * User.tailoringSessions
+ */
+export type User$tailoringSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TailoringSession
+   */
+  select?: Prisma.TailoringSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TailoringSession
+   */
+  omit?: Prisma.TailoringSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TailoringSessionInclude<ExtArgs> | null
+  where?: Prisma.TailoringSessionWhereInput
+  orderBy?: Prisma.TailoringSessionOrderByWithRelationInput | Prisma.TailoringSessionOrderByWithRelationInput[]
+  cursor?: Prisma.TailoringSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TailoringSessionScalarFieldEnum | Prisma.TailoringSessionScalarFieldEnum[]
+}
+
+/**
+ * User.tailoredResume
+ */
+export type User$tailoredResumeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TailoredResume
+   */
+  select?: Prisma.TailoredResumeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TailoredResume
+   */
+  omit?: Prisma.TailoredResumeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TailoredResumeInclude<ExtArgs> | null
+  where?: Prisma.TailoredResumeWhereInput
+  orderBy?: Prisma.TailoredResumeOrderByWithRelationInput | Prisma.TailoredResumeOrderByWithRelationInput[]
+  cursor?: Prisma.TailoredResumeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TailoredResumeScalarFieldEnum | Prisma.TailoredResumeScalarFieldEnum[]
 }
 
 /**

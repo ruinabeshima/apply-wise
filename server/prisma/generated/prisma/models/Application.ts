@@ -223,6 +223,8 @@ export type ApplicationWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  tailoringSession?: Prisma.TailoringSessionListRelationFilter
+  tailoredResume?: Prisma.TailoredResumeListRelationFilter
 }
 
 export type ApplicationOrderByWithRelationInput = {
@@ -237,6 +239,8 @@ export type ApplicationOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  tailoringSession?: Prisma.TailoringSessionOrderByRelationAggregateInput
+  tailoredResume?: Prisma.TailoredResumeOrderByRelationAggregateInput
 }
 
 export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
@@ -254,6 +258,8 @@ export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  tailoringSession?: Prisma.TailoringSessionListRelationFilter
+  tailoredResume?: Prisma.TailoredResumeListRelationFilter
 }, "id">
 
 export type ApplicationOrderByWithAggregationInput = {
@@ -299,6 +305,8 @@ export type ApplicationCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutApplicationsInput
+  tailoringSession?: Prisma.TailoringSessionCreateNestedManyWithoutApplicationInput
+  tailoredResume?: Prisma.TailoredResumeCreateNestedManyWithoutApplicationInput
 }
 
 export type ApplicationUncheckedCreateInput = {
@@ -312,6 +320,8 @@ export type ApplicationUncheckedCreateInput = {
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  tailoringSession?: Prisma.TailoringSessionUncheckedCreateNestedManyWithoutApplicationInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedCreateNestedManyWithoutApplicationInput
 }
 
 export type ApplicationUpdateInput = {
@@ -325,6 +335,8 @@ export type ApplicationUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutApplicationsNestedInput
+  tailoringSession?: Prisma.TailoringSessionUpdateManyWithoutApplicationNestedInput
+  tailoredResume?: Prisma.TailoredResumeUpdateManyWithoutApplicationNestedInput
 }
 
 export type ApplicationUncheckedUpdateInput = {
@@ -338,6 +350,8 @@ export type ApplicationUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tailoringSession?: Prisma.TailoringSessionUncheckedUpdateManyWithoutApplicationNestedInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedUpdateManyWithoutApplicationNestedInput
 }
 
 export type ApplicationCreateManyInput = {
@@ -427,6 +441,11 @@ export type ApplicationMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type ApplicationScalarRelationFilter = {
+  is?: Prisma.ApplicationWhereInput
+  isNot?: Prisma.ApplicationWhereInput
+}
+
 export type ApplicationCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.ApplicationCreateWithoutUserInput, Prisma.ApplicationUncheckedCreateWithoutUserInput> | Prisma.ApplicationCreateWithoutUserInput[] | Prisma.ApplicationUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutUserInput | Prisma.ApplicationCreateOrConnectWithoutUserInput[]
@@ -473,6 +492,34 @@ export type EnumStatusFieldUpdateOperationsInput = {
   set?: $Enums.Status
 }
 
+export type ApplicationCreateNestedOneWithoutTailoringSessionInput = {
+  create?: Prisma.XOR<Prisma.ApplicationCreateWithoutTailoringSessionInput, Prisma.ApplicationUncheckedCreateWithoutTailoringSessionInput>
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutTailoringSessionInput
+  connect?: Prisma.ApplicationWhereUniqueInput
+}
+
+export type ApplicationUpdateOneRequiredWithoutTailoringSessionNestedInput = {
+  create?: Prisma.XOR<Prisma.ApplicationCreateWithoutTailoringSessionInput, Prisma.ApplicationUncheckedCreateWithoutTailoringSessionInput>
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutTailoringSessionInput
+  upsert?: Prisma.ApplicationUpsertWithoutTailoringSessionInput
+  connect?: Prisma.ApplicationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ApplicationUpdateToOneWithWhereWithoutTailoringSessionInput, Prisma.ApplicationUpdateWithoutTailoringSessionInput>, Prisma.ApplicationUncheckedUpdateWithoutTailoringSessionInput>
+}
+
+export type ApplicationCreateNestedOneWithoutTailoredResumeInput = {
+  create?: Prisma.XOR<Prisma.ApplicationCreateWithoutTailoredResumeInput, Prisma.ApplicationUncheckedCreateWithoutTailoredResumeInput>
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutTailoredResumeInput
+  connect?: Prisma.ApplicationWhereUniqueInput
+}
+
+export type ApplicationUpdateOneRequiredWithoutTailoredResumeNestedInput = {
+  create?: Prisma.XOR<Prisma.ApplicationCreateWithoutTailoredResumeInput, Prisma.ApplicationUncheckedCreateWithoutTailoredResumeInput>
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutTailoredResumeInput
+  upsert?: Prisma.ApplicationUpsertWithoutTailoredResumeInput
+  connect?: Prisma.ApplicationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ApplicationUpdateToOneWithWhereWithoutTailoredResumeInput, Prisma.ApplicationUpdateWithoutTailoredResumeInput>, Prisma.ApplicationUncheckedUpdateWithoutTailoredResumeInput>
+}
+
 export type ApplicationCreateWithoutUserInput = {
   id?: string
   role: string
@@ -483,6 +530,8 @@ export type ApplicationCreateWithoutUserInput = {
   jobUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tailoringSession?: Prisma.TailoringSessionCreateNestedManyWithoutApplicationInput
+  tailoredResume?: Prisma.TailoredResumeCreateNestedManyWithoutApplicationInput
 }
 
 export type ApplicationUncheckedCreateWithoutUserInput = {
@@ -495,6 +544,8 @@ export type ApplicationUncheckedCreateWithoutUserInput = {
   jobUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  tailoringSession?: Prisma.TailoringSessionUncheckedCreateNestedManyWithoutApplicationInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedCreateNestedManyWithoutApplicationInput
 }
 
 export type ApplicationCreateOrConnectWithoutUserInput = {
@@ -539,6 +590,150 @@ export type ApplicationScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string
 }
 
+export type ApplicationCreateWithoutTailoringSessionInput = {
+  id?: string
+  role: string
+  company: string
+  status?: $Enums.Status
+  appliedDate?: Date | string
+  notes?: string | null
+  jobUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutApplicationsInput
+  tailoredResume?: Prisma.TailoredResumeCreateNestedManyWithoutApplicationInput
+}
+
+export type ApplicationUncheckedCreateWithoutTailoringSessionInput = {
+  id?: string
+  role: string
+  company: string
+  status?: $Enums.Status
+  appliedDate?: Date | string
+  notes?: string | null
+  jobUrl?: string | null
+  userId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tailoredResume?: Prisma.TailoredResumeUncheckedCreateNestedManyWithoutApplicationInput
+}
+
+export type ApplicationCreateOrConnectWithoutTailoringSessionInput = {
+  where: Prisma.ApplicationWhereUniqueInput
+  create: Prisma.XOR<Prisma.ApplicationCreateWithoutTailoringSessionInput, Prisma.ApplicationUncheckedCreateWithoutTailoringSessionInput>
+}
+
+export type ApplicationUpsertWithoutTailoringSessionInput = {
+  update: Prisma.XOR<Prisma.ApplicationUpdateWithoutTailoringSessionInput, Prisma.ApplicationUncheckedUpdateWithoutTailoringSessionInput>
+  create: Prisma.XOR<Prisma.ApplicationCreateWithoutTailoringSessionInput, Prisma.ApplicationUncheckedCreateWithoutTailoringSessionInput>
+  where?: Prisma.ApplicationWhereInput
+}
+
+export type ApplicationUpdateToOneWithWhereWithoutTailoringSessionInput = {
+  where?: Prisma.ApplicationWhereInput
+  data: Prisma.XOR<Prisma.ApplicationUpdateWithoutTailoringSessionInput, Prisma.ApplicationUncheckedUpdateWithoutTailoringSessionInput>
+}
+
+export type ApplicationUpdateWithoutTailoringSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  appliedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutApplicationsNestedInput
+  tailoredResume?: Prisma.TailoredResumeUpdateManyWithoutApplicationNestedInput
+}
+
+export type ApplicationUncheckedUpdateWithoutTailoringSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  appliedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tailoredResume?: Prisma.TailoredResumeUncheckedUpdateManyWithoutApplicationNestedInput
+}
+
+export type ApplicationCreateWithoutTailoredResumeInput = {
+  id?: string
+  role: string
+  company: string
+  status?: $Enums.Status
+  appliedDate?: Date | string
+  notes?: string | null
+  jobUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutApplicationsInput
+  tailoringSession?: Prisma.TailoringSessionCreateNestedManyWithoutApplicationInput
+}
+
+export type ApplicationUncheckedCreateWithoutTailoredResumeInput = {
+  id?: string
+  role: string
+  company: string
+  status?: $Enums.Status
+  appliedDate?: Date | string
+  notes?: string | null
+  jobUrl?: string | null
+  userId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tailoringSession?: Prisma.TailoringSessionUncheckedCreateNestedManyWithoutApplicationInput
+}
+
+export type ApplicationCreateOrConnectWithoutTailoredResumeInput = {
+  where: Prisma.ApplicationWhereUniqueInput
+  create: Prisma.XOR<Prisma.ApplicationCreateWithoutTailoredResumeInput, Prisma.ApplicationUncheckedCreateWithoutTailoredResumeInput>
+}
+
+export type ApplicationUpsertWithoutTailoredResumeInput = {
+  update: Prisma.XOR<Prisma.ApplicationUpdateWithoutTailoredResumeInput, Prisma.ApplicationUncheckedUpdateWithoutTailoredResumeInput>
+  create: Prisma.XOR<Prisma.ApplicationCreateWithoutTailoredResumeInput, Prisma.ApplicationUncheckedCreateWithoutTailoredResumeInput>
+  where?: Prisma.ApplicationWhereInput
+}
+
+export type ApplicationUpdateToOneWithWhereWithoutTailoredResumeInput = {
+  where?: Prisma.ApplicationWhereInput
+  data: Prisma.XOR<Prisma.ApplicationUpdateWithoutTailoredResumeInput, Prisma.ApplicationUncheckedUpdateWithoutTailoredResumeInput>
+}
+
+export type ApplicationUpdateWithoutTailoredResumeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  appliedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutApplicationsNestedInput
+  tailoringSession?: Prisma.TailoringSessionUpdateManyWithoutApplicationNestedInput
+}
+
+export type ApplicationUncheckedUpdateWithoutTailoredResumeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  appliedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tailoringSession?: Prisma.TailoringSessionUncheckedUpdateManyWithoutApplicationNestedInput
+}
+
 export type ApplicationCreateManyUserInput = {
   id?: string
   role: string
@@ -561,6 +756,8 @@ export type ApplicationUpdateWithoutUserInput = {
   jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tailoringSession?: Prisma.TailoringSessionUpdateManyWithoutApplicationNestedInput
+  tailoredResume?: Prisma.TailoredResumeUpdateManyWithoutApplicationNestedInput
 }
 
 export type ApplicationUncheckedUpdateWithoutUserInput = {
@@ -573,6 +770,8 @@ export type ApplicationUncheckedUpdateWithoutUserInput = {
   jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tailoringSession?: Prisma.TailoringSessionUncheckedUpdateManyWithoutApplicationNestedInput
+  tailoredResume?: Prisma.TailoredResumeUncheckedUpdateManyWithoutApplicationNestedInput
 }
 
 export type ApplicationUncheckedUpdateManyWithoutUserInput = {
@@ -588,6 +787,44 @@ export type ApplicationUncheckedUpdateManyWithoutUserInput = {
 }
 
 
+/**
+ * Count Type ApplicationCountOutputType
+ */
+
+export type ApplicationCountOutputType = {
+  tailoringSession: number
+  tailoredResume: number
+}
+
+export type ApplicationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tailoringSession?: boolean | ApplicationCountOutputTypeCountTailoringSessionArgs
+  tailoredResume?: boolean | ApplicationCountOutputTypeCountTailoredResumeArgs
+}
+
+/**
+ * ApplicationCountOutputType without action
+ */
+export type ApplicationCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ApplicationCountOutputType
+   */
+  select?: Prisma.ApplicationCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ApplicationCountOutputType without action
+ */
+export type ApplicationCountOutputTypeCountTailoringSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TailoringSessionWhereInput
+}
+
+/**
+ * ApplicationCountOutputType without action
+ */
+export type ApplicationCountOutputTypeCountTailoredResumeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TailoredResumeWhereInput
+}
+
 
 export type ApplicationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -601,6 +838,9 @@ export type ApplicationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  tailoringSession?: boolean | Prisma.Application$tailoringSessionArgs<ExtArgs>
+  tailoredResume?: boolean | Prisma.Application$tailoredResumeArgs<ExtArgs>
+  _count?: boolean | Prisma.ApplicationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["application"]>
 
 export type ApplicationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -647,6 +887,9 @@ export type ApplicationSelectScalar = {
 export type ApplicationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "role" | "company" | "status" | "appliedDate" | "notes" | "jobUrl" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["application"]>
 export type ApplicationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  tailoringSession?: boolean | Prisma.Application$tailoringSessionArgs<ExtArgs>
+  tailoredResume?: boolean | Prisma.Application$tailoredResumeArgs<ExtArgs>
+  _count?: boolean | Prisma.ApplicationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ApplicationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -659,6 +902,8 @@ export type $ApplicationPayload<ExtArgs extends runtime.Types.Extensions.Interna
   name: "Application"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    tailoringSession: Prisma.$TailoringSessionPayload<ExtArgs>[]
+    tailoredResume: Prisma.$TailoredResumePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1066,6 +1311,8 @@ readonly fields: ApplicationFieldRefs;
 export interface Prisma__ApplicationClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  tailoringSession<T extends Prisma.Application$tailoringSessionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Application$tailoringSessionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TailoringSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tailoredResume<T extends Prisma.Application$tailoredResumeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Application$tailoredResumeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TailoredResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1301,6 +1548,11 @@ export type ApplicationFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Skip the first `n` Applications.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Applications.
+   */
   distinct?: Prisma.ApplicationScalarFieldEnum | Prisma.ApplicationScalarFieldEnum[]
 }
 
@@ -1498,6 +1750,54 @@ export type ApplicationDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many Applications to delete.
    */
   limit?: number
+}
+
+/**
+ * Application.tailoringSession
+ */
+export type Application$tailoringSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TailoringSession
+   */
+  select?: Prisma.TailoringSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TailoringSession
+   */
+  omit?: Prisma.TailoringSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TailoringSessionInclude<ExtArgs> | null
+  where?: Prisma.TailoringSessionWhereInput
+  orderBy?: Prisma.TailoringSessionOrderByWithRelationInput | Prisma.TailoringSessionOrderByWithRelationInput[]
+  cursor?: Prisma.TailoringSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TailoringSessionScalarFieldEnum | Prisma.TailoringSessionScalarFieldEnum[]
+}
+
+/**
+ * Application.tailoredResume
+ */
+export type Application$tailoredResumeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TailoredResume
+   */
+  select?: Prisma.TailoredResumeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TailoredResume
+   */
+  omit?: Prisma.TailoredResumeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TailoredResumeInclude<ExtArgs> | null
+  where?: Prisma.TailoredResumeWhereInput
+  orderBy?: Prisma.TailoredResumeOrderByWithRelationInput | Prisma.TailoredResumeOrderByWithRelationInput[]
+  cursor?: Prisma.TailoredResumeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TailoredResumeScalarFieldEnum | Prisma.TailoredResumeScalarFieldEnum[]
 }
 
 /**

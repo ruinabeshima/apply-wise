@@ -31,3 +31,12 @@ export const AuditEvent = {
 } as const
 
 export type AuditEvent = (typeof AuditEvent)[keyof typeof AuditEvent]
+
+
+export const TailoringSessionStatus = {
+  PENDING: 'PENDING',
+  REVIEWED: 'REVIEWED',
+  TAILORED: 'TAILORED'
+} as const
+
+export type TailoringSessionStatus = (typeof TailoringSessionStatus)[keyof typeof TailoringSessionStatus]

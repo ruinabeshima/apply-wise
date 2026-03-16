@@ -37,3 +37,13 @@ export type Resume = Prisma.ResumeModel
  * 
  */
 export type AuditLog = Prisma.AuditLogModel
+/**
+ * Model TailoringSession
+ * 
+ */
+export type TailoringSession = Prisma.TailoringSessionModel
+/**
+ * Model TailoredResume
+ * 
+ */
+export type TailoredResume = Prisma.TailoredResumeModel

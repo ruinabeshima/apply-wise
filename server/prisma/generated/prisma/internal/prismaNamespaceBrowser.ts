@@ -54,7 +54,9 @@ export const ModelName = {
   User: 'User',
   Application: 'Application',
   Resume: 'Resume',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  TailoringSession: 'TailoringSession',
+  TailoredResume: 'TailoredResume'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -127,12 +129,47 @@ export const AuditLogScalarFieldEnum = {
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
+export const TailoringSessionScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  userId: 'userId',
+  suggestions: 'suggestions',
+  acceptedSuggestions: 'acceptedSuggestions',
+  dismissedSuggestions: 'dismissedSuggestions',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TailoringSessionScalarFieldEnum = (typeof TailoringSessionScalarFieldEnum)[keyof typeof TailoringSessionScalarFieldEnum]
+
+
+export const TailoredResumeScalarFieldEnum = {
+  id: 'id',
+  tailoringSessionId: 'tailoringSessionId',
+  applicationId: 'applicationId',
+  userId: 'userId',
+  name: 'name',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type TailoredResumeScalarFieldEnum = (typeof TailoredResumeScalarFieldEnum)[keyof typeof TailoredResumeScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -149,4 +186,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
