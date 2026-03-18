@@ -1,7 +1,17 @@
+import { Resume } from "../../prisma/generated/prisma/client";
 import { ResumeSuggestions } from "../openai/openai";
 
+/* 
+Example structure: 
+{
+  "acceptedSuggestions": ["miss-0", "miss-1", "improve-0", "add-0"],
+  "dismissedSuggestions": ["improve-1", "weak-0"]
+}
+*/
+
 export function parseAcceptedSuggestions(
-  dbSuggestion: string[],
+  acceptedIndicies: string[],
+  fullSuggestions: ResumeSuggestions,
 ): ResumeSuggestions {
   const result: ResumeSuggestions = {
     miss: [],
@@ -10,11 +20,19 @@ export function parseAcceptedSuggestions(
     weak: [],
   };
 
-  for (const item of dbSuggestion) {
-    const [category, ...rest] = item.split(":");
-    const text = rest.join(":");
-    if (category in result) {
-      result[category as keyof ResumeSuggestions].push(text);
+  for (const item of acceptedIndicies) {
+    const [category, strIndex] = item.split("-");
+    const intIndex = parseInt(strIndex);
+
+    if (
+      category in result &&
+      !isNaN(intIndex) &&
+      intIndex < fullSuggestions[category as keyof ResumeSuggestions].length
+    ) {
+      const suggestion =
+        fullSuggestions[category as keyof ResumeSuggestions][intIndex];
+
+      result[category as keyof ResumeSuggestions].push(suggestion);
     }
   }
 
