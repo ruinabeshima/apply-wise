@@ -17,6 +17,7 @@ interface TailoringFeedback {
 
 const feedbackRouter = express.Router();
 
+// Start tailoring session, and retrieve AI suggestions 
 feedbackRouter.post("/", requireAuth(), async (req: Request, res: Response) => {
   const { userId } = req.auth;
   const { applicationId } = req.body;
@@ -72,5 +73,14 @@ feedbackRouter.post("/", requireAuth(), async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 });
+
+// Update suggestion decisions, and track accepted / dismissed 
+
+
+
+// Generate tailored resume 
+
+
+
 
 export { feedbackRouter };
