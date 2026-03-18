@@ -113,6 +113,7 @@ feedbackRouter.post(
         logger.warn("Unauthorised access attempt", {
           endpoint: `/feedback/${sessionId}`,
         });
+        return res.status(403).json({ message: "Forbidden" });
       }
 
       // Update session
@@ -163,6 +164,7 @@ feedbackRouter.post(
         logger.warn("Unauthorised access attempt", {
           endpoint: `/feedback/${sessionId}`,
         });
+        return res.status(403).json({ message: "Forbidden" });
       }
 
       // Retrieve resume text
