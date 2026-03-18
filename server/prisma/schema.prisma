@@ -24,6 +24,8 @@ model User {
 
   applications Application[]
   auditLogs AuditLog[]
+  tailoringSessions TailoringSession[] 
+  tailoredResume TailoredResume[]
   resume Resume?
 }
 
@@ -45,6 +47,12 @@ enum AuditEvent {
   RESUME_UPLOADED
 }
 
+enum TailoringSessionStatus {
+  PENDING 
+  REVIEWED 
+  TAILORED
+}
+
 model Application {
   id String @id @default(uuid())
   role String 
@@ -61,6 +69,8 @@ model Application {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tailoringSession TailoringSession[]
+  tailoredResume TailoredResume[]
   @@index([userId])
 }
 
@@ -70,6 +80,8 @@ model Resume {
   
   userId String 
   user User @relation(fields: [userId], references:[clerkId])
+
+  text String @db.Text
 
   uploadedAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -92,4 +104,51 @@ model AuditLog{
   @@index([createdAt])
   @@index([entityType])
   @@index([event])
+}
+
+model TailoringSession{
+  id String @id @default(uuid())
+  applicationId String 
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  userId String
+  user User @relation(fields: [userId], references:[clerkId], onDelete: Cascade)
+
+  // Feedback from OpenAI 
+  suggestions Json 
+
+  acceptedSuggestions String[] @default([])
+  dismissedSuggestions String[] @default([])
+
+  status TailoringSessionStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tailoredResume TailoredResume[]
+
+  @@index([userId])
+  @@index([applicationId])
+}
+
+model TailoredResume {
+  id String @id @default(uuid())
+
+  tailoringSessionId String
+  tailoringSession TailoringSession @relation(fields: [tailoringSessionId], references: [id], onDelete: Cascade)
+
+  applicationId String 
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  userId String 
+  user User @relation(fields: [userId], references:[clerkId], onDelete: Cascade)
+
+  name String 
+  content String @db.Text 
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([applicationId])
+  @@index([tailoringSessionId])
 }

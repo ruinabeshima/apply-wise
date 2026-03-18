@@ -52,7 +52,7 @@ A full-stack application where users can sign in, view their job applications an
 | Method | Endpoint            | Description                                                                    |
 | ------ | ------------------- | ------------------------------------------------------------------------------ |
 | GET    | `/applications`     | Paginated list of user's job application (query params: `pageNum`, `pageSize`) |
-| POST   | `/applications/add` | Create a new job application                                                    |
+| POST   | `/applications/add` | Create a new job application                                                   |
 | GET    | `/applications/:id` | Retrieve a specific application by ID                                          |
 | PATCH  | `/applications/:id` | Update application details                                                     |
 | DELETE | `/applications/:id` | Delete an application                                                          |
@@ -101,7 +101,7 @@ VITE_CLERK_PUBLISHABLE_KEY
 
 - Start development servers
   - `pnpm dev` (from `/client`)
-  - `pnpm dev` (from `/server`)
+  - `pnpm dev` (from `/server`) 
 
 ## Background Image
 

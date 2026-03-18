@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.4.2
- * Query Engine version: 94a226be1cf2967af2541cca5529f0f7ba866919
+ * Prisma Client JS version: 7.5.0
+ * Query Engine version: 280c870be64f457428992c43c1f6d557fab6e29e
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.4.2",
-  engine: "94a226be1cf2967af2541cca5529f0f7ba866919"
+  client: "7.5.0",
+  engine: "280c870be64f457428992c43c1f6d557fab6e29e"
 }
 
 /**
@@ -387,7 +387,9 @@ export const ModelName = {
   User: 'User',
   Application: 'Application',
   Resume: 'Resume',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  TailoringSession: 'TailoringSession',
+  TailoredResume: 'TailoredResume'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "application" | "resume" | "auditLog"
+    modelProps: "user" | "application" | "resume" | "auditLog" | "tailoringSession" | "tailoredResume"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +705,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TailoringSession: {
+      payload: Prisma.$TailoringSessionPayload<ExtArgs>
+      fields: Prisma.TailoringSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TailoringSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoringSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TailoringSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoringSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.TailoringSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoringSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TailoringSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoringSessionPayload>
+        }
+        findMany: {
+          args: Prisma.TailoringSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoringSessionPayload>[]
+        }
+        create: {
+          args: Prisma.TailoringSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoringSessionPayload>
+        }
+        createMany: {
+          args: Prisma.TailoringSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TailoringSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoringSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.TailoringSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoringSessionPayload>
+        }
+        update: {
+          args: Prisma.TailoringSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoringSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.TailoringSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TailoringSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TailoringSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoringSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.TailoringSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoringSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.TailoringSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTailoringSession>
+        }
+        groupBy: {
+          args: Prisma.TailoringSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TailoringSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TailoringSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TailoringSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    TailoredResume: {
+      payload: Prisma.$TailoredResumePayload<ExtArgs>
+      fields: Prisma.TailoredResumeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TailoredResumeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoredResumePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TailoredResumeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoredResumePayload>
+        }
+        findFirst: {
+          args: Prisma.TailoredResumeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoredResumePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TailoredResumeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoredResumePayload>
+        }
+        findMany: {
+          args: Prisma.TailoredResumeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoredResumePayload>[]
+        }
+        create: {
+          args: Prisma.TailoredResumeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoredResumePayload>
+        }
+        createMany: {
+          args: Prisma.TailoredResumeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TailoredResumeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoredResumePayload>[]
+        }
+        delete: {
+          args: Prisma.TailoredResumeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoredResumePayload>
+        }
+        update: {
+          args: Prisma.TailoredResumeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoredResumePayload>
+        }
+        deleteMany: {
+          args: Prisma.TailoredResumeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TailoredResumeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TailoredResumeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoredResumePayload>[]
+        }
+        upsert: {
+          args: Prisma.TailoredResumeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TailoredResumePayload>
+        }
+        aggregate: {
+          args: Prisma.TailoredResumeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTailoredResume>
+        }
+        groupBy: {
+          args: Prisma.TailoredResumeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TailoredResumeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TailoredResumeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TailoredResumeCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -775,6 +925,7 @@ export const ResumeScalarFieldEnum = {
   id: 'id',
   key: 'key',
   userId: 'userId',
+  text: 'text',
   uploadedAt: 'uploadedAt',
   updatedAt: 'updatedAt'
 } as const
@@ -795,12 +946,47 @@ export const AuditLogScalarFieldEnum = {
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
+export const TailoringSessionScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  userId: 'userId',
+  suggestions: 'suggestions',
+  acceptedSuggestions: 'acceptedSuggestions',
+  dismissedSuggestions: 'dismissedSuggestions',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TailoringSessionScalarFieldEnum = (typeof TailoringSessionScalarFieldEnum)[keyof typeof TailoringSessionScalarFieldEnum]
+
+
+export const TailoredResumeScalarFieldEnum = {
+  id: 'id',
+  tailoringSessionId: 'tailoringSessionId',
+  applicationId: 'applicationId',
+  userId: 'userId',
+  name: 'name',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type TailoredResumeScalarFieldEnum = (typeof TailoredResumeScalarFieldEnum)[keyof typeof TailoredResumeScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -817,6 +1003,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -885,6 +1080,34 @@ export type EnumAuditEventFieldRefInput<$PrismaModel> = FieldRefInputType<$Prism
  * Reference to a field of type 'AuditEvent[]'
  */
 export type ListEnumAuditEventFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEvent[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'TailoringSessionStatus'
+ */
+export type EnumTailoringSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TailoringSessionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TailoringSessionStatus[]'
+ */
+export type ListEnumTailoringSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TailoringSessionStatus[]'>
     
 
 
@@ -1000,6 +1223,8 @@ export type GlobalOmitConfig = {
   application?: Prisma.ApplicationOmit
   resume?: Prisma.ResumeOmit
   auditLog?: Prisma.AuditLogOmit
+  tailoringSession?: Prisma.TailoringSessionOmit
+  tailoredResume?: Prisma.TailoredResumeOmit
 }
 
 /* Types for Logging */

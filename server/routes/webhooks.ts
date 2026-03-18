@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { Webhook } from "svix";
-import { logger } from "../lib/logger";
-import logAudit from "../lib/audit";
+import { logger } from "../lib/monitoring/logger";
+import logAudit from "../lib/monitoring/audit";
 
 const webhookRouter = express.Router();
 
