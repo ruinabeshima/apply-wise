@@ -154,10 +154,13 @@ feedbackRouter.post(
     }
 
     try {
-      // Retrieve tailoring session
-      const session = await prisma.tailoringSession.findUnique({
+      // Retrieve tailoring session and update status
+      const session = await prisma.tailoringSession.update({
         where: {
           id: sessionId,
+        },
+        data: {
+          status: "TAILORED",
         },
       });
       if (!session || session?.userId !== userId) {
