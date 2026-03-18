@@ -103,21 +103,8 @@ feedbackRouter.post(
     }
 
     try {
-      // Retrieve tailoring session
-      const session = await prisma.tailoringSession.findUnique({
-        where: {
-          id: sessionId,
-        },
-      });
-      if (!session || session?.userId !== userId) {
-        logger.warn("Unauthorised access attempt", {
-          endpoint: `/feedback/${sessionId}`,
-        });
-        return res.status(403).json({ message: "Forbidden" });
-      }
-
-      // Update session
-      const updatedSession = await prisma.tailoringSession.update({
+      // Retrieve tailoring session and update with values
+      const session = await prisma.tailoringSession.update({
         where: {
           id: sessionId,
         },
@@ -127,10 +114,14 @@ feedbackRouter.post(
           status: "REVIEWED",
         },
       });
+      if (!session || session?.userId !== userId) {
+        logger.warn("Unauthorised access attempt", {
+          endpoint: `/feedback/${sessionId}`,
+        });
+        return res.status(403).json({ message: "Forbidden" });
+      }
 
-      res
-        .status(200)
-        .json({ message: "Suggestions updated", session: updatedSession });
+      res.status(200).json({ message: "Suggestions updated", session });
     } catch (error) {
       logger.error("Failed to update suggestion decisions", { userId, error });
       return res.status(500).json({ message: "Internal server error" });
