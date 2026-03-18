@@ -12,74 +12,78 @@ import {
 const feedbackRouter = express.Router();
 
 // Start tailoring session, and retrieve AI suggestions
-feedbackRouter.post("/", requireAuth(), async (req: Request, res: Response) => {
-  const { userId } = req.auth;
-  const { applicationId } = req.body;
+feedbackRouter.post(
+  "/:applicationId",
+  requireAuth(),
+  async (req: Request<{ applicationId: string }>, res: Response) => {
+    const { userId } = req.auth;
+    const { applicationId } = req.params;
 
-  if (!userId) {
-    logger.warn("Unauthorised access attempt", { endpoint: "/feedback" });
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+    if (!userId) {
+      logger.warn("Unauthorised access attempt", { endpoint: "/feedback" });
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
-  try {
-    // User authentication
-    const app = await prisma.application.findUnique({
-      where: { id: applicationId },
-    });
-    if (app?.userId !== userId) {
-      logger.warn("Application does not belong to user", {
-        userId,
-        applicationId,
+    try {
+      // User authentication
+      const app = await prisma.application.findUnique({
+        where: { id: applicationId },
       });
-      return res.status(403).json({ message: "Forbidden" });
-    }
+      if (app?.userId !== userId) {
+        logger.warn("Application does not belong to user", {
+          userId,
+          applicationId,
+        });
+        return res.status(403).json({ message: "Forbidden" });
+      }
 
-    // Get user application
-    const application: string[] | null = await getApplicationInfo(
-      applicationId,
-      userId,
-    );
-    if (!application) {
-      logger.warn("Application does not exist", { applicationId, userId });
-      return res.status(404).json({ message: "Application not found" });
-    }
-
-    // Get resume text
-    const resumeText: string | null = await getResumeText(userId);
-    if (!resumeText) {
-      logger.warn("Resume does not exist", { userId });
-      return res.status(404).json({ message: "Resume not found" });
-    }
-
-    // Generate feedback
-    const suggestions: ResumeSuggestions | null = await getResumeSuggestions(
-      application,
-      resumeText,
-      userId,
-    );
-    if (!suggestions) {
-      logger.warn("Feedback was not received", { userId });
-      return res.status(500).json({ message: "Failed to retrieve feedback" });
-    }
-
-    // Create new tailoring session
-    const session = await prisma.tailoringSession.create({
-      data: {
+      // Get user application
+      const application: string[] | null = await getApplicationInfo(
         applicationId,
         userId,
-        suggestions,
-      },
-    });
+      );
+      if (!application) {
+        logger.warn("Application does not exist", { applicationId, userId });
+        return res.status(404).json({ message: "Application not found" });
+      }
 
-    return res.status(201).json({ sessionId: session.id, suggestions });
-  } catch (error) {
-    logger.error("Failed to process feedback request", {
-      userId,
-      error: error instanceof Error ? error.message : String(error),
-    });
-    return res.status(500).json({ message: "Internal server error" });
-  }
-});
+      // Get resume text
+      const resumeText: string | null = await getResumeText(userId);
+      if (!resumeText) {
+        logger.warn("Resume does not exist", { userId });
+        return res.status(404).json({ message: "Resume not found" });
+      }
+
+      // Generate feedback
+      const suggestions: ResumeSuggestions | null = await getResumeSuggestions(
+        application,
+        resumeText,
+        userId,
+      );
+      if (!suggestions) {
+        logger.warn("Feedback was not received", { userId });
+        return res.status(500).json({ message: "Failed to retrieve feedback" });
+      }
+
+      // Create new tailoring session
+      const session = await prisma.tailoringSession.create({
+        data: {
+          applicationId,
+          userId,
+          suggestions,
+        },
+      });
+
+      return res.status(201).json({ sessionId: session.id, suggestions });
+    } catch (error) {
+      logger.error("Failed to process feedback request", {
+        userId,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  },
+);
 
 // Update suggestion decisions, and track accepted / dismissed
 feedbackRouter.post(
