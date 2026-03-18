@@ -150,7 +150,7 @@ Return ONLY this JSON structure:
   }
 }
 
-export default async function generateTailoredResume(
+export async function generateTailoredResume(
   resumeText: string,
   resumeSuggestions: ResumeSuggestions,
   userId: string,

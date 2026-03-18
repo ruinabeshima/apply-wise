@@ -1,5 +1,9 @@
 name: CI Build and Test
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 permissions:
   id-token: write
@@ -90,6 +94,12 @@ jobs:
       - name: Install backend dependencies
         working-directory: ./server
         run: pnpm install
+
+      - name: Resolve failed migration
+        working-directory: ./server
+        run: pnpm exec prisma migrate resolve --rolled-back 20260302074502_application_table_init
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Run Prisma migrations
         working-directory: ./server
