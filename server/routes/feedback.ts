@@ -76,7 +76,9 @@ feedbackRouter.post(
         },
       });
 
-      return res.status(201).json({ sessionId: session.id, suggestions });
+      return res
+        .status(201)
+        .json({ sessionId: session.id, suggestions, status: session.status });
     } catch (error) {
       logger.error("Failed to process feedback request", {
         userId,
@@ -105,14 +107,9 @@ feedbackRouter.post(
 
     try {
       // Retrieve tailoring session and update with values
-      const session = await prisma.tailoringSession.update({
+      const session = await prisma.tailoringSession.findUnique({
         where: {
           id: sessionId,
-        },
-        data: {
-          acceptedSuggestions,
-          dismissedSuggestions,
-          status: "REVIEWED",
         },
       });
       if (!session || session?.userId !== userId) {
@@ -122,7 +119,22 @@ feedbackRouter.post(
         return res.status(403).json({ message: "Forbidden" });
       }
 
-      res.status(200).json({ message: "Suggestions updated", session });
+      // Update tailoring session
+      const updatedSession = await prisma.tailoringSession.update({
+        where: {
+          id: sessionId,
+        },
+        data: {
+          acceptedSuggestions,
+          dismissedSuggestions,
+          status: "REVIEWED",
+        },
+      });
+
+      res.status(200).json({
+        message: "Suggestions updated",
+        status: updatedSession.status,
+      });
     } catch (error) {
       logger.error("Failed to update suggestion decisions", { userId, error });
       return res.status(500).json({ message: "Internal server error" });
@@ -147,12 +159,9 @@ feedbackRouter.post(
 
     try {
       // Retrieve tailoring session and update status
-      const session = await prisma.tailoringSession.update({
+      const session = await prisma.tailoringSession.findUnique({
         where: {
           id: sessionId,
-        },
-        data: {
-          status: "TAILORED",
         },
       });
       if (!session || session?.userId !== userId) {
@@ -197,10 +206,21 @@ feedbackRouter.post(
         },
       });
 
+      // Update tailoring session
+      const updatedSession = await prisma.tailoringSession.update({
+        where: {
+          id: sessionId,
+        },
+        data: {
+          status: "TAILORED",
+        },
+      });
+
       return res.status(201).json({
         message: "Resume created",
         name: newResume.name,
         resume: newResume.content,
+        status: updatedSession.status,
       });
     } catch (error) {
       logger.warn("Unable to generate tailored resume", { userId, error });
