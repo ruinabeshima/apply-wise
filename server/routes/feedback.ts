@@ -6,18 +6,12 @@ import {
   getApplicationInfo,
   getResumeText,
   getResumeSuggestions,
+  ResumeSuggestions,
 } from "../lib/openai/openai";
-
-interface TailoringFeedback {
-  miss: string[];
-  improve: string[];
-  add: string[];
-  weak: string[];
-}
 
 const feedbackRouter = express.Router();
 
-// Start tailoring session, and retrieve AI suggestions 
+// Start tailoring session, and retrieve AI suggestions
 feedbackRouter.post("/", requireAuth(), async (req: Request, res: Response) => {
   const { userId } = req.auth;
   const { applicationId } = req.body;
@@ -28,6 +22,7 @@ feedbackRouter.post("/", requireAuth(), async (req: Request, res: Response) => {
   }
 
   try {
+    // User authentication
     const app = await prisma.application.findUnique({
       where: { id: applicationId },
     });
@@ -39,6 +34,7 @@ feedbackRouter.post("/", requireAuth(), async (req: Request, res: Response) => {
       return res.status(403).json({ message: "Forbidden" });
     }
 
+    // Get user application
     const application: string[] | null = await getApplicationInfo(
       applicationId,
       userId,
@@ -48,23 +44,34 @@ feedbackRouter.post("/", requireAuth(), async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Application not found" });
     }
 
+    // Get resume text
     const resumeText: string | null = await getResumeText(userId);
     if (!resumeText) {
       logger.warn("Resume does not exist", { userId });
       return res.status(404).json({ message: "Resume not found" });
     }
 
-    const feedback: TailoringFeedback | null = await getResumeSuggestions(
+    // Generate feedback
+    const suggestions: ResumeSuggestions | null = await getResumeSuggestions(
       application,
       resumeText,
       userId,
     );
-    if (!feedback) {
+    if (!suggestions) {
       logger.warn("Feedback was not received", { userId });
-      return res.status(404).json({ message: "Failed to retrieve feedback" });
+      return res.status(500).json({ message: "Failed to retrieve feedback" });
     }
 
-    return res.status(200).json({ feedback });
+    // Create new tailoring session
+    const session = await prisma.tailoringSession.create({
+      data: {
+        applicationId,
+        userId,
+        suggestions,
+      },
+    });
+
+    return res.status(201).json({ sessionId: session.id, suggestions });
   } catch (error) {
     logger.error("Failed to process feedback request", {
       userId,
@@ -74,13 +81,8 @@ feedbackRouter.post("/", requireAuth(), async (req: Request, res: Response) => {
   }
 });
 
-// Update suggestion decisions, and track accepted / dismissed 
+// Update suggestion decisions, and track accepted / dismissed
 
-
-
-// Generate tailored resume 
-
-
-
+// Generate tailored resume
 
 export { feedbackRouter };
