@@ -6,8 +6,10 @@ import {
   getApplicationInfo,
   getResumeText,
   getResumeSuggestions,
+  generateTailoredResume,
   ResumeSuggestions,
 } from "../lib/openai/openai";
+import { parseAcceptedSuggestions } from "../lib/tailoring/tailoring";
 
 const feedbackRouter = express.Router();
 
@@ -25,7 +27,6 @@ feedbackRouter.post(
     }
 
     try {
-      // User authentication
       const app = await prisma.application.findUnique({
         where: { id: applicationId },
       });
@@ -37,7 +38,7 @@ feedbackRouter.post(
         return res.status(403).json({ message: "Forbidden" });
       }
 
-      // Get user application
+      // Retrieve user application
       const application: string[] | null = await getApplicationInfo(
         applicationId,
         userId,
@@ -47,14 +48,14 @@ feedbackRouter.post(
         return res.status(404).json({ message: "Application not found" });
       }
 
-      // Get resume text
+      // Retrieve resume text
       const resumeText: string | null = await getResumeText(userId);
       if (!resumeText) {
         logger.warn("Resume does not exist", { userId });
         return res.status(404).json({ message: "Resume not found" });
       }
 
-      // Generate feedback
+      // Retrieve feedback
       const suggestions: ResumeSuggestions | null = await getResumeSuggestions(
         application,
         resumeText,
@@ -65,7 +66,7 @@ feedbackRouter.post(
         return res.status(500).json({ message: "Failed to retrieve feedback" });
       }
 
-      // Create new tailoring session
+      // Create tailoring session
       const session = await prisma.tailoringSession.create({
         data: {
           applicationId,
@@ -132,6 +133,63 @@ feedbackRouter.post(
     } catch (error) {
       logger.error("Failed to update suggestion decisions", { userId, error });
       return res.status(500).json({ message: "Internal server error" });
+    }
+  },
+);
+
+// Generate tailored resume
+feedbackRouter.post(
+  "/generate/:sessionId",
+  requireAuth(),
+  async (req: Request<{ sessionId: string }>, res: Response) => {
+    const { userId } = req.auth;
+    const { sessionId } = req.params;
+
+    if (!userId) {
+      logger.warn("Unauthorised access attempt", {
+        endpoint: "/feedback/generate",
+      });
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    try {
+      // Retrieve tailoring session
+      const session = await prisma.tailoringSession.findUnique({
+        where: {
+          id: sessionId,
+        },
+        select: {
+          userId: true,
+          acceptedSuggestions: true,
+        },
+      });
+      if (!session || session?.userId !== userId) {
+        logger.warn("Unauthorised access attempt", {
+          endpoint: `/feedback/${sessionId}`,
+        });
+      }
+
+      // Retrieve resume text
+      const resumeText: string | null = await getResumeText(userId);
+      if (!resumeText) {
+        logger.warn("Resume does not exist", { userId });
+        return res.status(404).json({ message: "Resume not found" });
+      }
+
+      // Retrieve tailored resume
+      const resumeSuggestions = parseAcceptedSuggestions(
+        session?.acceptedSuggestions ?? [],
+      );
+      const resume = await generateTailoredResume(
+        resumeText,
+        resumeSuggestions,
+        userId,
+      );
+
+      return res.status(201).json({ message: "Resume created", resume });
+    } catch (error) {
+      logger.warn("Unable to generate tailored resume", { userId, error });
+      res.status(500).json({ message: "Unable to generate tailored resume" });
     }
   },
 );
