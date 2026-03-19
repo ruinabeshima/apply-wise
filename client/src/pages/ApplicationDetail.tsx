@@ -3,6 +3,7 @@ import { useAuth } from "@clerk/clerk-react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import TailorResume from "../components/TailorResume";
 
 interface Application {
   id: string;
@@ -36,7 +37,7 @@ export default function ApplicationDetail() {
 
         if (!response.ok) {
           setError("Failed to retrieve application");
-          return; 
+          return;
         }
 
         const data = await response.json();
@@ -230,6 +231,8 @@ export default function ApplicationDetail() {
               </div>
             </div>
           </div>
+
+          <TailorResume applicationId={id ?? ""} />
         </>
       )}
     </div>
