@@ -38,7 +38,7 @@ export default function TailorResume(props: TailorResumeProps) {
         },
       );
 
-      if (!response) {
+      if (!response.ok) {
         setError(true);
         return;
       }
