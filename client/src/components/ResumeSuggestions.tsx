@@ -35,6 +35,48 @@ export function TrackResumeSuggestions(props: ResumeSuggestionsProps) {
           <div className="card-body">
             <h2 className="card-title">Miss</h2>
             <p>{suggestion}</p>
+            <div className="card-actions mt-4 justify-start gap-3">
+              <button
+                className="btn btn-circle btn-sm bg-green-100 text-green-700 hover:bg-green-200 border-green-200"
+                aria-label="Accept suggestion"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 13L9 17L19 7"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              <button
+                className="btn btn-circle btn-sm bg-red-100 text-red-700 hover:bg-red-200 border-red-200"
+                aria-label="Deny suggestion"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 6L18 18M18 6L6 18"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       ))}
@@ -44,6 +86,48 @@ export function TrackResumeSuggestions(props: ResumeSuggestionsProps) {
           <div className="card-body">
             <h2 className="card-title">Improve</h2>
             <p>{suggestion}</p>
+            <div className="card-actions mt-4 justify-start gap-3">
+              <button
+                className="btn btn-circle btn-sm bg-green-100 text-green-700 hover:bg-green-200 border-green-200"
+                aria-label="Accept suggestion"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 13L9 17L19 7"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              <button
+                className="btn btn-circle btn-sm bg-red-100 text-red-700 hover:bg-red-200 border-red-200"
+                aria-label="Deny suggestion"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 6L18 18M18 6L6 18"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       ))}
@@ -53,6 +137,48 @@ export function TrackResumeSuggestions(props: ResumeSuggestionsProps) {
           <div className="card-body">
             <h2 className="card-title">Add</h2>
             <p>{suggestion}</p>
+            <div className="card-actions mt-4 justify-start gap-3">
+              <button
+                className="btn btn-circle btn-sm bg-green-100 text-green-700 hover:bg-green-200 border-green-200"
+                aria-label="Accept suggestion"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 13L9 17L19 7"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              <button
+                className="btn btn-circle btn-sm bg-red-100 text-red-700 hover:bg-red-200 border-red-200"
+                aria-label="Deny suggestion"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 6L18 18M18 6L6 18"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       ))}
@@ -62,6 +188,48 @@ export function TrackResumeSuggestions(props: ResumeSuggestionsProps) {
           <div className="card-body">
             <h2 className="card-title">Weak</h2>
             <p>{suggestion}</p>
+            <div className="card-actions mt-4 justify-start gap-3">
+              <button
+                className="btn btn-circle btn-sm bg-green-100 text-green-700 hover:bg-green-200 border-green-200"
+                aria-label="Accept suggestion"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 13L9 17L19 7"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              <button
+                className="btn btn-circle btn-sm bg-red-100 text-red-700 hover:bg-red-200 border-red-200"
+                aria-label="Deny suggestion"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 6L18 18M18 6L6 18"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       ))}
