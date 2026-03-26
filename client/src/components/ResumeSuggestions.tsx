@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export type TypeResumeSuggestions = {
   miss: string[];
   improve: string[];
@@ -10,15 +12,59 @@ export type ResumeSuggestionsProps = {
   suggestions: TypeResumeSuggestions;
 };
 
+const SuggestionTypes = {
+  miss: "MISS",
+  improve: "IMPROVE",
+  add: "ADD",
+  weak: "WEAK",
+} as const;
+
+type SuggestionTypes = (typeof SuggestionTypes)[keyof typeof SuggestionTypes];
+
 export function TrackResumeSuggestions(props: ResumeSuggestionsProps) {
+  const [suggestionType, setSuggestionType] = useState<SuggestionTypes>("MISS");
+  const [suggestion, setSuggestion] = useState();
+
   return (
     <div>
-      <h1>Resume Suggestions</h1>
-      <p>SessionId: {props.sessionId}</p>
-      <p>Miss: {props.suggestions.miss}</p>
-      <p>Improve: {props.suggestions.improve}</p>
-      <p>Add: {props.suggestions.add}</p>
-      <p>Weak: {props.suggestions.weak}</p>
+      {props.suggestions.miss.map((suggestion, i) => (
+        <div
+          className="card bg-error w-96 shadow-sm border border-red-500"
+          key={i}
+        >
+          <div className="card-body">
+            <h2 className="card-title">Miss</h2>
+            <p>{suggestion}</p>
+          </div>
+        </div>
+      ))}
+
+      {props.suggestions.improve.map((suggestion, i) => (
+        <div className="card bg-success w-96 shadow-sm" key={i}>
+          <div className="card-body">
+            <h2 className="card-title">Improve</h2>
+            <p>{suggestion}</p>
+          </div>
+        </div>
+      ))}
+
+      {props.suggestions.add.map((suggestion, i) => (
+        <div className="card bg-info w-96 shadow-sm" key={i}>
+          <div className="card-body">
+            <h2 className="card-title">Add</h2>
+            <p>{suggestion}</p>
+          </div>
+        </div>
+      ))}
+
+      {props.suggestions.weak.map((suggestion, i) => (
+        <div className="card bg-warning w-96 shadow-sm" key={i}>
+          <div className="card-body">
+            <h2 className="card-title">Weak</h2>
+            <p>{suggestion}</p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
