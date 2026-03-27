@@ -153,10 +153,22 @@ applicationRouter.patch(
     const { role, company, status, appliedDate, notes, jobUrl } = req.body;
 
     try {
-      const application = await prisma.application.update({
+      const existing = await prisma.application.findUnique({
+        where: { id },
+        select: { id: true, userId: true },
+      });
+
+      if (!existing) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+
+      if (existing.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
+      const updated = await prisma.application.update({
         where: {
-          id,
-          userId,
+          id
         },
         data: {
           role: role,
@@ -177,7 +189,7 @@ applicationRouter.patch(
         id,
       );
 
-      res.status(201).json(application);
+      res.status(200).json(updated);
     } catch (error) {
       logger.error("Failed to update application", { userId, error });
       res.status(500).json({ message: "Internal server error" });
@@ -201,10 +213,22 @@ applicationRouter.delete(
     }
 
     try {
+      const existing = await prisma.application.findUnique({
+        where: { id },
+        select: { id: true, userId: true },
+      });
+
+      if (!existing) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+
+      if (existing.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
       await prisma.application.delete({
         where: {
-          id,
-          userId,
+          id
         },
       });
 
@@ -216,9 +240,7 @@ applicationRouter.delete(
         id,
       );
 
-      return res
-        .status(204)
-        .json({ message: "Application successfully deleted" });
+      return res.sendStatus(204);
     } catch (error) {
       logger.error("Failed to delete application", { userId, error });
       res.status(500).json({ message: "Internal server error" });
