@@ -155,7 +155,8 @@ applicationRouter.patch(
     try {
       const application = await prisma.application.update({
         where: {
-          id: id,
+          id,
+          userId,
         },
         data: {
           role: role,
@@ -202,7 +203,8 @@ applicationRouter.delete(
     try {
       await prisma.application.delete({
         where: {
-          id: id,
+          id,
+          userId,
         },
       });
 
