@@ -3,6 +3,7 @@ import { prisma } from "../lib/prisma";
 import { requireAuth } from "@clerk/express";
 import { logger } from "../lib/monitoring/logger";
 import logAudit from "../lib/monitoring/audit";
+import * as z from "zod";
 
 const applicationRouter = express.Router();
 
@@ -91,6 +92,14 @@ applicationRouter.get(
 );
 
 // Create new job application
+const newApplicationSchema = z.object({
+  role: z.string().min(1).max(100),
+  company: z.string().min(1).max(100),
+  status: z.enum(["APPLIED", "INTERVIEW", "OFFER", "REJECTED"]),
+  appliedDate: z.iso.datetime().optional(),
+  notes: z.string().nullish(),
+  jobUrl: z.url().nullish(),
+});
 applicationRouter.post(
   "/add",
   requireAuth(),
@@ -104,18 +113,25 @@ applicationRouter.post(
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const { role, company, status, appliedDate, notes, jobUrl } = req.body;
+    const result = newApplicationSchema.safeParse(req.body);
+    if (!result.success) {
+      return res.status(400).json({
+        message: "Invalid request",
+        errors: z.treeifyError(result.error),
+      });
+    }
+    const { role, company, status, appliedDate, notes, jobUrl } = result.data;
 
     try {
       const application = await prisma.application.create({
         data: {
-          role: role,
-          company: company,
-          status: status,
+          role,
+          company,
+          status,
           appliedDate: appliedDate ? new Date(appliedDate) : undefined,
           notes: notes ?? null,
           jobUrl: jobUrl ?? null,
-          userId: userId,
+          userId,
         },
       });
 
@@ -168,7 +184,7 @@ applicationRouter.patch(
 
       const updated = await prisma.application.update({
         where: {
-          id
+          id,
         },
         data: {
           role: role,
@@ -228,7 +244,7 @@ applicationRouter.delete(
 
       await prisma.application.delete({
         where: {
-          id
+          id,
         },
       });
 
