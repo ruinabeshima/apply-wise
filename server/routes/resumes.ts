@@ -56,7 +56,45 @@ resumeRouter.get("/", requireAuth(), async (req: Request, res: Response) => {
   }
 });
 
-// Get tailored resume text
+// Get all user's tailored resume texts
+resumeRouter.get(
+  "/tailored",
+  requireAuth(),
+  async (req: Request, res: Response) => {
+    const { userId } = req.auth;
+
+    if (!userId) {
+      logger.warn("Unauthorised access attempt", {
+        route: "/resumes/tailored",
+      });
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    try {
+      const resumes = await prisma.tailoredResume.findMany({
+        where: {
+          userId,
+        },
+        select: {
+          id: true,
+          name: true,
+          applicationId: true,
+          createdAt: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      return res.status(200).json({ resumes });
+    } catch (error) {
+      logger.error("Failed to retrieve resume", { userId, error });
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  },
+);
+
+// Get individual tailored resume text
 resumeRouter.get(
   "/tailored/:tailoredResumeId",
   requireAuth(),
