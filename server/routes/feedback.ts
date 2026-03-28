@@ -202,13 +202,15 @@ feedbackRouter.post(
 );
 
 // Generate tailored resume
+const generateTailoredResumeSchema = z.object({
+  resumeName: z.string().min(5).max(30).nullish(),
+});
 feedbackRouter.post(
   "/generate/:sessionId",
   requireAuth(),
   async (req: Request<{ sessionId: string }>, res: Response) => {
     const { userId } = req.auth;
     const { sessionId } = req.params;
-    const { resumeName } = req.body;
 
     if (!userId) {
       logger.warn("Unauthorised access attempt", {
@@ -216,6 +218,15 @@ feedbackRouter.post(
       });
       return res.status(401).json({ message: "Unauthorized" });
     }
+
+    const result = generateTailoredResumeSchema.safeParse(req.body);
+    if (!result.success) {
+      return res.status(400).json({
+        message: "Invalid request",
+        errors: z.treeifyError(result.error),
+      });
+    }
+    const { resumeName } = result.data;
 
     try {
       // Retrieve tailoring session and update status
