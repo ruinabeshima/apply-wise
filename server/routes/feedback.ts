@@ -290,7 +290,7 @@ feedbackRouter.post(
       await logAudit(
         userId,
         "RESUME_TAILORED",
-        resumeName,
+        newResume.name,
         "TailoredResume",
         newResume.id,
       );
