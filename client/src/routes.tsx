@@ -87,7 +87,7 @@ const routes = (
       }
     ></Route>
     <Route
-      path="/applications/:id/tailored"
+      path="/tailored"
       element={
         <ProtectedRoute>
           <TailoredList />
