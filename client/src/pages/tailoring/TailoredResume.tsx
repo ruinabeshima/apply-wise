@@ -53,7 +53,7 @@ export default function TailoredResume() {
     <div className="w-full min-h-screen flex flex-col gap-5">
       <Navbar />
 
-      <main>
+      <main className="flex flex-col items-center">
         {error ? (
           <h1>An error occurred</h1>
         ) : loading ? (
