@@ -91,7 +91,7 @@ export default async function convertTextToPDF(tailoredText: string) {
 
     for (const line of lines) {
       if (y - lineHeight < bottomMargin) {
-        ({ page, width, y } = addPage());
+        ({ page, y } = addPage());
       }
 
       page.drawText(line, {
