@@ -77,3 +77,45 @@ describe("GET /resumes/tailored", () => {
     expect(res.status).toBe(500);
   });
 });
+
+describe("GET /resumes/tailored/:id", () => {
+  it("returns 401 no userId", async () => {
+    const res = await request(app).get("/resumes/tailored/resume-1");
+    expect(res.status).toBe(401);
+  });
+
+  it("returns 404 no tailored resume", async () => {
+    mockPrisma.tailoredResume.findFirst.mockResolvedValue(null);
+
+    const res = await request(app)
+      .get("/resumes/tailored/resume-1")
+      .set("x-test-user-id", "user-1");
+
+    expect(res.status).toBe(404);
+    expect(res.body).toEqual({ message: "Tailored resume not found" });
+  });
+
+  it("returns 200 signed URL", async () => {
+    mockPrisma.tailoredResume.findFirst.mockResolvedValue({
+      key: "tailored-pdf-key",
+    } as any);
+
+    const res = await request(app)
+      .get("/resumes/tailored/resume-1")
+      .set("x-test-user-id", "user-1");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ url: "https://fake-signed-url.com/resume.pdf" });
+  });
+
+  it("returns 500 error", async () => {
+    mockPrisma.tailoredResume.findFirst.mockRejectedValue(new Error("DB down"));
+
+    const res = await request(app)
+      .get("/resumes/tailored/resume-1")
+      .set("x-test-user-id", "user-1");
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ message: "Internal server error" });
+  });
+});
