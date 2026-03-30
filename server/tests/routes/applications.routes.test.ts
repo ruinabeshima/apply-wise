@@ -56,3 +56,51 @@ describe("/GET applications", () => {
     expect(res.status).toBe(500);
   });
 });
+
+describe("/GET applications/:id", () => {
+  it("returns 404 when application not found", async () => {
+    const res = await request(app)
+      .get("/applications/no-application")
+      .set("x-test-user-id", "user-1");
+    expect(res.status).toBe(404);
+  });
+
+  it("returns 200 with application", async () => {
+    mockPrisma.application.findUnique.mockResolvedValue({
+      id: "application-1",
+      role: "software engineer",
+      company: "Google",
+      status: "APPLIED",
+      appliedDate: new Date("2026-03-18T23:31:21.834Z"),
+      notes: null,
+      jobUrl: null,
+      userId: "user-1",
+      createdAt: new Date("2026-03-18T23:31:21.834Z"),
+      updatedAt: new Date("2026-03-18T23:31:21.834Z"),
+    });
+
+    const res = await request(app)
+      .get("/applications/application-1")
+      .set("x-test-user-id", "user-1");
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({
+      id: "application-1",
+      role: "software engineer",
+      company: "Google",
+      status: "APPLIED",
+      appliedDate: "2026-03-18T23:31:21.834Z",
+      notes: null,
+      jobUrl: null,
+    });
+  });
+
+  it("returns 500 when database fails", async () => {
+    mockPrisma.application.findUnique.mockRejectedValue(new Error("DB down"));
+
+    const res = await request(app)
+      .get("/applications/application-1")
+      .set("x-test-user-id", "user-1");
+
+    expect(res.status).toBe(500);
+  });
+});
