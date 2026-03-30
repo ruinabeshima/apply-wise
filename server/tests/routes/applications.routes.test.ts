@@ -255,3 +255,55 @@ describe("POST /applications/:id", () => {
     expect(res.status).toBe(200);
   });
 });
+
+describe("DELETE /applications/:id", () => {
+  it("returns 404 missing", async () => {
+    mockPrisma.application.findUnique.mockResolvedValue(null);
+
+    const res = await request(app)
+      .delete("/applications/:application-1")
+      .set("x-test-user-id", "user-1");
+    expect(res.status).toBe(404);
+  });
+
+  it("returns 403 wrong owner", async () => {
+    mockPrisma.application.findUnique.mockResolvedValue({
+      id: "application-1",
+      role: "software engineer",
+      company: "Google",
+      status: "APPLIED",
+      appliedDate: new Date("2026-03-18T23:31:21.834Z"),
+      notes: null,
+      jobUrl: null,
+      userId: "user-2",
+      createdAt: new Date("2026-03-18T23:31:21.834Z"),
+      updatedAt: new Date("2026-03-18T23:31:21.834Z"),
+    });
+
+    const res = await request(app)
+      .delete("/applications/:application-1")
+      .set("x-test-user-id", "user-1");
+    expect(res.status).toBe(403);
+  });
+
+  it("returns 204 delete success", async () => {
+    mockPrisma.application.findUnique.mockResolvedValue({
+      id: "application-1",
+      role: "software engineer",
+      company: "Google",
+      status: "APPLIED",
+      appliedDate: new Date("2026-03-18T23:31:21.834Z"),
+      notes: null,
+      jobUrl: null,
+      userId: "user-1",
+      createdAt: new Date("2026-03-18T23:31:21.834Z"),
+      updatedAt: new Date("2026-03-18T23:31:21.834Z"),
+    });
+
+    const res = await request(app)
+      .delete("/applications/:application-1")
+      .set("x-test-user-id", "user-1");
+
+    expect(res.status).toBe(204);
+  });
+});
