@@ -104,3 +104,60 @@ describe("/GET applications/:id", () => {
     expect(res.status).toBe(500);
   });
 });
+
+describe("POST /applications/add", () => {
+  it("returns 400 invalid body", async () => {
+    const res = await request(app)
+      .post("/applications/add")
+      .set("x-test-user-id", "user-1")
+      .set("Content-Type", "application/json")
+      .send({
+        role: "software engineer",
+        company: "Google",
+        status: "NOT APPLIED YET",
+        appliedDate: "2026-03-18T23:31:21.834Z",
+        notes: null,
+        jobUrl: null,
+      });
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 201 with add new application", async () => {
+    mockPrisma.application.create.mockResolvedValue({
+      id: "application-1",
+      role: "software engineer",
+      company: "Google",
+      status: "APPLIED",
+      appliedDate: new Date("2026-03-18T23:31:21.834Z"),
+      notes: null,
+      jobUrl: null,
+      userId: "user-1",
+      createdAt: new Date("2026-03-18T23:31:21.834Z"),
+      updatedAt: new Date("2026-03-18T23:31:21.834Z"),
+    });
+
+    const res = await request(app)
+      .post("/applications/add")
+      .set("x-test-user-id", "user-1")
+      .set("Content-Type", "application/json")
+      .send({
+        role: "software engineer",
+        company: "Google",
+        status: "APPLIED",
+        appliedDate: "2026-03-18T23:31:21.834Z",
+        notes: null,
+        jobUrl: null,
+      });
+    expect(res.status).toBe(201);
+  });
+
+  it("returns 500 when database fails", async () => {
+    mockPrisma.application.findUnique.mockRejectedValue(new Error("DB down"));
+
+    const res = await request(app)
+      .get("/applications/application-1")
+      .set("x-test-user-id", "user-1");
+
+    expect(res.status).toBe(500);
+  });
+});
