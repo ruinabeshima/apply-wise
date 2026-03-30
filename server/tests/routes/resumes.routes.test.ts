@@ -1,17 +1,25 @@
 import request from "supertest";
 import createApp from "../../app";
 import { prisma } from "../../lib/prisma";
+import { r2 } from "../../lib/storage/r2";
+import parsePDF from "../../lib/storage/parse";
 
 // Mocks
 jest.mock("../../lib/prisma");
-const mockPrisma = jest.mocked(prisma);
 jest.mock("../../lib/monitoring/audit");
-jest.mock("../../lib/storage/r2", () => ({ r2: {} }));
+jest.mock("../../lib/storage/r2", () => ({ r2: { send: jest.fn() } }));
 jest.mock("@aws-sdk/s3-request-presigner", () => ({
   getSignedUrl: jest
     .fn()
     .mockResolvedValue("https://fake-signed-url.com/resume.pdf"),
 }));
+jest.mock("../../lib/storage/parse", () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+const mockPrisma = jest.mocked(prisma);
+const mockR2Send = r2.send as jest.Mock;
+const mockParsePDF = jest.mocked(parsePDF);
 
 const app = createApp();
 
@@ -114,6 +122,67 @@ describe("GET /resumes/tailored/:id", () => {
     const res = await request(app)
       .get("/resumes/tailored/resume-1")
       .set("x-test-user-id", "user-1");
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ message: "Internal server error" });
+  });
+});
+
+describe("POST /resumes/upload", () => {
+  it("returns 401 no userId", async () => {
+    const res = await request(app).post("/resumes/upload");
+    expect(res.status).toBe(401);
+  });
+
+  it("returns 400 no file", async () => {
+    const res = await request(app)
+      .post("/resumes/upload")
+      .set("x-test-user-id", "user-1");
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({ message: "No file uploaded" });
+  });
+
+  it("returns 400 parse failure", async () => {
+    mockPrisma.resume.findUnique.mockResolvedValue(null);
+    mockR2Send.mockResolvedValue({} as any);
+    mockParsePDF.mockResolvedValue("");
+
+    const res = await request(app)
+      .post("/resumes/upload")
+      .set("x-test-user-id", "user-1")
+      .attach("file", Buffer.from("fake-pdf-content"), "resume.pdf");
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({ message: "Failed to parse resume" });
+  });
+
+  it("returns 201 success upload/upsert", async () => {
+    mockPrisma.resume.findUnique.mockResolvedValue(null);
+    mockR2Send.mockResolvedValue({} as any);
+    mockParsePDF.mockResolvedValue("Parsed resume text");
+    mockPrisma.resume.upsert.mockResolvedValue({ id: "resume-1" } as any);
+
+    const res = await request(app)
+      .post("/resumes/upload")
+      .set("x-test-user-id", "user-1")
+      .attach("file", Buffer.from("fake-pdf-content"), "resume.pdf");
+
+    expect(res.status).toBe(201);
+    expect(res.body).toEqual({
+      id: "resume-1",
+      message: "File sent successfully",
+    });
+  });
+
+  it("returns 500 storage/db failure", async () => {
+    mockPrisma.resume.findUnique.mockResolvedValue(null);
+    mockR2Send.mockRejectedValue(new Error("R2 down"));
+
+    const res = await request(app)
+      .post("/resumes/upload")
+      .set("x-test-user-id", "user-1")
+      .attach("file", Buffer.from("fake-pdf-content"), "resume.pdf");
 
     expect(res.status).toBe(500);
     expect(res.body).toEqual({ message: "Internal server error" });
