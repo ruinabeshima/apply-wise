@@ -125,3 +125,80 @@ describe("POST /feedback/:applicationId", () => {
     expect(res.status).toBe(201);
   });
 });
+
+describe("POST /feedback/update/:sessionId", () => {
+  it("returns 401 no userId", async () => {
+    const res = await request(app).post("/feedback/update/session-1");
+    expect(res.status).toBe(401);
+  });
+
+  it("returns 400 schema invalid", async () => {
+    const res = await request(app)
+      .post("/feedback/update/session-1")
+      .set("x-test-user-id", "user-1")
+      .send({
+        acceptedSuggestions: ["miss-1", "miss-2"],
+        dismissedSuggestions: ["miss-1"],
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body["message"]).toEqual("Invalid request");
+  });
+
+  it("returns 403 wrong session owner", async () => {
+    mockPrisma.tailoringSession.findUnique.mockResolvedValue({
+      userId: "user-2",
+    } as any);
+
+    const res = await request(app)
+      .post("/feedback/update/session-1")
+      .set("x-test-user-id", "user-1")
+      .send({
+        acceptedSuggestions: ["miss-1", "miss-2"],
+        dismissedSuggestions: ["miss-3"],
+      });
+
+    expect(res.status).toBe(403);
+    expect(res.body).toEqual({ message: "Forbidden" });
+  });
+
+  it("returns 200 success", async () => {
+    mockPrisma.tailoringSession.findUnique.mockResolvedValue({
+      userId: "user-1",
+    } as any);
+    mockPrisma.tailoringSession.update.mockResolvedValue({
+      status: "REVIEWED",
+    } as any);
+
+    const res = await request(app)
+      .post("/feedback/update/session-1")
+      .set("x-test-user-id", "user-1")
+      .send({
+        acceptedSuggestions: ["miss-1", "miss-2"],
+        dismissedSuggestions: ["miss-3"],
+      });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      message: "Suggestions updated",
+      status: "REVIEWED",
+    });
+  });
+
+  it("returns 500 failure", async () => {
+    mockPrisma.tailoringSession.findUnique.mockRejectedValue(
+      new Error("DB down"),
+    );
+
+    const res = await request(app)
+      .post("/feedback/update/session-1")
+      .set("x-test-user-id", "user-1")
+      .send({
+        acceptedSuggestions: ["miss-1", "miss-2"],
+        dismissedSuggestions: ["miss-3"],
+      });
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ message: "Internal server error" });
+  });
+});

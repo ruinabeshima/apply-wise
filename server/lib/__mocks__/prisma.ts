@@ -24,6 +24,8 @@ export const prisma = {
   },
   tailoringSession: {
     create: jest.fn(),
+    findUnique: jest.fn(),
+    update: jest.fn(),
   },
   resumeFeedback: {
     create: jest.fn(),
