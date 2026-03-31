@@ -22,6 +22,9 @@ export const prisma = {
     findMany: jest.fn(),
     findFirst: jest.fn(),
   },
+  tailoringSession: {
+    create: jest.fn(),
+  },
   resumeFeedback: {
     create: jest.fn(),
     findUnique: jest.fn(),
