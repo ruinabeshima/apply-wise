@@ -58,9 +58,34 @@ jobs:
         working-directory: ./server
         run: pnpm run format
 
+  test:
+    name: Test
+    needs: lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install backend dependencies
+        working-directory: ./server
+        run: pnpm install
+
+      - name: Test
+        working-directory: ./server
+        run: pnpm test
+
   build:
     name: Build
-    needs: lint
+    needs: test
     runs-on: ubuntu-latest
 
     env:
