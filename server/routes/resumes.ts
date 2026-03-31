@@ -13,6 +13,13 @@ import { randomUUID } from "crypto";
 import { logger } from "../lib/monitoring/logger";
 import logAudit from "../lib/monitoring/audit";
 import parsePDF from "../lib/storage/parse";
+import { createRateLimiter } from "../lib/redis/rateLimiter";
+
+const resumeUploadLimiter = createRateLimiter({
+  windowMs: 10 * 60 * 1000,
+  limit: 5,
+  prefix: "rl:resume-upload:",
+});
 
 const resumeRouter = express.Router();
 
@@ -144,6 +151,7 @@ resumeRouter.get(
 // Upload / update resume
 resumeRouter.post(
   "/upload",
+  resumeUploadLimiter,
   requireAuth(),
   upload.single("file"),
   async (req: Request, res: Response) => {
