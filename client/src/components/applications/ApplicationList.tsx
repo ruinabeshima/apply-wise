@@ -38,7 +38,6 @@ export default function ApplicationList() {
         }
 
         const data: Application[] = await response.json();
-        console.log(data);
         setApplications(data);
       } catch {
         setError("Failed to retrieve applications");

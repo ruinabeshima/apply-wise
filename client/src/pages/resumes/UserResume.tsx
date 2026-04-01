@@ -30,7 +30,6 @@ export default function UserResume() {
 
         const { url } = await response.json();
         setUrl(url);
-        console.log(url);
       } catch {
         setError("Failed to retreive resume");
       } finally {
