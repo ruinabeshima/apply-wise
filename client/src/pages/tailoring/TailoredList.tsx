@@ -1,53 +1,19 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/navbar/Navbar";
-
-interface TailoredResume {
-  id: string;
-  name: string;
-  applicationId: string;
-  createdAt: string;
-}
-
-interface TailoredResumeResponse {
-  resumes: TailoredResume[];
-}
+import useTailoredResumes from "../../lib/useTailoredResumes";
+import useOnboardingStatus from "../../lib/useOnboardingStatus";
 
 export default function TailoredList() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [data, setData] = useState<TailoredResume[]>([]);
-  const { getToken } = useAuth();
-  const appUrl = import.meta.env.VITE_SERVER_URL;
+  const { loading: onboardingLoading, error: onboardingError } =
+    useOnboardingStatus();
+  const {
+    data,
+    loading: tailoredLoading,
+    error: tailoredError,
+  } = useTailoredResumes();
 
-  useEffect(() => {
-    const getTailoredResumes = async () => {
-      try {
-        const token = await getToken();
-        const response = await fetch(`${appUrl}/resumes/tailored`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          setError(true);
-          return;
-        }
-
-        const data: TailoredResumeResponse = await response.json();
-        setData(data.resumes);
-      } catch {
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getTailoredResumes();
-  }, [getToken, appUrl]);
+  const loading = onboardingLoading || tailoredLoading;
+  const error = onboardingError || tailoredError;
 
   return (
     <div className="flex flex-col gap-5 min-h-screen w-full">
