@@ -14,6 +14,7 @@ export default function ApplicationDetail() {
   const { id } = useParams<{ id: string }>();
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<null | string>(null);
+  const [tailoringLoading, setTailoringLoading] = useState(false);
 
   const { loading: onboardingLoading, error: onboardingError } =
     useOnboardingStatus();
@@ -178,12 +179,14 @@ export default function ApplicationDetail() {
                   <button
                     className="btn btn-outline btn-accent"
                     onClick={() => navigate(`/applications/${id}/edit`)}
+                    disabled={tailoringLoading}
                   >
                     Edit
                   </button>
                   <button
                     className="btn btn-error"
                     onClick={handleApplicationDelete}
+                    disabled={tailoringLoading}
                   >
                     Delete
                   </button>
@@ -196,7 +199,10 @@ export default function ApplicationDetail() {
               <p className="text-sm text-base-content/60 mb-4">
                 Generate targeted feedback and a tailored version for this role.
               </p>
-              <TailorResume applicationId={id ?? ""} />
+              <TailorResume
+                applicationId={id ?? ""}
+                onTailoringLoadingChange={setTailoringLoading}
+              />
             </div>
           </section>
         )}

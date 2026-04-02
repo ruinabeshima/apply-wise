@@ -12,6 +12,7 @@ export type TypeResumeSuggestions = {
 export type ResumeSuggestionsProps = {
   sessionId: string;
   suggestions: TypeResumeSuggestions;
+  onTailoringLoadingChange?: (loading: boolean) => void;
 };
 
 export function TrackResumeSuggestions(props: ResumeSuggestionsProps) {
@@ -71,12 +72,14 @@ export function TrackResumeSuggestions(props: ResumeSuggestionsProps) {
 
         if (!response.ok) {
           setError(true);
+          props.onTailoringLoadingChange?.(false);
           return;
         }
 
         setSubmitted(true);
       } catch {
         setError(true);
+        props.onTailoringLoadingChange?.(false);
       } finally {
         setLoading(false);
       }
@@ -95,6 +98,7 @@ export function TrackResumeSuggestions(props: ResumeSuggestionsProps) {
     appUrl,
     getToken,
     props.sessionId,
+    props.onTailoringLoadingChange,
   ]);
 
   useEffect(() => {
@@ -122,16 +126,19 @@ export function TrackResumeSuggestions(props: ResumeSuggestionsProps) {
 
         if (!response.ok) {
           setError(true);
+          props.onTailoringLoadingChange?.(false);
           return;
         }
 
         const data = await response.json();
         setGenerated(true);
+        props.onTailoringLoadingChange?.(false);
         navigate(
           `/applications/${data.applicationId}/tailored/${data.tailoredResumeId}`,
         );
       } catch {
         setError(true);
+        props.onTailoringLoadingChange?.(false);
       } finally {
         setLoading(false);
       }
@@ -148,7 +155,13 @@ export function TrackResumeSuggestions(props: ResumeSuggestionsProps) {
     appUrl,
     getToken,
     props.sessionId,
+    props.onTailoringLoadingChange,
   ]);
+
+  useEffect(() => {
+    if (total !== 0) return;
+    props.onTailoringLoadingChange?.(false);
+  }, [total, props.onTailoringLoadingChange]);
 
   const handleAcceptSuggestion = (
     key: string,

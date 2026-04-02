@@ -10,6 +10,7 @@ type Suggestion = {
 
 type TailorResumeProps = {
   applicationId: string;
+  onTailoringLoadingChange?: (loading: boolean) => void;
 };
 
 export default function TailorResume(props: TailorResumeProps) {
@@ -25,6 +26,8 @@ export default function TailorResume(props: TailorResumeProps) {
   ) => {
     event.preventDefault();
     setLoading(true);
+    setError(false);
+    props.onTailoringLoadingChange?.(true);
 
     try {
       const token = await getToken();
@@ -40,6 +43,7 @@ export default function TailorResume(props: TailorResumeProps) {
 
       if (!response.ok) {
         setError(true);
+        props.onTailoringLoadingChange?.(false);
         return;
       }
 
@@ -47,9 +51,12 @@ export default function TailorResume(props: TailorResumeProps) {
       if (data.status === "PENDING") {
         setData(data);
         setGetSuggestions(true);
+      } else {
+        props.onTailoringLoadingChange?.(false);
       }
     } catch {
       setError(true);
+      props.onTailoringLoadingChange?.(false);
     } finally {
       setLoading(false);
     }
@@ -96,6 +103,7 @@ export default function TailorResume(props: TailorResumeProps) {
         <TrackResumeSuggestions
           sessionId={data.sessionId}
           suggestions={data.suggestions}
+          onTailoringLoadingChange={props.onTailoringLoadingChange}
         />
       ) : (
         <div className="rounded-2xl border border-base-300 bg-base-100 shadow-sm p-6">
