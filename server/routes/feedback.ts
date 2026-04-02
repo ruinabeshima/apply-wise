@@ -258,6 +258,19 @@ feedbackRouter.post(
         return res.status(403).json({ message: "Forbidden" });
       }
 
+      // Check if user resume already exists for idempotency
+      const existingResume = await prisma.tailoredResume.findFirst({
+        where: { tailoringSessionId: sessionId },
+      });
+      if (existingResume) {
+        return res.status(200).json({
+          message: "Resume already generated",
+          applicationId: existingResume.applicationId,
+          tailoredResumeId: existingResume.id,
+          status: "TAILORED",
+        });
+      }
+
       // Retrieve resume text
       const resumeText: string | null = await getResumeText(userId);
       if (!resumeText) {
