@@ -280,7 +280,11 @@ export default function ApplicationForm(props: ApplicationFormProps) {
 
           {props.isOnboarding ? (
             <section className="flex gap-2">
-              <button className="btn btn-neutral" onClick={props.onSkip}>
+              <button
+                type="button"
+                className="btn btn-neutral"
+                onClick={props.onSkip}
+              >
                 Skip
               </button>
               <button className="btn btn-primary" type="submit">
