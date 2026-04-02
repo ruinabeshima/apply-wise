@@ -26,7 +26,11 @@ export default function ApplicationForm(props: ApplicationFormProps) {
       setRole(props.role ?? "");
       setCompany(props.company ?? "");
       setStatus(props.status ?? "APPLIED");
-      setAppliedDate(props.appliedDate ?? "");
+      setAppliedDate(
+        props.appliedDate
+          ? new Date(props.appliedDate).toISOString().slice(0, 16)
+          : "",
+      );
       setNotes(props.notes ?? "");
       setLink(props.jobUrl ?? "");
     };
@@ -44,7 +48,7 @@ export default function ApplicationForm(props: ApplicationFormProps) {
 
   const [role, setRole] = useState("");
   const [company, setCompany] = useState("");
-  const [status, setStatus] = useState("Applied");
+  const [status, setStatus] = useState("APPLIED");
   const [appliedDate, setAppliedDate] = useState("");
   const [notes, setNotes] = useState("");
   const [link, setLink] = useState("");
@@ -210,10 +214,10 @@ export default function ApplicationForm(props: ApplicationFormProps) {
               value={status}
               onChange={(event) => setStatus(event.target.value)}
             >
-              <option>Applied</option>
-              <option>Interview</option>
-              <option>Offer</option>
-              <option>Rejected</option>
+              <option value="APPLIED">Applied</option>
+              <option value="INTERVIEW">Interview</option>
+              <option value="OFFER">Offer</option>
+              <option value="REJECTED">Rejected</option>
             </select>
             <p className="label">Required</p>
           </fieldset>
