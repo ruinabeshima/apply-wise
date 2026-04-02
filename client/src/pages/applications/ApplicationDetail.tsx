@@ -163,7 +163,7 @@ export default function ApplicationDetail() {
                       href={application.jobUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="btn btn-ghost btn-sm"
+                      className="btn btn-ghost"
                     >
                       View job posting
                     </a>
@@ -172,20 +172,21 @@ export default function ApplicationDetail() {
                       No job link added yet.
                     </span>
                   )}
-                  <div className="flex gap-2">
-                    <button
-                      className="btn btn-xs btn-accent"
-                      onClick={() => navigate(`/applications/${id}/edit`)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="btn btn-xs btn-error"
-                      onClick={handleApplicationDelete}
-                    >
-                      Delete
-                    </button>
-                  </div>
+                </div>
+
+                <div className="card-actions justify-end">
+                  <button
+                    className="btn btn-outline btn-accent"
+                    onClick={() => navigate(`/applications/${id}/edit`)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn btn-error"
+                    onClick={handleApplicationDelete}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             </div>
