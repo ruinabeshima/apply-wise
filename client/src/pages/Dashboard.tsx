@@ -6,7 +6,7 @@ export default function Dashboard() {
   const { loading, error } = useOnboardingStatus();
 
   return (
-    <div className="flex min-h-screen flex-col gap-5 w-full items-center">
+    <div className="flex min-h-screen flex-col gap-5 w-full items-center bg-base-200/40">
       <Navbar />
 
       {loading ? (
