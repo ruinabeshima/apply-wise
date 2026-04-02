@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import createApp from "./app";
+import { logger } from "./lib/monitoring/logger";
 
 function requireEnv(keys: string[]) {
   const missing = keys.filter((key) => !process.env[key]);
@@ -26,5 +27,5 @@ const app = createApp();
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  logger.info(`Server is running on port ${port}`);
 });

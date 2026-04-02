@@ -7,6 +7,7 @@ import { authRouter } from "./routes/auth";
 import { resumeRouter } from "./routes/resumes";
 import { feedbackRouter } from "./routes/feedback";
 import { randomUUID } from "node:crypto";
+import { logger } from "./lib/monitoring/logger";
 
 export default function createApp() {
   const app = express();
@@ -23,7 +24,7 @@ export default function createApp() {
 
     const start = Date.now();
     res.on("finish", () => {
-      console.log({
+      logger.info({
         requestId,
         method: req.method,
         path: req.path,
