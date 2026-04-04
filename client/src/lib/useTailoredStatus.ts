@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "./auth";
 import type { TypeResumeSuggestions } from "../components/resumes/ResumeSuggestions";
 
 export default function useTailoredStatus(applicationId: string) {

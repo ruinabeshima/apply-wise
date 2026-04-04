@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "../../lib/auth";
 import { TrackResumeSuggestions } from "../resumes/ResumeSuggestions";
 import useTailoredStatus from "../../lib/useTailoredStatus";
 
