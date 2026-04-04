@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
-import { requireAuth } from "@clerk/express";
+import { requireFirebaseAuth } from "../lib/firebase/middleware";
 import { logger } from "../lib/monitoring/logger";
 import logAudit from "../lib/monitoring/audit";
 
@@ -9,7 +9,7 @@ const authRouter = express.Router();
 // Check user's onboarding status
 authRouter.get(
   "/status",
-  requireAuth(),
+  requireFirebaseAuth(),
   async (req: Request, res: Response) => {
     const { userId } = req.auth;
 
@@ -46,7 +46,7 @@ authRouter.get(
 // Update user's onboarding status
 authRouter.patch(
   "/status",
-  requireAuth(),
+  requireFirebaseAuth(),
   async (req: Request, res: Response) => {
     const { userId } = req.auth;
 
