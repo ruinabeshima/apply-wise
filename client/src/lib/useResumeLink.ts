@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "./auth";
 
 export default function useResumeLink() {
   const [error, setError] = useState<null | string>(null);
