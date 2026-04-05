@@ -159,11 +159,52 @@ export default function Home() {
                 <div className="collapse collapse-arrow join-item border border-base-300 bg-base-100">
                   <input type="radio" name="home-faq" />
                   <div className="collapse-title font-semibold">
-                    How do I update my profile information?
+                    What is the registration process?
                   </div>
                   <div className="collapse-content text-sm">
-                    Go to "My Account" settings and select "Edit Profile" to
-                    make changes.
+                    Once users create an account, they will be taken to
+                    Onboarding where they are required to upload their resume
+                    and create an optional job application.
+                  </div>
+                </div>
+                <div className="collapse collapse-arrow join-item border border-base-300 bg-base-100">
+                  <input type="radio" name="home-faq" />
+                  <div className="collapse-title font-semibold">
+                    How do tailoring sessions work?
+                  </div>
+                  <div className="collapse-content text-sm">
+                    Users get a list of around 20 suggestions they can
+                    incorporate into their resume, and they have the option to
+                    accept or dismiss these suggestions. AI will generate a new
+                    resume based on these choices.
+                  </div>
+                </div>
+                <div className="collapse collapse-arrow join-item border border-base-300 bg-base-100">
+                  <input type="radio" name="home-faq" />
+                  <div className="collapse-title font-semibold">
+                    Can I reupload my resume?
+                  </div>
+                  <div className="collapse-content text-sm">
+                    Yes you can! All users have the option to view their resumes
+                    in window and change it if necessary.
+                  </div>
+                </div>
+                <div className="collapse collapse-arrow join-item border border-base-300 bg-base-100">
+                  <input type="radio" name="home-faq" />
+                  <div className="collapse-title font-semibold">
+                    How many applications can I track?
+                  </div>
+                  <div className="collapse-content text-sm">
+                    As many as you want!
+                  </div>
+                </div>
+                <div className="collapse collapse-arrow join-item border border-base-300 bg-base-100">
+                  <input type="radio" name="home-faq" />
+                  <div className="collapse-title font-semibold">
+                    How many resumes can I tailor?
+                  </div>
+                  <div className="collapse-content text-sm">
+                    All accounts can only tailor maximum 3 resumes with AI.
                   </div>
                 </div>
               </div>
