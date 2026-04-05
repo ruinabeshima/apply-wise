@@ -18,9 +18,15 @@ export default function Navbar() {
 
   return (
     <nav className="w-full flex justify-between items-center py-4 px-8 border-b border-base-300 bg-base-100 sticky top-0 z-50">
-      <Link to="/dashboard">
-        <h1 className="text-2xl font-extrabold tracking-tight">ApplyWise</h1>
-      </Link>
+      {isSignedIn ? (
+        <Link to="/dashboard">
+          <h1 className="text-2xl font-extrabold tracking-tight">ApplyWise</h1>
+        </Link>
+      ) : (
+        <Link to="/">
+          <h1 className="text-2xl font-extrabold tracking-tight">ApplyWise</h1>
+        </Link>
+      )}
 
       {isSignedIn ? (
         <div className="flex items-center gap-6">
