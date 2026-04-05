@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import background from "../assets/background.jpg";
+import reference from "../assets/reference1.png";
 import NavBar from "../components/navbar/Navbar";
 
 export default function Home() {
@@ -17,17 +18,17 @@ export default function Home() {
 
   return (
     <div className="relative flex min-h-screen flex-col bg-base-200/40">
+      <div
+        style={{ backgroundImage: `url(${background})` }}
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-30 -z-20"
+      />
       <div className="fixed inset-0 bg-linear-to-b from-base-200/85 via-base-200/70 to-base-200/90 -z-10" />
-
       <NavBar />
+
       <main className="flex w-full flex-1 flex-col items-center gap-16 px-6 pb-16">
         <section className="hero w-full max-w-6xl pt-14">
-          <div
-            style={{ backgroundImage: `url(${background})` }}
-            className="fixed inset-0 bg-cover bg-center bg-no-repeat -z-10"
-          />
-          <div className="hero-content flex-col items-center gap-12 lg:flex-row lg:items-stretch">
-            <div className="flex flex-1 flex-col items-start text-left">
+          <div className="hero-content flex-col items-center text-center">
+            <div className="flex flex-col items-center">
               <div className="badge badge-outline">AI-first applications</div>
               <h2 className="mt-4 text-5xl font-bold leading-tight sm:text-6xl">
                 Stay ahead of the curve.
@@ -36,7 +37,7 @@ export default function Home() {
                 Apply smarter with personalised AI resume insights, tailored to
                 every job description.
               </p>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Link to="/register">
                   <button className="btn btn-primary btn-lg">
                     Get Started →
@@ -46,7 +47,7 @@ export default function Home() {
                   <button className="btn btn-ghost btn-lg">Login</button>
                 </Link>
               </div>
-              <div className="mt-6 flex flex-wrap gap-2">
+              <div className="mt-6 flex flex-wrap justify-center gap-2">
                 <span className="badge badge-neutral badge-outline">
                   Tailored insights
                 </span>
@@ -57,6 +58,13 @@ export default function Home() {
                   Resume feedback
                 </span>
               </div>
+            </div>
+            <div className="mt-10 flex w-full justify-center">
+              <img
+                src={reference}
+                className="w-full max-w-3xl object-contain"
+                alt="Reference"
+              />
             </div>
           </div>
         </section>
