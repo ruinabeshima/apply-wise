@@ -91,11 +91,7 @@ jobs:
     env:
       CLIENT_URL: ${{ secrets.CLIENT_URL }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
-      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
-      CLERK_WEBHOOK_SECRET: ${{ secrets.CLERK_WEBHOOK_SECRET }}
       VITE_SERVER_URL: ${{secrets.VITE_SERVER_URL }}
-      VITE_CLERK_PUBLISHABLE_KEY: ${{secrets.VITE_CLERK_PUBLISHABLE_KEY }}
       R2_ACCOUNT_ID: ${{secrets.R2_ACCOUNT_ID}}
       R2_ACCESS_KEY_ID: ${{secrets.R2_ACCESS_KEY_ID}}
       R2_BUCKET_NAME: ${{secrets.R2_BUCKET_NAME}}
@@ -140,8 +136,7 @@ jobs:
         run: |
           docker build \
             --build-arg VITE_SERVER_URL=${{ secrets.VITE_SERVER_URL }} \
-            --build-arg VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }} \
-            -t ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/applywise-repo/apply-wise:${{ github.sha }} .
+            --build-arg 
           docker push ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/applywise-repo/apply-wise:${{ github.sha }}
 
   deploy:
@@ -171,4 +166,3 @@ jobs:
           flags: "--allow-unauthenticated"
           env_vars: |
             VITE_SERVER_URL = ${{ secrets.VITE_SERVER_URL }}
-            VITE_CLERK_PUBLISHABLE_KEY = ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}

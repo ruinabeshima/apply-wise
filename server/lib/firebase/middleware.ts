@@ -10,7 +10,11 @@ export function requireFirebaseAuth() {
 
     try {
       const decoded = await firebaseAuth.verifyIdToken(token);
-      req.auth = { userId: decoded.uid, email: decoded.email };
+      req.auth = {
+        userId: decoded.uid,
+        email: decoded.email ?? undefined,
+        imageUrl: decoded.picture ?? undefined,
+      };
       return next();
     } catch {
       return res.status(401).json({ message: "Unauthorized" });

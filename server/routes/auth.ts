@@ -6,6 +6,32 @@ import logAudit from "../lib/monitoring/audit";
 
 const authRouter = express.Router();
 
+authRouter.post(
+  "/sync",
+  requireFirebaseAuth(),
+  async (req: Request, res: Response) => {
+    const { userId, email, imageUrl } = req.auth;
+    if (!userId || !email) {
+      return res.status(400).json({ message: "Missing user info" });
+    }
+
+    await prisma.user.upsert({
+      where: { id: userId },
+      create: {
+        id: userId,
+        email,
+        imageUrl: imageUrl ?? null,
+      },
+      update: {
+        email,
+        imageUrl: imageUrl ?? null,
+      },
+    });
+
+    return res.status(200).json({ ok: true });
+  },
+);
+
 // Check user's onboarding status
 authRouter.get(
   "/status",

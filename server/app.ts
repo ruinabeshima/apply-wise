@@ -7,7 +7,6 @@ import { feedbackRouter } from "./routes/feedback";
 import { tailoringRouter } from "./routes/tailoring";
 import { randomUUID } from "node:crypto";
 import { logger } from "./lib/monitoring/logger";
-import admin from "firebase-admin";
 
 export default function createApp() {
   const app = express();

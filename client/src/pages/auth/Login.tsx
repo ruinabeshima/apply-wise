@@ -17,7 +17,19 @@ export default function Login() {
     setError(null);
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email.trim(), password);
+      const cred = await signInWithEmailAndPassword(
+        auth,
+        email.trim(),
+        password,
+      );
+
+      const token = await cred.user.getIdToken();
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/sync`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Sync failed");
+
       navigate("/dashboard");
     } catch {
       setError("Login failed. Check your email and password.");
@@ -30,7 +42,15 @@ export default function Login() {
     setError(null);
     setLoading(true);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const cred = await signInWithPopup(auth, googleProvider);
+
+      const token = await cred.user.getIdToken();
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/sync`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Sync failed");
+
       navigate("/dashboard");
     } catch {
       setError("Google sign-in failed.");
@@ -38,7 +58,6 @@ export default function Login() {
       setLoading(false);
     }
   };
-
   return (
     <div className="flex min-h-screen flex-col gap-5 items-center">
       <div
@@ -46,7 +65,10 @@ export default function Login() {
         className="fixed inset-0 bg-cover bg-center bg-no-repeat brightness-80 -z-10"
       />
       <AuthNavbar />
-      <form className="card w-full max-w-md bg-base-100 p-6" onSubmit={handleEmailLogin}>
+      <form
+        className="card w-full max-w-md bg-base-100 p-6"
+        onSubmit={handleEmailLogin}
+      >
         <h2 className="text-xl font-semibold">Welcome back</h2>
         <input
           className="input input-bordered w-full mt-4"
@@ -75,7 +97,10 @@ export default function Login() {
         </button>
         {error && <p className="text-sm text-error mt-2">{error}</p>}
         <p className="text-sm mt-3">
-          No account? <Link className="link" to="/register">Create one</Link>
+          No account?{" "}
+          <Link className="link" to="/register">
+            Create one
+          </Link>
         </p>
       </form>
     </div>

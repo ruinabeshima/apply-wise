@@ -1,8 +1,5 @@
 import { useState } from "react";
-import {
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../lib/firebase";
 import { useNavigate, Link } from "react-router-dom";
 import background from "../../assets/background.jpg";
@@ -20,7 +17,19 @@ export default function Register() {
     setError(null);
     setLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, email.trim(), password);
+      const cred = await createUserWithEmailAndPassword(
+        auth,
+        email.trim(),
+        password,
+      );
+
+      const token = await cred.user.getIdToken();
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/sync`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Sync failed");
+
       navigate("/onboarding");
     } catch {
       setError("Registration failed. Try a stronger password.");
@@ -33,7 +42,15 @@ export default function Register() {
     setError(null);
     setLoading(true);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const cred = await signInWithPopup(auth, googleProvider);
+
+      const token = await cred.user.getIdToken();
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/sync`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Sync failed");
+
       navigate("/onboarding");
     } catch {
       setError("Google sign-up failed.");
@@ -49,7 +66,10 @@ export default function Register() {
         className="fixed inset-0 bg-cover bg-center bg-no-repeat brightness-80 -z-10"
       />
       <AuthNavbar />
-      <form className="card w-full max-w-md bg-base-100 p-6" onSubmit={handleEmailRegister}>
+      <form
+        className="card w-full max-w-md bg-base-100 p-6"
+        onSubmit={handleEmailRegister}
+      >
         <h2 className="text-xl font-semibold">Create your account</h2>
         <input
           className="input input-bordered w-full mt-4"
@@ -78,7 +98,10 @@ export default function Register() {
         </button>
         {error && <p className="text-sm text-error mt-2">{error}</p>}
         <p className="text-sm mt-3">
-          Already have an account? <Link className="link" to="/login">Sign in</Link>
+          Already have an account?{" "}
+          <Link className="link" to="/login">
+            Sign in
+          </Link>
         </p>
       </form>
     </div>
