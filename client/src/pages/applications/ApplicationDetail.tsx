@@ -185,7 +185,7 @@ export default function ApplicationDetail() {
 
                 <div className="card-actions justify-end">
                   <button
-                    className="btn btn-outline btn-accent"
+                    className="btn btn-outline btn-primary"
                     onClick={() => navigate(`/applications/${id}/edit`)}
                     disabled={tailoringLoading}
                   >
