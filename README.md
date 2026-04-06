@@ -1,21 +1,38 @@
 # ApplyWise
 
-A full-stack application where users can sign in, view their job applications and receive personalised insights.
-
-<img width="1470" height="921" alt="Screenshot 2026-03-04 at 10 14 19" src="https://github.com/user-attachments/assets/2bb2a298-403f-4d16-b910-d54f84cc11b2" />
+- Try it out: https://apply-wise-6gx6cmwdmq-an.a.run.app/
+- Signed-in users can create and track their job applications.
+- They can view their uploaded resume and update them.
+- Users can tailor their resumes using AI for a specific job application, and receive various suggestions which they can accept or decline.
 
 ## Tech Stack
 
-- **Languages:** Typescript, TailwindCSS
-- **Frontend framework:** React + Vite
-- **Backend framework:** NodeJS + Express
-- **Frontend Component Library:** DaisyUI
-- **Authentication and User Management:** Clerk
-- **ORM:** PrismaORM
-- **Containerisation:** Docker
-- **Database:** PostgreSQL (Neon)
-- **CI/CD:** Github Actions
-- **Deployment:** Google Cloud Run for the frontend, Render for the backend
+**Frontend**
+
+- React + Vite
+- TypeScript
+- Tailwind CSS + DaisyUI
+- React Router
+- Firebase Auth
+
+**Backend**
+
+- Node.js + Express
+- TypeScript
+- Prisma ORM
+- Zod
+- Winston
+- Multer
+- OpenAI SDK
+- Firebase Admin SDK
+
+**Infrastructure**
+
+- PostgreSQL (Neon)
+- AWS S3
+- Docker
+- GitHub Actions
+- Google Cloud Run (frontend) + Render (backend)
 
 ## Features
 
