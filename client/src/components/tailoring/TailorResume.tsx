@@ -6,6 +6,7 @@ import useTailoredStatus from "../../hooks/useTailoredStatus";
 type TailorResumeProps = {
   applicationId: string;
   onTailoringLoadingChange?: (loading: boolean) => void;
+  remaining: number;
 };
 
 export default function TailorResume(props: TailorResumeProps) {
@@ -144,14 +145,24 @@ export default function TailorResume(props: TailorResumeProps) {
             <div className="badge badge-ghost">AI Tailoring</div>
             <div>
               <h3 className="text-lg font-semibold">Tailor this resume</h3>
-              <p className="text-sm text-base-content/60">
-                Get focused feedback and a tailored version for this role.
-              </p>
+              {props.remaining > 1 ? (
+                <p className="text-sm text-base-content/60">
+                  You have {props.remaining} tailoring sessions left!
+                </p>
+              ) : props.remaining === 0 ? (
+                <p className="text-sm text-base-content/60">
+                  You have no tailoring sessions left! Paid plan coming soon!
+                </p>
+              ) : (
+                <p className="text-sm text-base-content/60">
+                  You have {props.remaining} tailoring session left!
+                </p>
+              )}
             </div>
             <button
               className="btn btn-primary gap-2"
               onClick={handleTailorApplication}
-              disabled={tailoringLoading}
+              disabled={tailoringLoading || props.remaining <= 0}
             >
               <svg
                 className="w-4 h-4"

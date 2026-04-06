@@ -68,4 +68,23 @@ tailoringRouter.get(
   },
 );
 
+tailoringRouter.get(
+  "/count",
+  requireFirebaseAuth(),
+  async (req: Request, res: Response) => {
+    const { userId } = req.auth;
+
+    try {
+      const count = await prisma.tailoringSession.count({
+        where: { userId },
+      });
+
+      return res.status(200).json({ count });
+    } catch (error) {
+      logger.error({ userId, error });
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  },
+);
+
 export { tailoringRouter };

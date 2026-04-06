@@ -6,6 +6,7 @@ import Navbar from "../../components/navbar/Navbar";
 import TailorResume from "../../components/tailoring/TailorResume";
 import useOnboardingStatus from "../../hooks/useOnboardingStatus";
 import useIndividualApplication from "../../hooks/useIndividualApplication";
+import useTailoredCount from "../../hooks/useTailoredCount";
 
 export default function ApplicationDetail() {
   const appUrl = import.meta.env.VITE_SERVER_URL;
@@ -23,6 +24,11 @@ export default function ApplicationDetail() {
     loading: appLoading,
     error: appError,
   } = useIndividualApplication(id!);
+  const {
+    count,
+    loading: countLoading,
+    error: countError,
+  } = useTailoredCount();
 
   const handleApplicationDelete = async () => {
     setDeleteLoading(true);
@@ -49,8 +55,10 @@ export default function ApplicationDetail() {
     }
   };
 
-  const loading = onboardingLoading || appLoading || deleteLoading;
-  const error = onboardingError || appError || deleteError;
+  const loading =
+    onboardingLoading || appLoading || deleteLoading || countLoading;
+  const error = onboardingError || appError || deleteError || countError;
+  const remaining = 3 - count!;
 
   return (
     <div className="w-full min-h-screen flex flex-col gap-5 bg-base-200/40">
@@ -202,6 +210,7 @@ export default function ApplicationDetail() {
               <TailorResume
                 applicationId={id ?? ""}
                 onTailoringLoadingChange={setTailoringLoading}
+                remaining={remaining}
               />
             </div>
           </section>
