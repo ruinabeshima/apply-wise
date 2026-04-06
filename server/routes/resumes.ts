@@ -49,7 +49,7 @@ resumeRouter.get(
           Bucket: process.env.R2_BUCKET_NAME!,
           Key: resume.key,
         }),
-        { expiresIn: 3600 },
+        { expiresIn: 300 },
       );
 
       res.json({ url });
@@ -134,7 +134,7 @@ resumeRouter.get(
           Bucket: process.env.R2_BUCKET_NAME!,
           Key: tailoredResume.key,
         }),
-        { expiresIn: 3600 },
+        { expiresIn: 300 },
       );
 
       res.json({ url });
