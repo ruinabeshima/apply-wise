@@ -161,7 +161,7 @@ export type TailoringSessionGroupByArgs<ExtArgs extends runtime.Types.Extensions
 
 export type TailoringSessionGroupByOutputType = {
   id: string
-  applicationId: string
+  applicationId: string | null
   userId: string
   suggestions: runtime.JsonValue
   acceptedSuggestions: string[]
@@ -194,7 +194,7 @@ export type TailoringSessionWhereInput = {
   OR?: Prisma.TailoringSessionWhereInput[]
   NOT?: Prisma.TailoringSessionWhereInput | Prisma.TailoringSessionWhereInput[]
   id?: Prisma.StringFilter<"TailoringSession"> | string
-  applicationId?: Prisma.StringFilter<"TailoringSession"> | string
+  applicationId?: Prisma.StringNullableFilter<"TailoringSession"> | string | null
   userId?: Prisma.StringFilter<"TailoringSession"> | string
   suggestions?: Prisma.JsonFilter<"TailoringSession">
   acceptedSuggestions?: Prisma.StringNullableListFilter<"TailoringSession">
@@ -202,14 +202,14 @@ export type TailoringSessionWhereInput = {
   status?: Prisma.EnumTailoringSessionStatusFilter<"TailoringSession"> | $Enums.TailoringSessionStatus
   createdAt?: Prisma.DateTimeFilter<"TailoringSession"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TailoringSession"> | Date | string
-  application?: Prisma.XOR<Prisma.ApplicationScalarRelationFilter, Prisma.ApplicationWhereInput>
+  application?: Prisma.XOR<Prisma.ApplicationNullableScalarRelationFilter, Prisma.ApplicationWhereInput> | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   tailoredResume?: Prisma.TailoredResumeListRelationFilter
 }
 
 export type TailoringSessionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  applicationId?: Prisma.SortOrder
+  applicationId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   suggestions?: Prisma.SortOrder
   acceptedSuggestions?: Prisma.SortOrder
@@ -227,7 +227,7 @@ export type TailoringSessionWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.TailoringSessionWhereInput | Prisma.TailoringSessionWhereInput[]
   OR?: Prisma.TailoringSessionWhereInput[]
   NOT?: Prisma.TailoringSessionWhereInput | Prisma.TailoringSessionWhereInput[]
-  applicationId?: Prisma.StringFilter<"TailoringSession"> | string
+  applicationId?: Prisma.StringNullableFilter<"TailoringSession"> | string | null
   userId?: Prisma.StringFilter<"TailoringSession"> | string
   suggestions?: Prisma.JsonFilter<"TailoringSession">
   acceptedSuggestions?: Prisma.StringNullableListFilter<"TailoringSession">
@@ -235,14 +235,14 @@ export type TailoringSessionWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumTailoringSessionStatusFilter<"TailoringSession"> | $Enums.TailoringSessionStatus
   createdAt?: Prisma.DateTimeFilter<"TailoringSession"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TailoringSession"> | Date | string
-  application?: Prisma.XOR<Prisma.ApplicationScalarRelationFilter, Prisma.ApplicationWhereInput>
+  application?: Prisma.XOR<Prisma.ApplicationNullableScalarRelationFilter, Prisma.ApplicationWhereInput> | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   tailoredResume?: Prisma.TailoredResumeListRelationFilter
 }, "id">
 
 export type TailoringSessionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  applicationId?: Prisma.SortOrder
+  applicationId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   suggestions?: Prisma.SortOrder
   acceptedSuggestions?: Prisma.SortOrder
@@ -260,7 +260,7 @@ export type TailoringSessionScalarWhereWithAggregatesInput = {
   OR?: Prisma.TailoringSessionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.TailoringSessionScalarWhereWithAggregatesInput | Prisma.TailoringSessionScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"TailoringSession"> | string
-  applicationId?: Prisma.StringWithAggregatesFilter<"TailoringSession"> | string
+  applicationId?: Prisma.StringNullableWithAggregatesFilter<"TailoringSession"> | string | null
   userId?: Prisma.StringWithAggregatesFilter<"TailoringSession"> | string
   suggestions?: Prisma.JsonWithAggregatesFilter<"TailoringSession">
   acceptedSuggestions?: Prisma.StringNullableListFilter<"TailoringSession">
@@ -278,14 +278,14 @@ export type TailoringSessionCreateInput = {
   status?: $Enums.TailoringSessionStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  application: Prisma.ApplicationCreateNestedOneWithoutTailoringSessionInput
+  application?: Prisma.ApplicationCreateNestedOneWithoutTailoringSessionInput
   user: Prisma.UserCreateNestedOneWithoutTailoringSessionsInput
   tailoredResume?: Prisma.TailoredResumeCreateNestedManyWithoutTailoringSessionInput
 }
 
 export type TailoringSessionUncheckedCreateInput = {
   id?: string
-  applicationId: string
+  applicationId?: string | null
   userId: string
   suggestions: Prisma.JsonNullValueInput | runtime.InputJsonValue
   acceptedSuggestions?: Prisma.TailoringSessionCreateacceptedSuggestionsInput | string[]
@@ -304,14 +304,14 @@ export type TailoringSessionUpdateInput = {
   status?: Prisma.EnumTailoringSessionStatusFieldUpdateOperationsInput | $Enums.TailoringSessionStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  application?: Prisma.ApplicationUpdateOneRequiredWithoutTailoringSessionNestedInput
+  application?: Prisma.ApplicationUpdateOneWithoutTailoringSessionNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutTailoringSessionsNestedInput
   tailoredResume?: Prisma.TailoredResumeUpdateManyWithoutTailoringSessionNestedInput
 }
 
 export type TailoringSessionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  applicationId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   suggestions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   acceptedSuggestions?: Prisma.TailoringSessionUpdateacceptedSuggestionsInput | string[]
@@ -324,7 +324,7 @@ export type TailoringSessionUncheckedUpdateInput = {
 
 export type TailoringSessionCreateManyInput = {
   id?: string
-  applicationId: string
+  applicationId?: string | null
   userId: string
   suggestions: Prisma.JsonNullValueInput | runtime.InputJsonValue
   acceptedSuggestions?: Prisma.TailoringSessionCreateacceptedSuggestionsInput | string[]
@@ -346,7 +346,7 @@ export type TailoringSessionUpdateManyMutationInput = {
 
 export type TailoringSessionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  applicationId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   suggestions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   acceptedSuggestions?: Prisma.TailoringSessionUpdateacceptedSuggestionsInput | string[]
@@ -537,13 +537,13 @@ export type TailoringSessionCreateWithoutUserInput = {
   status?: $Enums.TailoringSessionStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  application: Prisma.ApplicationCreateNestedOneWithoutTailoringSessionInput
+  application?: Prisma.ApplicationCreateNestedOneWithoutTailoringSessionInput
   tailoredResume?: Prisma.TailoredResumeCreateNestedManyWithoutTailoringSessionInput
 }
 
 export type TailoringSessionUncheckedCreateWithoutUserInput = {
   id?: string
-  applicationId: string
+  applicationId?: string | null
   suggestions: Prisma.JsonNullValueInput | runtime.InputJsonValue
   acceptedSuggestions?: Prisma.TailoringSessionCreateacceptedSuggestionsInput | string[]
   dismissedSuggestions?: Prisma.TailoringSessionCreatedismissedSuggestionsInput | string[]
@@ -584,7 +584,7 @@ export type TailoringSessionScalarWhereInput = {
   OR?: Prisma.TailoringSessionScalarWhereInput[]
   NOT?: Prisma.TailoringSessionScalarWhereInput | Prisma.TailoringSessionScalarWhereInput[]
   id?: Prisma.StringFilter<"TailoringSession"> | string
-  applicationId?: Prisma.StringFilter<"TailoringSession"> | string
+  applicationId?: Prisma.StringNullableFilter<"TailoringSession"> | string | null
   userId?: Prisma.StringFilter<"TailoringSession"> | string
   suggestions?: Prisma.JsonFilter<"TailoringSession">
   acceptedSuggestions?: Prisma.StringNullableListFilter<"TailoringSession">
@@ -652,13 +652,13 @@ export type TailoringSessionCreateWithoutTailoredResumeInput = {
   status?: $Enums.TailoringSessionStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  application: Prisma.ApplicationCreateNestedOneWithoutTailoringSessionInput
+  application?: Prisma.ApplicationCreateNestedOneWithoutTailoringSessionInput
   user: Prisma.UserCreateNestedOneWithoutTailoringSessionsInput
 }
 
 export type TailoringSessionUncheckedCreateWithoutTailoredResumeInput = {
   id?: string
-  applicationId: string
+  applicationId?: string | null
   userId: string
   suggestions: Prisma.JsonNullValueInput | runtime.InputJsonValue
   acceptedSuggestions?: Prisma.TailoringSessionCreateacceptedSuggestionsInput | string[]
@@ -692,13 +692,13 @@ export type TailoringSessionUpdateWithoutTailoredResumeInput = {
   status?: Prisma.EnumTailoringSessionStatusFieldUpdateOperationsInput | $Enums.TailoringSessionStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  application?: Prisma.ApplicationUpdateOneRequiredWithoutTailoringSessionNestedInput
+  application?: Prisma.ApplicationUpdateOneWithoutTailoringSessionNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutTailoringSessionsNestedInput
 }
 
 export type TailoringSessionUncheckedUpdateWithoutTailoredResumeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  applicationId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   suggestions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   acceptedSuggestions?: Prisma.TailoringSessionUpdateacceptedSuggestionsInput | string[]
@@ -710,7 +710,7 @@ export type TailoringSessionUncheckedUpdateWithoutTailoredResumeInput = {
 
 export type TailoringSessionCreateManyUserInput = {
   id?: string
-  applicationId: string
+  applicationId?: string | null
   suggestions: Prisma.JsonNullValueInput | runtime.InputJsonValue
   acceptedSuggestions?: Prisma.TailoringSessionCreateacceptedSuggestionsInput | string[]
   dismissedSuggestions?: Prisma.TailoringSessionCreatedismissedSuggestionsInput | string[]
@@ -727,13 +727,13 @@ export type TailoringSessionUpdateWithoutUserInput = {
   status?: Prisma.EnumTailoringSessionStatusFieldUpdateOperationsInput | $Enums.TailoringSessionStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  application?: Prisma.ApplicationUpdateOneRequiredWithoutTailoringSessionNestedInput
+  application?: Prisma.ApplicationUpdateOneWithoutTailoringSessionNestedInput
   tailoredResume?: Prisma.TailoredResumeUpdateManyWithoutTailoringSessionNestedInput
 }
 
 export type TailoringSessionUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  applicationId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suggestions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   acceptedSuggestions?: Prisma.TailoringSessionUpdateacceptedSuggestionsInput | string[]
   dismissedSuggestions?: Prisma.TailoringSessionUpdatedismissedSuggestionsInput | string[]
@@ -745,7 +745,7 @@ export type TailoringSessionUncheckedUpdateWithoutUserInput = {
 
 export type TailoringSessionUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  applicationId?: Prisma.StringFieldUpdateOperationsInput | string
+  applicationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   suggestions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   acceptedSuggestions?: Prisma.TailoringSessionUpdateacceptedSuggestionsInput | string[]
   dismissedSuggestions?: Prisma.TailoringSessionUpdatedismissedSuggestionsInput | string[]
@@ -841,7 +841,7 @@ export type TailoringSessionSelect<ExtArgs extends runtime.Types.Extensions.Inte
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
+  application?: boolean | Prisma.TailoringSession$applicationArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   tailoredResume?: boolean | Prisma.TailoringSession$tailoredResumeArgs<ExtArgs>
   _count?: boolean | Prisma.TailoringSessionCountOutputTypeDefaultArgs<ExtArgs>
@@ -857,7 +857,7 @@ export type TailoringSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
+  application?: boolean | Prisma.TailoringSession$applicationArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tailoringSession"]>
 
@@ -871,7 +871,7 @@ export type TailoringSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
+  application?: boolean | Prisma.TailoringSession$applicationArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tailoringSession"]>
 
@@ -889,30 +889,30 @@ export type TailoringSessionSelectScalar = {
 
 export type TailoringSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "applicationId" | "userId" | "suggestions" | "acceptedSuggestions" | "dismissedSuggestions" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["tailoringSession"]>
 export type TailoringSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
+  application?: boolean | Prisma.TailoringSession$applicationArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   tailoredResume?: boolean | Prisma.TailoringSession$tailoredResumeArgs<ExtArgs>
   _count?: boolean | Prisma.TailoringSessionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TailoringSessionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
+  application?: boolean | Prisma.TailoringSession$applicationArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type TailoringSessionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>
+  application?: boolean | Prisma.TailoringSession$applicationArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $TailoringSessionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "TailoringSession"
   objects: {
-    application: Prisma.$ApplicationPayload<ExtArgs>
+    application: Prisma.$ApplicationPayload<ExtArgs> | null
     user: Prisma.$UserPayload<ExtArgs>
     tailoredResume: Prisma.$TailoredResumePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    applicationId: string
+    applicationId: string | null
     userId: string
     suggestions: runtime.JsonValue
     acceptedSuggestions: string[]
@@ -1314,7 +1314,7 @@ readonly fields: TailoringSessionFieldRefs;
  */
 export interface Prisma__TailoringSessionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  application<T extends Prisma.ApplicationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ApplicationDefaultArgs<ExtArgs>>): Prisma.Prisma__ApplicationClient<runtime.Types.Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  application<T extends Prisma.TailoringSession$applicationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TailoringSession$applicationArgs<ExtArgs>>): Prisma.Prisma__ApplicationClient<runtime.Types.Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   tailoredResume<T extends Prisma.TailoringSession$tailoredResumeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TailoringSession$tailoredResumeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TailoredResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1753,6 +1753,25 @@ export type TailoringSessionDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many TailoringSessions to delete.
    */
   limit?: number
+}
+
+/**
+ * TailoringSession.application
+ */
+export type TailoringSession$applicationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Application
+   */
+  select?: Prisma.ApplicationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Application
+   */
+  omit?: Prisma.ApplicationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationInclude<ExtArgs> | null
+  where?: Prisma.ApplicationWhereInput
 }
 
 /**

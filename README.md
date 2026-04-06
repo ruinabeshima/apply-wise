@@ -1,33 +1,79 @@
 # ApplyWise
 
-A full-stack application where users can sign in, view their job applications and receive personalised insights.
+- Try it out: https://apply-wise-6gx6cmwdmq-an.a.run.app/
+- Signed-in users can create and track their job applications.
+- They can view their uploaded resume and update them.
+- Users can tailor their resumes using AI for a specific job application, and receive various suggestions which they can accept or decline.
 
-<img width="1470" height="921" alt="Screenshot 2026-03-04 at 10 14 19" src="https://github.com/user-attachments/assets/2bb2a298-403f-4d16-b910-d54f84cc11b2" />
+## Table of Contents
+
+- [Tech Stack](#tech-stack)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [API Routes](#server-api-routes)
+- [Database Models](#database-models)
+- [Environment Variables](#environment-variables)
+- [Testing](#testing)
 
 ## Tech Stack
 
-- **Languages:** Typescript, TailwindCSS
-- **Frontend framework:** React + Vite
-- **Backend framework:** NodeJS + Express
-- **Frontend Component Library:** DaisyUI
-- **Authentication and User Management:** Clerk
-- **ORM:** PrismaORM
-- **Containerisation:** Docker
-- **Database:** PostgreSQL (Neon)
-- **CI/CD:** Github Actions
-- **Deployment:** Google Cloud Run for the frontend, Render for the backend
+**Frontend**
+
+- React + Vite
+- TypeScript
+- Tailwind CSS + DaisyUI
+- React Router
+- Firebase Auth
+
+**Backend**
+
+- Node.js + Express
+- TypeScript
+- Prisma ORM
+- Zod
+- Winston
+- Multer
+- OpenAI SDK
+- Firebase Admin SDK
+
+**Infrastructure**
+
+- PostgreSQL (Neon)
+- Cloudflare R2
+- Docker
+- GitHub Actions
+- Google Cloud Run (frontend) + Render (backend)
 
 ## Features
+
+### Onboarding
+
+- Once a user creates an account, they are taken to an onboarding page where they are required to upload their resume, and optionally enter a job application.
+- The user cannot navigate to any other page unless they have completed onboarding.
+
+### Job Application Tracking
+
+- Users can see the resume they have uploaded and optionally update it in the `/your-resume` page.
+- The `/dashboard` page allows users to see their job applications in a grid layout.
+- They can add new applications with required fields `role`, `company`, select `application status`, and optionally enter the application date, add extra notes and add the job link.
+- The application date is set to the time the application is created if nothing is entered.
+- Users can see the detailed view of a single application, where they have the option to edit, delete or tailor their resume to that application.
 
 ### Resume Suggestions and OpenAI Integration
 
 - Users can use AI to review their resume and tailor it to fit specific job applications.
+- **Resume Tailoring Limit**: Users can tailor up to 3 resumes with AI. The count is tracked via `TailoringSession` records and persists even after application deletion to prevent users from circumventing the limit.
 - OpenAI's API analyzes the resume against job requirements and provides specific, actionable suggestions.
 - Suggestions are grouped into four categories:
   - `miss:` Skills or requirements from the job description that are absent from the resume
   - `improve:` Existing resume content that could be strengthened with metrics, stronger action verbs, or better framing
   - `add:` Relevant experience or projects worth mentioning that aren't currently highlighted
   - `weak:` Content that doesn't align with the role and should be removed or reframed
+- The user can view all of these suggestions, and have the option to accept or ignore them.
+- Once all the suggestions have been reviewed, the AI generates a new resume based on the suggestions that have been accepted.
+- Users can view all of their tailored resumes in the `/tailored` page.
+
+### Tests
 
 ### Audit Logging
 
@@ -51,33 +97,6 @@ A full-stack application where users can sign in, view their job applications an
   - **Warnings**: Unauthorised access attempts, missing resources, validation errors
 - Logs are output to stdout in JSON format, making them queryable in production environments (Google Cloud Run Logs, Render Logs, etc.)
 
-## Workflow / Logic of the Application
-
-### Tailoring
-
-**1. User clicks "Tailor Resume" on a job application**
-
-- Backend analyses job description and resume text via OpenAI
-- AI returns suggestions in JSON format: `{"miss":[],"improve":[],"add":[],"weak":[]}`
-- A `TailoringSession` is created to track the tailoring process
-
-**2. User reviews suggestions individually**
-
-- Frontend displays suggestions grouped by category
-- User accepts or dismisses each suggestion
-- Decisions are saved, and dismissed suggestions will not be used in the final resume
-- User's decisions are stored as indices - `e.g ["miss-0", "miss-1", "improve-2", "add-1"]` - allowing the system to track which specific suggestions were accepted or dismissed
-
-**3. User generates tailored resume**
-
-- Only accepted suggestions are incorporated into the final resume
-- Backend rewrites the resume using OpenAI with the filtered suggestions
-- Tailored resume is saved with a name entered by the user
-
-**4. User downloads or views tailored version**
-
-- All tailored resumes are linked to the original application
-
 ## Server API Routes
 
 | Method | Endpoint                              | Description                                                                           |
@@ -97,62 +116,118 @@ A full-stack application where users can sign in, view their job applications an
 | POST   | `/feedback/:applicationId`            | Start tailoring session and get AI suggestions for an application                     |
 | POST   | `/feedback/update/:sessionId`         | Accept or dismiss individual suggestions                                              |
 | POST   | `/feedback/generate/:sessionId`       | Generate final tailored resume from accepted suggestions                              |
-| POST   | `/webhooks/clerk`                     | Receive Clerk webhook to sync user data with database                                 |
 | GET    | `/tailoring/status/:applicationId`    | Check if tailoring status exists and returns suggestions or tailored resume key if so |
+| GET    | `/tailoring/count`                    | Get count of all user's tailoring sessions                                            |
 
 ## Database Models
 
 ### Tables
 
-- `User`: id, clerkId, email, imageUrl, createdAt, updatedAt, onboarding_complete
+- `User`: id, email, imageUrl, createdAt, updatedAt, onboarding_complete
 - `Application`: id, role, company, status, appliedDate, notes, jobUrl, userId, createdAt, updatedAt
-- `Resume`: id, key, userId, uploadedAt, updatedAt
+- `Resume`: id, key, userId, text, uploadedAt, updatedAt
 - `AuditLog`: id, userId, event, description, entityType, entityId, createdAt
-- `TailoringSession`: id, applicationId, userId, suggestions, acceptedSuggestions, dismissedSuggestions, status, createdAt, updatedAt, tailoredResume
-- `TailoredResume`: id, tailoringSessionId, applicationId, userId, name, content, createdAt
-
-### Enumerated Values
-
-`Status`: APPLIED, INTERVIEW, OFFER, REJECTED
-`AuditEvent`: USER_CREATED, USER_UPDATED, USER_DELETED, ONBOARDING_COMPLETED, APPLICATION_CREATED, APPLICATION_UPDATED, APPLICATION_DELETED, RESUME_UPLOADED, TAILORING_SESSION_CREATED, TAILORING_SUGGESTIONS_REVIEWED, RESUME_TAILORED
-`TailoringSessionStatus`: PENDING, REVIEWED, TAILORED
+- `TailoringSession`: id, applicationId, userId, suggestions, acceptedSuggestions, dismissedSuggestions, status, createdAt, updatedAt
+- `TailoredResume`: id, key, tailoringSessionId, applicationId, userId, name, content, createdAt
 
 ## Environment Variables
 
 ### Client
 
-VITE_SERVER_URL
-VITE_CLERK_PUBLISHABLE_KEY
+- `VITE_SERVER_URL`: Backend server URL (e.g., `http://localhost:3000`)
+- `VITE_FIREBASE_API_KEY`: Firebase API key
+- `VITE_FIREBASE_AUTH_DOMAIN`: Firebase auth domain
+- `VITE_FIREBASE_PROJECT_ID`: Firebase project ID
+- `VITE_FIREBASE_APP_ID`: Firebase app ID
 
 ### Server
 
-- PORT
-- CLIENT_URL
-- POSTGRES_USER
-- POSTGRES_PASSWORD
-- DATABASE_URL
-- CLERK_PUBLISHABLE_KEY
-- CLERK_SECRET_KEY
-- CLERK_WEBHOOK_SECRET
-- R2_ACCOUNT_ID
-- R2_ACCESS_KEY_ID
-- R2_SECRET_ACCESS_KEY
-- R2_BUCKET_NAME
-- OPENAI_API_KEY
+- `PORT`: Server port (default: 3000)
+- `CLIENT_URL`: Frontend URL for CORS (e.g., `http://localhost:5173`)
+- `POSTGRES_USER`: PostgreSQL username
+- `POSTGRES_PASSWORD`: PostgreSQL password
+- `DATABASE_URL`: PostgreSQL connection string
+- `R2_ACCOUNT_ID`: Cloudflare R2 account ID
+- `R2_ACCESS_KEY_ID`: Cloudflare R2 access key
+- `R2_SECRET_ACCESS_KEY`: Cloudflare R2 secret key
+- `R2_BUCKET_NAME`: Cloudflare R2 bucket name
+- `OPENAI_API_KEY`: OpenAI API key for resume tailoring
+- `FIREBASE_SERVICE_ACCOUNT`: Firebase service account JSON (for admin SDK)
 
 ## Getting started
 
-- Install dependencies
-  - `cd client && pnpm install`
-  - `cd ../server && pnpm install`
+### Prerequisites
 
-- Start server docker container
-  `docker-compose up -d` (from `/server`)
+- Node.js 18 or higher
+- pnpm (install with: `npm install -g pnpm`)
+- Docker and Docker Compose
 
-- Start development servers
-  - `pnpm dev` (from `/client`)
-  - `pnpm dev` (from `/server`)
+### Setup
 
-## Background Image
+1. **Clone and install dependencies**
 
-https://www.freepik.com/free-vector/abstract-seamless-geometric-shape-lines-pattern-design-background_386291308.htm#fromView=keyword&page=1&position=1&uuid=73ee21b1-a895-4e6b-952f-5deac1313597&query=Background+pattern
+   ```bash
+   cd client && pnpm install
+   cd ../server && pnpm install
+   ```
+
+2. **Configure environment variables**
+
+   ```bash
+   # Client
+   cp client/.env.example client/.env
+
+   # Server
+   cp server/.env.example server/.env
+   ```
+
+   Update both `.env` files with your credentials (Firebase, OpenAI, Cloudflare R2, PostgreSQL)
+
+3. **Start the database**
+
+   ```bash
+   docker-compose up -d
+   ```
+
+   (from `/server` directory)
+
+4. **Run database migrations**
+
+   ```bash
+   pnpm prisma migrate dev
+   ```
+
+   (from `/server` directory)
+
+5. **Start development servers**
+   - Client: `pnpm dev` (from `/client`)
+   - Server: `pnpm dev` (from `/server`)
+
+The client will be available at `http://localhost:5173` and the server at `http://localhost:3000`
+
+### Testing
+
+The project includes comprehensive integration tests for all API routes using Jest and Supertest:
+
+**Tested Routes:**
+
+- **Applications** - CRUD operations for job applications, including authorization checks, pagination and error handling
+- **Authentication** - Onboarding status retrieval and completion, user authentication flow
+- **Resumes** - Resume upload/retrieval, pre-signed URL generation, and error cases
+- **Feedback/Tailoring** - Resume tailoring workflow including AI suggestion generation, user feedback acceptance, and tailored resume generation with file conversion and cloud storage
+
+**Test Coverage:**
+
+- Authorization and authentication (401/403 responses)
+- Success paths with mocked external services (OpenAI, Cloudflare R2)
+- Database failures and error handling (500 responses)
+- Input validation and constraints
+- Mock implementations for prisma, audit logging, and file conversion
+
+```bash
+# Run tests
+cd server && pnpm test
+
+# Run tests with coverage
+pnpm test:coverage
+```

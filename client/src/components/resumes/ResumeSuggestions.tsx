@@ -232,6 +232,24 @@ export function TrackResumeSuggestions(props: ResumeSuggestionsProps) {
 
   return (
     <section className="w-full flex flex-col gap-6">
+      <label className="form-control w-full lg:max-w-xs">
+        <div className="label">
+          <span className="label-text">Tailored resume name</span>
+        </div>
+        <input
+          type="text"
+          className="input input-bordered"
+          placeholder="e.g. Product Designer - Stripe"
+          value={resumeName}
+          maxLength={30}
+          onChange={(event) => setResumeName(event.target.value)}
+        />
+        <div className="label">
+          <span className="label-text-alt text-base-content/50">
+            Optional. Enter before finishing all suggestions.
+          </span>
+        </div>
+      </label>
       <div className="rounded-2xl border border-base-300 bg-base-100 shadow-sm p-6">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -247,24 +265,6 @@ export function TrackResumeSuggestions(props: ResumeSuggestionsProps) {
                 version.
               </p>
             </div>
-            <label className="form-control w-full lg:max-w-xs">
-              <div className="label">
-                <span className="label-text">Tailored resume name</span>
-              </div>
-              <input
-                type="text"
-                className="input input-bordered"
-                placeholder="e.g. Product Designer - Stripe"
-                value={resumeName}
-                maxLength={30}
-                onChange={(event) => setResumeName(event.target.value)}
-              />
-              <div className="label">
-                <span className="label-text-alt text-base-content/50">
-                  Optional. Enter before finishing all suggestions.
-                </span>
-              </div>
-            </label>
           </div>
 
           <div className="stats stats-vertical lg:stats-horizontal bg-base-200/40">

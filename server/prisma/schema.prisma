@@ -104,8 +104,8 @@ model AuditLog{
 
 model TailoringSession{
   id String @id @default(uuid())
-  applicationId String 
-  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String? 
+  application Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
 
   userId String
   user User @relation(fields: [userId], references:[id], onDelete: Cascade)

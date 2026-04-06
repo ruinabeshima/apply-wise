@@ -441,6 +441,11 @@ export type ApplicationMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type ApplicationNullableScalarRelationFilter = {
+  is?: Prisma.ApplicationWhereInput | null
+  isNot?: Prisma.ApplicationWhereInput | null
+}
+
 export type ApplicationScalarRelationFilter = {
   is?: Prisma.ApplicationWhereInput
   isNot?: Prisma.ApplicationWhereInput
@@ -498,10 +503,12 @@ export type ApplicationCreateNestedOneWithoutTailoringSessionInput = {
   connect?: Prisma.ApplicationWhereUniqueInput
 }
 
-export type ApplicationUpdateOneRequiredWithoutTailoringSessionNestedInput = {
+export type ApplicationUpdateOneWithoutTailoringSessionNestedInput = {
   create?: Prisma.XOR<Prisma.ApplicationCreateWithoutTailoringSessionInput, Prisma.ApplicationUncheckedCreateWithoutTailoringSessionInput>
   connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutTailoringSessionInput
   upsert?: Prisma.ApplicationUpsertWithoutTailoringSessionInput
+  disconnect?: Prisma.ApplicationWhereInput | boolean
+  delete?: Prisma.ApplicationWhereInput | boolean
   connect?: Prisma.ApplicationWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ApplicationUpdateToOneWithWhereWithoutTailoringSessionInput, Prisma.ApplicationUpdateWithoutTailoringSessionInput>, Prisma.ApplicationUncheckedUpdateWithoutTailoringSessionInput>
 }
