@@ -5,6 +5,16 @@
 - They can view their uploaded resume and update them.
 - Users can tailor their resumes using AI for a specific job application, and receive various suggestions which they can accept or decline.
 
+## Table of Contents
+
+- [Tech Stack](#tech-stack)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [API Routes](#server-api-routes)
+- [Database Models](#database-models)
+- [Environment Variables](#environment-variables)
+- [Testing](#testing)
+
 ## Tech Stack
 
 **Frontend**
@@ -29,7 +39,7 @@
 **Infrastructure**
 
 - PostgreSQL (Neon)
-- AWS S3
+- Cloudflare R2
 - Docker
 - GitHub Actions
 - Google Cloud Run (frontend) + Render (backend)
@@ -44,7 +54,7 @@
 ### Job Application Tracking
 
 - Users can see the resume they have uploaded and optionally update it in the `/your-resume` page.
-- The `/dashboard` page allows users to see thei job applications in a grid layout.
+- The `/dashboard` page allows users to see their job applications in a grid layout.
 - They can add new applications with required fields `role`, `company`, select `application status`, and optionally enter the application date, add extra notes and add the job link.
 - The application date is set to the time the application is created if nothing is entered.
 - Users can see the detailed view of a single application, where they have the option to edit, delete or tailor their resume to that application.
@@ -52,7 +62,7 @@
 ### Resume Suggestions and OpenAI Integration
 
 - Users can use AI to review their resume and tailor it to fit specific job applications.
-- Users can only tailor three resumes with AI. Deleting an application will not change the count if you have tailored a resume before.
+- **Resume Tailoring Limit**: Users can tailor up to 3 resumes with AI. The count is tracked via `TailoringSession` records and persists even after application deletion to prevent users from circumventing the limit.
 - OpenAI's API analyzes the resume against job requirements and provides specific, actionable suggestions.
 - Suggestions are grouped into four categories:
   - `miss:` Skills or requirements from the job description that are absent from the resume
@@ -104,7 +114,6 @@
 | POST   | `/feedback/:applicationId`            | Start tailoring session and get AI suggestions for an application                     |
 | POST   | `/feedback/update/:sessionId`         | Accept or dismiss individual suggestions                                              |
 | POST   | `/feedback/generate/:sessionId`       | Generate final tailored resume from accepted suggestions                              |
-| POST   | `/webhooks/clerk`                     | Receive Clerk webhook to sync user data with database                                 |
 | GET    | `/tailoring/status/:applicationId`    | Check if tailoring status exists and returns suggestions or tailored resume key if so |
 | GET    | `/tailoring/count`                    | Get count of all user's tailoring sessions                                            |
 
@@ -145,13 +154,61 @@
 
 ## Getting started
 
-- Install dependencies
-  - `cd client && pnpm install`
-  - `cd ../server && pnpm install`
+### Prerequisites
 
-- Start server docker container
-  `docker-compose up -d` (from `/server`)
+- Node.js 18 or higher
+- pnpm (install with: `npm install -g pnpm`)
+- Docker and Docker Compose
 
-- Start development servers
-  - `pnpm dev` (from `/client`)
-  - `pnpm dev` (from `/server`)
+### Setup
+
+1. **Clone and install dependencies**
+
+   ```bash
+   cd client && pnpm install
+   cd ../server && pnpm install
+   ```
+
+2. **Configure environment variables**
+
+   ```bash
+   # Client
+   cp client/.env.example client/.env
+
+   # Server
+   cp server/.env.example server/.env
+   ```
+
+   Update both `.env` files with your credentials (Firebase, OpenAI, Cloudflare R2, PostgreSQL)
+
+3. **Start the database**
+
+   ```bash
+   docker-compose up -d
+   ```
+
+   (from `/server` directory)
+
+4. **Run database migrations**
+
+   ```bash
+   pnpm prisma migrate dev
+   ```
+
+   (from `/server` directory)
+
+5. **Start development servers**
+   - Client: `pnpm dev` (from `/client`)
+   - Server: `pnpm dev` (from `/server`)
+
+The client will be available at `http://localhost:5173` and the server at `http://localhost:3000`
+
+### Testing
+
+```bash
+# Run tests
+cd server && pnpm test
+
+# Run tests with coverage
+pnpm test:coverage
+```
