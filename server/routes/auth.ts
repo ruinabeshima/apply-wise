@@ -1,8 +1,9 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import { prisma } from "../lib/prisma";
 import { requireFirebaseAuth } from "../lib/firebase/middleware";
 import { logger } from "../lib/monitoring/logger";
 import logAudit from "../lib/monitoring/audit";
+import { AppError } from "../lib/errors/AppError";
 
 const authRouter = express.Router();
 
@@ -19,13 +20,14 @@ const authRouter = express.Router();
 authRouter.post(
   "/sync",
   requireFirebaseAuth(),
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const { userId, email, imageUrl } = req.auth;
-    if (!userId || !email) {
-      return res.status(400).json({ message: "Missing user info" });
-    }
 
     try {
+      if (!userId || !email) {
+        throw new AppError(400, "Missing user info");
+      }
+
       await prisma.user.upsert({
         where: { id: userId },
         create: {
@@ -41,8 +43,10 @@ authRouter.post(
 
       return res.status(200).json({ ok: true });
     } catch (error) {
-      logger.error("Failed to sync user", { userId, error });
-      return res.status(500).json({ message: "Internal server error" });
+      if (!(error instanceof AppError)) {
+        logger.error("Failed to sync user", { userId, error });
+      }
+      next(error);
     }
   },
 );
@@ -60,15 +64,17 @@ authRouter.post(
 authRouter.get(
   "/status",
   requireFirebaseAuth(),
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.auth;
 
-    if (!userId) {
-      logger.warn("Unauthorised access attempt", { for: "onboarding status" });
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
     try {
+      if (!userId) {
+        logger.warn("Unauthorized access attempt", {
+          for: "onboarding status",
+        });
+        throw new AppError(401, "Unauthorized");
+      }
+
       const data = await prisma.user.findUnique({
         where: {
           id: userId,
@@ -80,15 +86,17 @@ authRouter.get(
 
       if (!data) {
         logger.warn("Failed to get user data", { userId });
-        return res.status(404).json({ message: "User not found" });
+        throw new AppError(404, "User not found");
       }
 
       return res
         .status(200)
         .json({ onboardingComplete: data.onboarding_complete });
     } catch (error) {
-      logger.error("Failed to get onboarding status", { userId, error });
-      return res.status(500).json({ message: "Failed to fetch status" });
+      if (!(error instanceof AppError)) {
+        logger.error("Failed to get onboarding status", { userId, error });
+      }
+      next(error);
     }
   },
 );
@@ -106,15 +114,18 @@ authRouter.get(
 authRouter.patch(
   "/status",
   requireFirebaseAuth(),
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.auth;
 
-    if (!userId) {
-      logger.warn("Unauthorised access attempt", { for: "onboarding status" });
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
     try {
+      if (!userId) {
+        logger.warn("Unauthorized access attempt", {
+          for: "onboarding status",
+        });
+        throw new AppError(401, "Unauthorized");
+      }
+
+      // P2025 error handled centrally
       await prisma.user.update({
         where: {
           id: userId,
@@ -130,11 +141,10 @@ authRouter.patch(
         .status(200)
         .json({ message: "Onboarding status updated successfully" });
     } catch (error) {
-      if ((error as any).code === "P2025") {
-        return res.status(404).json({ message: "User not found" });
+      if (!(error instanceof AppError)) {
+        logger.error("Failed to update onboarding status", { userId, error });
       }
-      logger.error("Failed to update onboarding status", { userId, error });
-      return res.status(500).json({ message: "Internal server error" });
+      next(error);
     }
   },
 );
