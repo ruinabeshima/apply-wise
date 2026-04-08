@@ -9,12 +9,18 @@ export default async function convertTextToPDF(tailoredText: string) {
   const margin = 50;
   const color = rgb(0.1, 0.1, 0.1);
 
+  /* 
+    Creates a new page and returns it.
+    pdf-lib uses bottom-left as the origin, so make y start at the top of the page 
+    Default A4 and letter dimensions
+  */
   const addPage = () => {
     const p = pdfDoc.addPage();
     const { width, height } = p.getSize();
     return { page: p, width, height, y: height - margin };
   };
 
+  // Handles words that are too long to fit on a single line
   const splitLongWord = (word: string, maxWidth: number): string[] => {
     const parts: string[] = [];
     let current = "";
@@ -38,6 +44,7 @@ export default async function convertTextToPDF(tailoredText: string) {
     return parts;
   };
 
+  // Breaks a paragraph into lines that fit within maxWidth
   const wrapParagraph = (text: string, maxWidth: number): string[] => {
     const words = text.trim().split(/\s+/);
     const lines: string[] = [];
