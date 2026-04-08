@@ -35,7 +35,9 @@ resumeRouter.get(
 
     try {
       if (!userId) {
-        logger.warn("Unauthorized access attempt", { route: "/your-resume" });
+        logger.warn("Unauthorized access attempt", {
+          endpoint: "GET /resumes",
+        });
         throw new AppError(401, "Unauthorized");
       }
 
@@ -91,7 +93,7 @@ resumeRouter.get(
     try {
       if (!userId) {
         logger.warn("Unauthorized access attempt", {
-          route: "/resumes/tailored",
+          endpoint: "GET /resumes/tailored",
         });
         throw new AppError(401, "Unauthorized");
       }
@@ -147,7 +149,7 @@ resumeRouter.get(
     try {
       if (!userId) {
         logger.warn("Unauthorized access attempt", {
-          route: "/resumes/tailored",
+          endpoint: `GET /resumes/tailored/${tailoredResumeId}`,
         });
         throw new AppError(401, "Unauthorized");
       }
@@ -210,7 +212,9 @@ resumeRouter.post(
 
     try {
       if (!userId) {
-        logger.warn("Unauthorized access attempt", { route: "/your-resume" });
+        logger.warn("Unauthorized access attempt", {
+          endpoint: "POST /resumes/upload",
+        });
         throw new AppError(401, "Unauthorized");
       }
 

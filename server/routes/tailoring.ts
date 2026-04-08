@@ -1,7 +1,8 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { requireFirebaseAuth } from "../lib/firebase/middleware";
 import { prisma } from "../lib/prisma";
 import { logger } from "../lib/monitoring/logger";
+import { AppError } from "../lib/errors/AppError";
 
 const tailoringRouter = express.Router();
 
@@ -14,7 +15,7 @@ const tailoringRouter = express.Router();
  *
  * @returns {200} { status: "NONE", message }
  * @returns {200} { status: "PENDING" | "REVIEWED", sessionId, suggestions }
- * @returns {200} { status: "TAILORED", sessionId, tailoredResumeId, key }
+ * @returns {200} { status: "TAILORED", sessionId, tailoredResumeId }
  * @returns {401} Unauthorized
  * @returns {404} Tailored resume not found
  * @returns {500} Internal server error
@@ -22,18 +23,22 @@ const tailoringRouter = express.Router();
 tailoringRouter.get(
   "/status/:applicationId",
   requireFirebaseAuth(),
-  async (req: Request<{ applicationId: string }>, res: Response) => {
+  async (
+    req: Request<{ applicationId: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
     const { userId } = req.auth;
     const { applicationId } = req.params;
 
-    if (!userId) {
-      logger.warn("Unauthorized access attempt", {
-        endpoint: `/tailoring/status/${applicationId}`,
-      });
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
     try {
+      if (!userId) {
+        logger.warn("Unauthorized access attempt", {
+          endpoint: `GET /tailoring/status/${applicationId}`,
+        });
+        throw new AppError(401, "Unauthorized");
+      }
+
       const session = await prisma.tailoringSession.findFirst({
         where: { userId, applicationId },
       });
@@ -64,9 +69,11 @@ tailoringRouter.get(
         });
 
         if (!tailoredResume) {
-          return res
-            .status(404)
-            .json({ message: "Tailored resume key not found" });
+          logger.warn("Tailored resume key not found", {
+            userId,
+            applicationId,
+          });
+          throw new AppError(404, "Tailored resume key not found");
         }
 
         return res.status(200).json({
@@ -75,9 +82,17 @@ tailoringRouter.get(
           tailoredResumeId: tailoredResume.id,
         });
       }
+
+      logger.warn("Unexpected session status", {
+        userId,
+        status: session.status,
+      });
+      throw new AppError(500, "Unexpected session status");
     } catch (error) {
-      logger.error("Failed to retreive tailoring status", { userId, error });
-      return res.status(500).json({ message: "Internal server error" });
+      if (!(error instanceof AppError)) {
+        logger.error("Failed to retrieve tailored status", { userId, error });
+      }
+      next(error);
     }
   },
 );
@@ -94,28 +109,30 @@ tailoringRouter.get(
 tailoringRouter.get(
   "/count",
   requireFirebaseAuth(),
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.auth;
 
-    if (!userId) {
-      logger.warn("Unauthorized access attempt", {
-        endpoint: `/tailoring/count`,
-      });
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
     try {
+      if (!userId) {
+        logger.warn("Unauthorized access attempt", {
+          endpoint: `GET /tailoring/count`,
+        });
+        throw new AppError(401, "Unauthorized");
+      }
+
       const count = await prisma.tailoringSession.count({
         where: { userId },
       });
 
       return res.status(200).json({ count });
     } catch (error) {
-      logger.error("Failed to retrieve tailoring session count", {
-        userId,
-        error,
-      });
-      return res.status(500).json({ message: "Internal server error" });
+      if (!(error instanceof AppError)) {
+        logger.error("Failed to retrieve tailoring session count", {
+          userId,
+          error,
+        });
+      }
+      next(error);
     }
   },
 );

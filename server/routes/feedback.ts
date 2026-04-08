@@ -48,7 +48,9 @@ feedbackRouter.post(
 
     try {
       if (!userId) {
-        logger.warn("Unauthorized access attempt", { endpoint: "/feedback" });
+        logger.warn("Unauthorized access attempt", {
+          endpoint: `POST /feedback/${applicationId}`,
+        });
         throw new AppError(401, "Unauthorized");
       }
 
@@ -303,7 +305,7 @@ feedbackRouter.post(
     try {
       if (!userId) {
         logger.warn("Unauthorized access attempt", {
-          endpoint: "/feedback/generate",
+          endpoint: `POST /feedback/generate/${sessionId}`,
         });
         throw new AppError(401, "Unauthorized");
       }

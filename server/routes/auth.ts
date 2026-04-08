@@ -70,7 +70,7 @@ authRouter.get(
     try {
       if (!userId) {
         logger.warn("Unauthorized access attempt", {
-          for: "onboarding status",
+          endpoint: "GET /auth/status",
         });
         throw new AppError(401, "Unauthorized");
       }
@@ -120,7 +120,7 @@ authRouter.patch(
     try {
       if (!userId) {
         logger.warn("Unauthorized access attempt", {
-          for: "onboarding status",
+          endpoint: "PATCH /auth/status",
         });
         throw new AppError(401, "Unauthorized");
       }
