@@ -16,7 +16,16 @@ import parsePDF from "../lib/storage/parse";
 
 const resumeRouter = express.Router();
 
-// Get URL of user's resume
+/**
+ * @route GET /resumes
+ * @desc Retrieve URL of user's resume
+ * @access Private
+ *
+ * @returns {200} { url }
+ * @returns {401} Unauthorized
+ * @returns {404} Resume URL not found
+ * @returns {500} Internal server error
+ */
 resumeRouter.get(
   "/",
   requireFirebaseAuth(),
@@ -39,10 +48,11 @@ resumeRouter.get(
       });
 
       if (!resume) {
-        logger.warn("Resume not found", { userId });
-        return res.status(404).json({ message: "Resume not found" });
+        logger.warn("Resume URL not found", { userId });
+        return res.status(404).json({ message: "Resume URL not found" });
       }
 
+      // Retrieve URL from R2 bucket
       const url = await getSignedUrl(
         r2,
         new GetObjectCommand({
@@ -60,7 +70,15 @@ resumeRouter.get(
   },
 );
 
-// Get all user's tailored resumes
+/**
+ * @route GET /resumes/tailored
+ * @desc Retrieve all user's tailored resumes
+ * @access Private
+ *
+ * @returns {200} { id, name, applicationId, selectedAt }[]
+ * @returns {401} Unauthorized
+ * @returns {500} Internal server error
+ */
 resumeRouter.get(
   "/tailored",
   requireFirebaseAuth(),
@@ -98,7 +116,18 @@ resumeRouter.get(
   },
 );
 
-// Get individual tailored resume url
+/**
+ * @route GET /resumes/tailored/:tailoredResumeId
+ * @desc Retrieve URL of individual tailored resume
+ * @access Private
+ *
+ * @param {string} tailoredResumeId - Tailored resume ID
+ *
+ * @returns {200} { url }
+ * @returns {401} Unauthorized
+ * @returns {404} Tailored resume not found
+ * @returns {500} Internal server error
+ */
 resumeRouter.get(
   "/tailored/:tailoredResumeId",
   requireFirebaseAuth(),
@@ -114,7 +143,8 @@ resumeRouter.get(
     }
 
     try {
-      const tailoredResume = await prisma.tailoredResume.findFirst({
+      // Retrieve PDF key
+      const tailoredResume = await prisma.tailoredResume.findUnique({
         where: {
           id: tailoredResumeId,
           userId,
@@ -128,6 +158,7 @@ resumeRouter.get(
         return res.status(404).json({ message: "Tailored resume not found" });
       }
 
+      // Retrieve URL from R2 bucket
       const url = await getSignedUrl(
         r2,
         new GetObjectCommand({
@@ -145,7 +176,16 @@ resumeRouter.get(
   },
 );
 
-// Upload / update resume
+/**
+ * @route POST /resumes/upload
+ * @desc Upload or update resume
+ * @access Private
+ *
+ * @returns {201} { id, message: "File sent successfully" }
+ * @returns {400} No file uploaded | File must be a valid PDF | Failed to parse resume
+ * @returns {401} Unauthorized
+ * @returns {500} Internal server error
+ */
 resumeRouter.post(
   "/upload",
   requireFirebaseAuth(),

@@ -5,7 +5,20 @@ import { logger } from "../lib/monitoring/logger";
 
 const tailoringRouter = express.Router();
 
-// Check if tailoring session exists, and return null, suggestions or tailored resume key
+/**
+ * @route GET /tailoring/status/:applicationId
+ * @desc Retrieve tailoring session status for an application
+ * @access Private
+ *
+ * @param {string} applicationId - Application ID
+ *
+ * @returns {200} { status: "NONE", message }
+ * @returns {200} { status: "PENDING" | "REVIEWED", sessionId, suggestions }
+ * @returns {200} { status: "TAILORED", sessionId, tailoredResumeId, key }
+ * @returns {401} Unauthorized
+ * @returns {404} Tailored resume not found
+ * @returns {500} Internal server error
+ */
 tailoringRouter.get(
   "/status/:applicationId",
   requireFirebaseAuth(),
@@ -14,7 +27,9 @@ tailoringRouter.get(
     const { applicationId } = req.params;
 
     if (!userId) {
-      logger.warn("Unauthorised access attempt", { endpoint: "/feedback" });
+      logger.warn("Unauthorised access attempt", {
+        endpoint: `/tailoring/status/${applicationId}`,
+      });
       return res.status(401).json({ message: "Unauthorized" });
     }
 
@@ -58,21 +73,36 @@ tailoringRouter.get(
           status: session.status,
           sessionId: session.id,
           tailoredResumeId: tailoredResume.id,
-          key: tailoredResume.key,
         });
       }
     } catch (error) {
-      logger.error({ userId, error });
+      logger.error("Failed to retreive tailoring status", { userId, error });
       return res.status(500).json({ message: "Internal server error" });
     }
   },
 );
 
+/**
+ * @route GET /tailoring/count
+ * @desc Retrieve count of user's tailoring sessions
+ * @access Private
+ *
+ * @returns {200} { count }
+ * @returns {401} Unauthorized
+ * @returns {500} Internal server error
+ */
 tailoringRouter.get(
   "/count",
   requireFirebaseAuth(),
   async (req: Request, res: Response) => {
     const { userId } = req.auth;
+
+    if (!userId) {
+      logger.warn("Unauthorised access attempt", {
+        endpoint: `/tailoring/count`,
+      });
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
     try {
       const count = await prisma.tailoringSession.count({
@@ -81,7 +111,10 @@ tailoringRouter.get(
 
       return res.status(200).json({ count });
     } catch (error) {
-      logger.error({ userId, error });
+      logger.error("Failed to retrieve tailoring session count", {
+        userId,
+        error,
+      });
       return res.status(500).json({ message: "Internal server error" });
     }
   },
