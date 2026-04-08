@@ -1,8 +1,9 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 import { requireFirebaseAuth } from "../lib/firebase/middleware";
 import { logger } from "../lib/monitoring/logger";
 import logAudit from "../lib/monitoring/audit";
+import { AppError } from "../lib/errors/AppError";
 import * as z from "zod";
 
 const applicationRouter = express.Router();
@@ -45,17 +46,19 @@ const appliedDateSchema = z.preprocess((value) => {
 applicationRouter.get(
   "/",
   requireFirebaseAuth(),
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.auth;
     const pageNum = parseInt(req.query.pageNum as string) || 1;
     const pageSize = parseInt(req.query.pageSize as string) || 10;
 
-    if (!userId) {
-      logger.warn("Unauthorised access attempt", { endpoint: "/applications" });
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
     try {
+      if (!userId) {
+        logger.warn("Unauthorised access attempt", {
+          endpoint: "GET /applications",
+        });
+        throw new AppError(401, "Unauthorized");
+      }
+
       const applications = await prisma.application.findMany({
         where: { userId: userId },
         select: {
@@ -74,8 +77,10 @@ applicationRouter.get(
 
       res.json(applications);
     } catch (error) {
-      logger.error("Failed to fetch applications", { userId, error });
-      res.status(500).json({ message: "Internal server error" });
+      if (!(error instanceof AppError)) {
+        logger.error("Failed to fetch applications", { userId, error });
+      }
+      next(error);
     }
   },
 );
@@ -95,18 +100,18 @@ applicationRouter.get(
 applicationRouter.get(
   "/:id",
   requireFirebaseAuth(),
-  async (req: Request<{ id: string }>, res: Response) => {
+  async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
     const { userId } = req.auth;
     const { id } = req.params;
 
-    if (!userId) {
-      logger.warn("Unauthorised access attempt", {
-        endpoint: "/applications/:id",
-      });
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
     try {
+      if (!userId) {
+        logger.warn("Unauthorised access attempt", {
+          endpoint: `GET /applications/${id}`,
+        });
+        throw new AppError(401, "Unauthorized");
+      }
+
       const application = await prisma.application.findUnique({
         where: {
           id: id,
@@ -125,13 +130,15 @@ applicationRouter.get(
 
       if (!application) {
         logger.warn("Application not found", { userId, applicationId: id });
-        return res.status(404).json({ message: "Application not found" });
+        throw new AppError(404, "Application not found");
       }
 
       res.json(application);
     } catch (error) {
-      logger.error("Failed to fetch application", { userId, error });
-      res.status(500).json({ message: "Internal server error" });
+      if (!(error instanceof AppError)) {
+        logger.error("Failed to fetch application", { userId, error });
+      }
+      next(error);
     }
   },
 );
@@ -167,26 +174,23 @@ const newApplicationSchema = z
 applicationRouter.post(
   "/add",
   requireFirebaseAuth(),
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.auth;
 
-    if (!userId) {
-      logger.warn("Unauthorised access attempt", {
-        endpoint: "/applications/add",
-      });
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    const result = newApplicationSchema.safeParse(req.body);
-    if (!result.success) {
-      return res.status(400).json({
-        message: "Invalid request",
-        errors: z.treeifyError(result.error),
-      });
-    }
-    const { role, company, status, appliedDate, notes, jobUrl } = result.data;
-
     try {
+      if (!userId) {
+        logger.warn("Unauthorised access attempt", {
+          endpoint: "POST /applications/add",
+        });
+        throw new AppError(401, "Unauthorized");
+      }
+
+      const result = newApplicationSchema.safeParse(req.body);
+      if (!result.success) {
+        throw result.error;
+      }
+      const { role, company, status, appliedDate, notes, jobUrl } = result.data;
+
       const application = await prisma.application.create({
         data: {
           role,
@@ -209,8 +213,10 @@ applicationRouter.post(
 
       res.status(201).json(application);
     } catch (error) {
-      logger.error("Failed to add application", { userId, error });
-      res.status(500).json({ message: "Internal server error" });
+      if (!(error instanceof AppError)) {
+        logger.error("Failed to create application", { userId, error });
+      }
+      next(error);
     }
   },
 );
@@ -249,38 +255,37 @@ const updateApplicationSchema = z
 applicationRouter.put(
   "/:id",
   requireFirebaseAuth(),
-  async (req: Request<{ id: string }>, res: Response) => {
+  async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
     const { userId } = req.auth;
     const { id } = req.params;
 
-    if (!userId) {
-      logger.warn("Unauthorised access attempt", {
-        endpoint: "/applications/:id",
-      });
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    const result = updateApplicationSchema.safeParse(req.body);
-    if (!result.success) {
-      return res.status(400).json({
-        message: "Invalid request",
-        errors: z.treeifyError(result.error),
-      });
-    }
-    const { role, company, status, appliedDate, notes, jobUrl } = result.data;
-
     try {
+      if (!userId) {
+        logger.warn("Unauthorised access attempt", {
+          endpoint: `PUT /applications/${id}`,
+        });
+        throw new AppError(401, "Unauthorized");
+      }
+
+      const result = updateApplicationSchema.safeParse(req.body);
+      if (!result.success) {
+        throw result.error;
+      }
+      const { role, company, status, appliedDate, notes, jobUrl } = result.data;
+
       const existing = await prisma.application.findUnique({
         where: { id },
         select: { id: true, userId: true },
       });
 
       if (!existing) {
-        return res.status(404).json({ message: "Application not found" });
+        logger.warn("Application not found", { userId, applicationId: id });
+        throw new AppError(404, "Application not found");
       }
 
       if (existing.userId !== userId) {
-        return res.status(403).json({ message: "Forbidden" });
+        logger.warn("Unauthorized access attempt", { userId });
+        throw new AppError(403, "Forbidden");
       }
 
       const updated = await prisma.application.update({
@@ -308,8 +313,10 @@ applicationRouter.put(
 
       res.status(200).json(updated);
     } catch (error) {
-      logger.error("Failed to update application", { userId, error });
-      res.status(500).json({ message: "Internal server error" });
+      if (!(error instanceof AppError)) {
+        logger.error("Failed to update application", { userId, error });
+      }
+      next(error);
     }
   },
 );
@@ -330,29 +337,31 @@ applicationRouter.put(
 applicationRouter.delete(
   "/:id",
   requireFirebaseAuth(),
-  async (req: Request<{ id: string }>, res: Response) => {
+  async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
     const { userId } = req.auth;
     const { id } = req.params;
 
-    if (!userId) {
-      logger.warn("Unauthorised access attempt", {
-        endpoint: "/applications/:id",
-      });
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
     try {
+      if (!userId) {
+        logger.warn("Unauthorised access attempt", {
+          endpoint: `DELETE /applications/${id}`,
+        });
+        throw new AppError(401, "Unauthorized");
+      }
+
       const existing = await prisma.application.findUnique({
         where: { id },
         select: { id: true, userId: true },
       });
 
       if (!existing) {
-        return res.status(404).json({ message: "Application not found" });
+        logger.warn("Application not found", { userId, applicationId: id });
+        throw new AppError(404, "Application not found");
       }
 
       if (existing.userId !== userId) {
-        return res.status(403).json({ message: "Forbidden" });
+        logger.warn("Unauthorized access attempt", { userId });
+        throw new AppError(403, "Forbidden");
       }
 
       await prisma.application.delete({
@@ -371,8 +380,10 @@ applicationRouter.delete(
 
       return res.sendStatus(204);
     } catch (error) {
-      logger.error("Failed to delete application", { userId, error });
-      res.status(500).json({ message: "Internal server error" });
+      if (!(error instanceof AppError)) {
+        logger.error("Failed to delete application", { userId, error });
+      }
+      next(error);
     }
   },
 );
