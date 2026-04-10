@@ -108,3 +108,29 @@ describe("GET /tailoring/status/:applicationId", () => {
     expect(res.status).toBe(500);
   });
 });
+
+describe("GET /tailoring/count", () => {
+  it("returns 401 no userId", async () => {
+    const res = await request(app).get("/tailoring/count");
+    expect(res.status).toBe(401);
+  });
+
+  it("returns 200 with count", async () => {
+    mockPrisma.tailoringSession.count.mockResolvedValue(5);
+
+    const res = await request(app)
+      .get("/tailoring/count")
+      .set("x-test-user-id", "user-1");
+    expect(res.status).toBe(200);
+    expect(res.body.count).toEqual(5);
+  });
+
+  it("returns 500 tailoringSession count error", async () => {
+    mockPrisma.tailoringSession.count.mockRejectedValue(new Error("DB down"));
+
+    const res = await request(app)
+      .get("/tailoring/count")
+      .set("x-test-user-id", "user-1");
+    expect(res.status).toBe(500);
+  });
+});
