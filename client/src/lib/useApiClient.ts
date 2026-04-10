@@ -29,6 +29,12 @@ export default function useApiClient() {
         throw new Error(error.message || "API request failed");
       }
 
+      if (
+        response.status === 204 ||
+        response.headers.get("content-length") === "0"
+      ) {
+        return undefined as T;
+      }
       return response.json();
     };
 

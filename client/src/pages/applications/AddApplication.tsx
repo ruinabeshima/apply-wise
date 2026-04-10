@@ -1,5 +1,5 @@
-import Navbar from "../../components/navbar/Navbar";
-import ApplicationForm from "../../components/applications/ApplicationForm";
+import Navbar from "../../components/Navbar";
+import ApplicationForm from "../../features/applications/ApplicationForm";
 import useOnboardingStatus from "../../hooks/useOnboardingStatus";
 
 export default function AddApplication() {

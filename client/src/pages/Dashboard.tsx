@@ -1,5 +1,5 @@
-import ApplicationList from "../components/applications/ApplicationList";
-import Navbar from "../components/navbar/Navbar";
+import ApplicationList from "../features/applications/ApplicationList";
+import Navbar from "../components/Navbar";
 import useOnboardingStatus from "../hooks/useOnboardingStatus";
 
 export default function Dashboard() {

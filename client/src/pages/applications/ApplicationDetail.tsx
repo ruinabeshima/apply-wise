@@ -1,25 +1,21 @@
 import { useState } from "react";
-import { useAuth } from "../../lib/useAuth";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/navbar/Navbar";
-import TailorResume from "../../components/tailoring/TailorResume";
+import Navbar from "../../components/Navbar";
+import TailorResume from "../../features/tailoring/TailorResume";
 import useOnboardingStatus from "../../hooks/useOnboardingStatus";
 import useIndividualApplication from "../../hooks/useIndividualApplication";
 import useTailoredCount from "../../hooks/useTailoredCount";
 
 export default function ApplicationDetail() {
-  const appUrl = import.meta.env.VITE_SERVER_URL;
   const navigate = useNavigate();
-  const { getToken } = useAuth();
   const { id } = useParams<{ id: string }>();
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [deleteError, setDeleteError] = useState<null | string>(null);
   const [tailoringLoading, setTailoringLoading] = useState(false);
 
   const { loading: onboardingLoading, error: onboardingError } =
     useOnboardingStatus();
   const {
+    handleApplicationDelete,
     application,
     loading: appLoading,
     error: appError,
@@ -30,34 +26,8 @@ export default function ApplicationDetail() {
     error: countError,
   } = useTailoredCount();
 
-  const handleApplicationDelete = async () => {
-    setDeleteLoading(true);
-
-    try {
-      const token = await getToken();
-      const response = await fetch(`${appUrl}/applications/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        setDeleteError("Failed to delete application");
-        return;
-      }
-
-      navigate("/dashboard");
-    } catch {
-      setDeleteError("Failed to delete application");
-    } finally {
-      setDeleteLoading(false);
-    }
-  };
-
-  const loading =
-    onboardingLoading || appLoading || deleteLoading || countLoading;
-  const error = onboardingError || appError || deleteError || countError;
+  const loading = onboardingLoading || appLoading || countLoading;
+  const error = onboardingError || appError || countError;
   const remaining = 3 - count!;
 
   return (

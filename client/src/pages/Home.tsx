@@ -3,7 +3,7 @@ import { useAuth } from "../lib/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import reference from "../assets/reference.png";
-import NavBar from "../components/navbar/Navbar";
+import Navbar from "../components/Navbar";
 
 export default function Home() {
   const { isSignedIn } = useAuth();
@@ -18,7 +18,7 @@ export default function Home() {
   return (
     <div className="relative flex min-h-screen flex-col bg-base-200/40 w-full">
       <div className="fixed inset-0 bg-linear-to-b from-base-200/85 via-base-200/70 to-base-200/90 -z-10" />
-      <NavBar />
+      <Navbar />
 
       <main className="flex w-full flex-1 flex-col items-center gap-10 px-6 pb-16">
         <section className="hero w-full max-w-6xl pt-14">

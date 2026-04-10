@@ -8,6 +8,9 @@ export default function useOnboardingStatus() {
   const navigate = useNavigate();
   const [error, setError] = useState<null | string>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState(
+    "Checking your onboarding status...",
+  );
   const api = useApiClient();
 
   useEffect(() => {
@@ -33,5 +36,23 @@ export default function useOnboardingStatus() {
     checkOnboardingStatus();
   }, [navigate, api]);
 
-  return { loading, error };
+  const updateOnboarding = async () => {
+    setLoading(true);
+    setLoadingMessage("Updating your onboarding status ...");
+
+    try {
+      await api.patch("/auth/status");
+      navigate("/dashboard");
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to update onboarding status",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { updateOnboarding, loading, error, loadingMessage };
 }

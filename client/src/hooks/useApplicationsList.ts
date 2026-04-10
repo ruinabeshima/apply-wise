@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import type { ApplicationsResponse } from "@apply-wise/shared";
-import useApiClient from "src/lib/useApiClient";
+import useApiClient from "../lib/useApiClient";
 
 // Returns list of all the user's job applications
 export default function useApplicationsList() {

@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { useAuth } from "../../lib/useAuth";
-import { TrackResumeSuggestions } from "../resumes/ResumeSuggestions";
+import { TrackResumeSuggestions } from "../suggestions/ResumeSuggestions";
 import useTailoredStatus from "../../hooks/useTailoredStatus";
 import { Link } from "react-router-dom";
+import useStartTailoring from "../../hooks/useStartTailoring";
 
 type TailorResumeProps = {
   applicationId: string;
@@ -11,11 +10,6 @@ type TailorResumeProps = {
 };
 
 export default function TailorResume(props: TailorResumeProps) {
-  const appUrl = import.meta.env.VITE_SERVER_URL;
-  const { getToken } = useAuth();
-  const [tailoringLoading, setTailoringLoading] = useState(false);
-  const [tailoringError, setTailoringError] = useState(false);
-
   const {
     loading: statusLoading,
     error: statusError,
@@ -25,46 +19,28 @@ export default function TailorResume(props: TailorResumeProps) {
     tailoredResumeId,
     refetch,
   } = useTailoredStatus(props.applicationId);
+  const {
+    startTailoring,
+    loading: startTailoringLoading,
+    error: startTailoringError,
+  } = useStartTailoring(props.applicationId);
+
+  const loading = statusLoading || startTailoringLoading;
+  const error = statusError || startTailoringError;
 
   const handleTailorApplication = async (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
-    setTailoringLoading(true);
-    setTailoringError(false);
     props.onTailoringLoadingChange?.(true);
-
-    try {
-      const token = await getToken();
-      const response = await fetch(
-        `${appUrl}/feedback/${props.applicationId}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (!response.ok) {
-        setTailoringError(true);
-        props.onTailoringLoadingChange?.(false);
-        return;
-      }
-
-      // Success - tailoring initiated
-      await refetch();
+    const success = await startTailoring();
+    if (!success) {
       props.onTailoringLoadingChange?.(false);
-    } catch {
-      setTailoringError(true);
-      props.onTailoringLoadingChange?.(false);
-    } finally {
-      setTailoringLoading(false);
+      return;
     }
+    await refetch();
+    props.onTailoringLoadingChange?.(false);
   };
-
-  const loading = tailoringLoading || statusLoading;
-  const error = tailoringError || statusError;
 
   return (
     <section className="w-full">
@@ -116,24 +92,23 @@ export default function TailorResume(props: TailorResumeProps) {
             <div>
               <h3 className="text-lg font-semibold">Resume tailored</h3>
               <p className="text-sm text-base-content/60">
-                Your customized resume is ready to viewed
+                Your customized resume is ready to view
               </p>
             </div>
 
             <Link
               to={`/applications/${props.applicationId}/tailored/${tailoredResumeId}`}
+              className="btn btn-primary gap-2"
             >
-              <button className="btn btn-primary gap-2">
-                <svg
-                  className="w-4 h-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4z" />
-                </svg>
-                View Resume
-              </button>
+              <svg
+                className="w-4 h-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4z" />
+              </svg>
+              View Resume
             </Link>
           </div>
         </div>
@@ -160,7 +135,7 @@ export default function TailorResume(props: TailorResumeProps) {
             <button
               className="btn btn-primary gap-2"
               onClick={handleTailorApplication}
-              disabled={tailoringLoading || props.remaining <= 0}
+              disabled={startTailoringLoading || props.remaining <= 0}
             >
               <svg
                 className="w-4 h-4"

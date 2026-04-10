@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Navbar from "../../components/navbar/Navbar";
+import Navbar from "../../components/Navbar";
 import useTailoredResumes from "../../hooks/useTailoredResumes";
 import useOnboardingStatus from "../../hooks/useOnboardingStatus";
 
@@ -7,7 +7,7 @@ export default function TailoredList() {
   const { loading: onboardingLoading, error: onboardingError } =
     useOnboardingStatus();
   const {
-    data,
+    data = [],
     loading: tailoredLoading,
     error: tailoredError,
   } = useTailoredResumes();

@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { useAuth } from "../../lib/useAuth";
-import { useNavigate } from "react-router-dom";
+import ResumePreview from "./ResumePreview";
+import useResumeUpload from "../../hooks/useResumeUpload";
 
 type ResumeUploadProps = {
   isOnboarding?: boolean;
@@ -9,59 +8,14 @@ type ResumeUploadProps = {
 };
 
 export default function ResumeUpload(props: ResumeUploadProps) {
-  const [file, setFile] = useState<File | null>(null);
-  const [error, setError] = useState<null | string>();
-  const [loading, setLoading] = useState(false);
-  const { getToken } = useAuth();
-  const navigate = useNavigate();
-
-  const uploadFile = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const appUrl = import.meta.env.VITE_SERVER_URL;
-
-    setLoading(true);
-
-    try {
-      const token = await getToken();
-      const formData = new FormData();
-      formData.append("file", file!);
-
-      const response = await fetch(`${appUrl}/resumes/upload`, {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        setError("Failed to upload file");
-        return;
-      }
-
-      props.onSuccess?.();
-
-      if (props.isUpdate) {
-        navigate("/dashboard");
-      }
-    } catch {
-      setError("Failed to upload file");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0] ?? null;
-    if (selectedFile && selectedFile.type !== "application/pdf") {
-      return;
-    }
-    setFile(selectedFile);
-  };
-
-  const handleFileRemove = () => {
-    setFile(null);
-  };
+  const {
+    file,
+    loading,
+    error,
+    uploadFile,
+    handleFileChange,
+    handleFileRemove,
+  } = useResumeUpload({ isUpdate: props.isUpdate, onSuccess: props.onSuccess });
 
   return (
     <section className="w-full p-5 flex flex-col justify-center items-center">
@@ -98,9 +52,9 @@ export default function ResumeUpload(props: ResumeUploadProps) {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M15 17h3a3 3 0 0 0 0-6h-.025a5.56 5.56 0 0 0 .025-.5A5.5 5.5 0 0 0 7.207 9.021C7.137 9.017 7.071 9 7 9a4 4 0 1 0 0 8h2.167M12 19v-9m0 0-2 2m2-2 2 2"
                   />
                 </svg>
@@ -119,26 +73,7 @@ export default function ResumeUpload(props: ResumeUploadProps) {
             </label>
           </div>
         ) : (
-          <div className="flex items-center justify-between p-3 border rounded-xl bg-gray-50">
-            <div className="flex items-center gap-3">
-              <div className="bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded">
-                PDF
-              </div>
-              <div>
-                <p className="text-sm font-medium truncate">{file.name}</p>
-                <p className="text-xs text-gray-400">
-                  {(file.size / 1024).toFixed(1)} KB
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={handleFileRemove}
-              className="text-gray-400 hover:text-red-500 transition-colors"
-            >
-              ✕
-            </button>
-          </div>
+          <ResumePreview file={file} handleFileRemove={handleFileRemove} />
         )}
 
         <button

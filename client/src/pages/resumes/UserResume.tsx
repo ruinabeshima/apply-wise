@@ -1,5 +1,5 @@
-import Navbar from "../../components/navbar/Navbar";
-import ResumeUpload from "../../components/resumes/ResumeUpload";
+import Navbar from "../../components/Navbar";
+import ResumeUpload from "../../features/resume/ResumeUploader";
 import useOnboardingStatus from "../../hooks/useOnboardingStatus";
 import useResumeLink from "../../hooks/useResumeLink";
 

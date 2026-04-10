@@ -1,21 +1,11 @@
 import { useState } from "react";
-import { useAuth } from "../../lib/useAuth";
-import { useNavigate } from "react-router-dom";
-import ResumeUpload from "../../components/resumes/ResumeUpload";
-import Navbar from "../../components/navbar/Navbar";
-import ApplicationForm from "../../components/applications/ApplicationForm";
+import ResumeUpload from "../../features/resume/ResumeUploader";
+import Navbar from "../../components/Navbar";
+import ApplicationForm from "../../features/applications/ApplicationForm";
 import useOnboardingStatus from "../../hooks/useOnboardingStatus";
 
 export default function Onboarding() {
   const [page, setPage] = useState(1);
-  const [updateError, setUpdateError] = useState<string | null>(null);
-  const [updateLoading, setUpdateLoading] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState(
-    "Checking your onboarding status...",
-  );
-  const { getToken } = useAuth();
-  const navigate = useNavigate();
-
   const stepDetails =
     page === 1
       ? {
@@ -29,37 +19,8 @@ export default function Onboarding() {
             "Add your first application or skip for now to head to your dashboard.",
         };
 
-  const { loading: onboardingLoading, error: onboardingError } =
+  const { updateOnboarding, loading, error, loadingMessage } =
     useOnboardingStatus();
-
-  const updateOnboarding = async () => {
-    const appUrl = import.meta.env.VITE_SERVER_URL;
-    setLoadingMessage("Skipping for now and finishing setup...");
-    setUpdateLoading(true);
-
-    try {
-      const token = await getToken();
-      const response = await fetch(`${appUrl}/auth/status`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        setUpdateError("Failed to update onboarding status");
-      }
-
-      navigate("/dashboard");
-    } catch {
-      setUpdateError("Failed to update onboarding status");
-    } finally {
-      setUpdateLoading(false);
-    }
-  };
-
-  const error = onboardingError || updateError;
-  const loading = onboardingLoading || updateLoading;
 
   return (
     <div className="flex flex-col w-full min-h-screen gap-5">

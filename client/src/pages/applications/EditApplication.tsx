@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import Navbar from "../../components/navbar/Navbar";
-import ApplicationForm from "../../components/applications/ApplicationForm";
+import Navbar from "../../components/Navbar";
+import ApplicationForm from "../../features/applications/ApplicationForm";
 import useIndividualApplication from "../../hooks/useIndividualApplication";
 import useOnboardingStatus from "../../hooks/useOnboardingStatus";
 
@@ -71,7 +71,7 @@ export default function EditApplication() {
             role={application.role}
             company={application.company}
             status={application.status}
-            appliedDate={application.appliedDate}
+            appliedDate={application.appliedDate?.toISOString()}
             notes={application.notes}
             jobUrl={application.jobUrl}
           />
