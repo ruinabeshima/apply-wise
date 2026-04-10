@@ -94,7 +94,7 @@ describe("GET /resumes/tailored/:id", () => {
   });
 
   it("returns 404 no tailored resume", async () => {
-    mockPrisma.tailoredResume.findFirst.mockResolvedValue(null);
+    mockPrisma.tailoredResume.findUnique.mockResolvedValue(null);
 
     const res = await request(app)
       .get("/resumes/tailored/resume-1")
@@ -105,7 +105,7 @@ describe("GET /resumes/tailored/:id", () => {
   });
 
   it("returns 200 signed URL", async () => {
-    mockPrisma.tailoredResume.findFirst.mockResolvedValue({
+    mockPrisma.tailoredResume.findUnique.mockResolvedValue({
       key: "tailored-pdf-key",
     } as any);
 
@@ -118,7 +118,7 @@ describe("GET /resumes/tailored/:id", () => {
   });
 
   it("returns 500 error", async () => {
-    mockPrisma.tailoredResume.findFirst.mockRejectedValue(new Error("DB down"));
+    mockPrisma.tailoredResume.findUnique.mockRejectedValue(new Error("DB down"));
 
     const res = await request(app)
       .get("/resumes/tailored/resume-1")

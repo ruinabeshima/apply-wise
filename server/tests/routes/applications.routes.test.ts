@@ -155,7 +155,7 @@ describe("POST /applications/add", () => {
     mockPrisma.application.findUnique.mockRejectedValue(new Error("DB down"));
 
     const res = await request(app)
-      .get("/applications/application-1")
+      .post("/applications/application-1")
       .set("x-test-user-id", "user-1");
 
     expect(res.status).toBe(500);
@@ -165,7 +165,7 @@ describe("POST /applications/add", () => {
 describe("POST /applications/:id", () => {
   it("returns 400 invalid body", async () => {
     const res = await request(app)
-      .patch("/applications/:application-1")
+      .patch("/applications/application-1")
       .set("x-test-user-id", "user-1")
       .set("Content-Type", "application/json")
       .send({
@@ -261,7 +261,7 @@ describe("DELETE /applications/:id", () => {
     mockPrisma.application.findUnique.mockResolvedValue(null);
 
     const res = await request(app)
-      .delete("/applications/:application-1")
+      .delete("/applications/application-1")
       .set("x-test-user-id", "user-1");
     expect(res.status).toBe(404);
   });
@@ -281,7 +281,7 @@ describe("DELETE /applications/:id", () => {
     });
 
     const res = await request(app)
-      .delete("/applications/:application-1")
+      .delete("/applications/application-1")
       .set("x-test-user-id", "user-1");
     expect(res.status).toBe(403);
   });
@@ -301,7 +301,7 @@ describe("DELETE /applications/:id", () => {
     });
 
     const res = await request(app)
-      .delete("/applications/:application-1")
+      .delete("/applications/application-1")
       .set("x-test-user-id", "user-1");
 
     expect(res.status).toBe(204);

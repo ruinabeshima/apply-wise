@@ -21,7 +21,7 @@ export function errorHandler(
   // Zod schema validation error
   if (error instanceof ZodError) {
     return res
-      .status(401)
+      .status(400)
       .json({ message: "Invalid request", errors: z.treeifyError(error) });
   }
 

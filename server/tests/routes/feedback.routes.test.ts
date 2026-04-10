@@ -170,13 +170,13 @@ describe("POST /feedback/:applicationId", () => {
 
 describe("POST /feedback/update/:sessionId", () => {
   it("returns 401 no userId", async () => {
-    const res = await request(app).post("/feedback/update/session-1");
+    const res = await request(app).patch("/feedback/update/session-1");
     expect(res.status).toBe(401);
   });
 
   it("returns 400 schema invalid", async () => {
     const res = await request(app)
-      .post("/feedback/update/session-1")
+      .patch("/feedback/update/session-1")
       .set("x-test-user-id", "user-1")
       .send({
         acceptedSuggestions: ["miss-1", "miss-2"],
@@ -193,7 +193,7 @@ describe("POST /feedback/update/:sessionId", () => {
     } as any);
 
     const res = await request(app)
-      .post("/feedback/update/session-1")
+      .patch("/feedback/update/session-1")
       .set("x-test-user-id", "user-1")
       .send({
         acceptedSuggestions: ["miss-1", "miss-2"],
@@ -213,7 +213,7 @@ describe("POST /feedback/update/:sessionId", () => {
     } as any);
 
     const res = await request(app)
-      .post("/feedback/update/session-1")
+      .patch("/feedback/update/session-1")
       .set("x-test-user-id", "user-1")
       .send({
         acceptedSuggestions: ["miss-1", "miss-2"],
@@ -233,7 +233,7 @@ describe("POST /feedback/update/:sessionId", () => {
     );
 
     const res = await request(app)
-      .post("/feedback/update/session-1")
+      .patch("/feedback/update/session-1")
       .set("x-test-user-id", "user-1")
       .send({
         acceptedSuggestions: ["miss-1", "miss-2"],

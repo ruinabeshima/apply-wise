@@ -5,8 +5,10 @@ process.env.OPENAI_API_KEY = "test-openai-api-key";
 jest.mock("../lib/firebase/middleware", () => ({
   requireFirebaseAuth: () => (req: any, res: any, next: any) => {
     const userId = req.headers["x-test-user-id"];
+    const email = req.headers["x-test-email"];
+    const imageUrl = req.headers["x-test-image-url"];
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
-    req.auth = { userId };
+    req.auth = { userId, email, imageUrl };
     next();
   },
 }));
