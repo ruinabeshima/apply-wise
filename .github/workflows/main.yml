@@ -81,7 +81,7 @@ jobs:
 
       - name: Test
         working-directory: ./server
-        run: pnpm test
+        run: pnpm run test:coverage
 
   build:
     name: Build
