@@ -57,7 +57,7 @@ export default function useResumeSuggestionFlow({
       );
       setLoading(true);
       try {
-        await api.post(`/feedback/update/${sessionId}`, {
+        await api.patch(`/feedback/update/${sessionId}`, {
           acceptedSuggestions,
           dismissedSuggestions,
         });
