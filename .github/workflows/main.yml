@@ -81,7 +81,7 @@ jobs:
 
       - name: Test
         working-directory: ./server
-        run: pnpm run test:coverage
+        run: pnpm run test
 
   e2e:
     name: Frontend E2E Tests (Playwright)
