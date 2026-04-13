@@ -6,7 +6,12 @@ const config: Config = {
   clearMocks: true,
   setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
   testMatch: ["**/tests/**/*.test.ts"],
-  collectCoverageFrom: ["**/*.ts", "!**/*.d.ts", "!**/tests/**", "!**/prisma/generated/**"],
+  collectCoverageFrom: [
+    "**/*.ts",
+    "!**/*.d.ts",
+    "!**/tests/**",
+    "!**/prisma/generated/**",
+  ],
   coverageThreshold: {
     global: {
       lines: 80,

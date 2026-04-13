@@ -490,10 +490,10 @@ describe("POST /feedback/generate/:sessionId", () => {
     });
     mockGenerateTailoredResume.mockResolvedValue("Tailored resume text");
     mockConvertTextToPDF.mockResolvedValue(Buffer.from("pdf-buffer"));
-    
+
     mockR2Send.mockResolvedValueOnce({} as any);
     mockR2Send.mockResolvedValueOnce({} as any);
-   
+
     mockPrisma.$transaction.mockRejectedValue(new Error("Transaction failed"));
 
     const res = await request(app)
@@ -505,7 +505,7 @@ describe("POST /feedback/generate/:sessionId", () => {
     expect(res.body).toEqual({
       message: "Unable to generate tailored resume",
     });
-   
+
     expect(mockR2Send).toHaveBeenCalledTimes(2);
     const deleteCall = mockR2Send.mock.calls[1][0];
     expect(deleteCall.input).toHaveProperty("Key");

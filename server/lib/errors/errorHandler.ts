@@ -13,6 +13,9 @@ export function errorHandler(
   res: Response,
   next: NextFunction,
 ) {
+  // Keep `next` to preserve Express error-middleware signature.
+  void next;
+
   // Known operational errors (type AppError)
   if (error instanceof AppError) {
     return res.status(error.statusCode).json({ message: error.message });
