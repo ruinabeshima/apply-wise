@@ -41,12 +41,16 @@ export default function useResumeUpload(props: ResumeUploadProps) {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] ?? null;
     if (selectedFile && selectedFile.type !== "application/pdf") {
+      setError("File must be a valid PDF");
+      setFile(null);
       return;
     }
+    setError(null);
     setFile(selectedFile);
   };
 
   const handleFileRemove = () => {
+    setError(null);
     setFile(null);
   };
 

@@ -21,6 +21,8 @@ export default function useOnboardingStatus() {
         const data: OnboardingStatusResponse = await api.get("/auth/status");
         if (!data.onboardingComplete) {
           navigate("/onboarding");
+        } else {
+          navigate("/dashboard");
         }
       } catch (error) {
         setError(

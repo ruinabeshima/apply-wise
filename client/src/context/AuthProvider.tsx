@@ -67,6 +67,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isSignedIn: !!user,
       getToken,
       signOut: async () => {
+        const mockedAuthState = (
+          window as {
+            __FIREBASE_AUTH_STATE__?: {
+              uid: string;
+              email?: string;
+            } | null;
+          }
+        ).__FIREBASE_AUTH_STATE__;
+
+        if (mockedAuthState !== undefined) {
+          (
+            window as { __FIREBASE_AUTH_STATE__?: null }
+          ).__FIREBASE_AUTH_STATE__ = null;
+          setUser(null);
+          return;
+        }
+
         await firebaseSignOut(auth);
       },
     }),
