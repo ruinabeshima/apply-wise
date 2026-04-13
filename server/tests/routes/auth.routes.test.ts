@@ -1,11 +1,13 @@
 import request from "supertest";
 import createApp from "../../app";
 import { prisma } from "../../lib/prisma";
+import logAudit from "../../lib/monitoring/audit";
 
-// Mock prisma client and auditing
+// Mocks
 jest.mock("../../lib/prisma");
 const mockPrisma = jest.mocked(prisma);
 jest.mock("../../lib/monitoring/audit");
+const mockLogAudit = jest.mocked(logAudit);
 
 const app = createApp();
 
@@ -16,7 +18,7 @@ describe("GET /auth/status", () => {
   });
 
   it("returns 404 user not found", async () => {
-    mockPrisma.user.findFirst.mockResolvedValue(null);
+    mockPrisma.user.findUnique.mockResolvedValue(null);
 
     const res = await request(app)
       .get("/auth/status")
@@ -24,8 +26,8 @@ describe("GET /auth/status", () => {
     expect(res.status).toBe(404);
   });
 
-  it("returns 300 onboarding complete", async () => {
-    mockPrisma.user.findFirst.mockResolvedValue({
+  it("returns 200 onboarding complete", async () => {
+    mockPrisma.user.findUnique.mockResolvedValue({
       id: "user-1",
       email: "user1@email.com",
       imageUrl: "image.com",
@@ -65,6 +67,13 @@ describe("PATCH /auth/status", () => {
         onboarding_complete: true,
       });
     expect(res.status).toBe(200);
+    expect(mockLogAudit).toHaveBeenCalledWith(
+      "user-1",
+      "ONBOARDING_COMPLETED",
+      undefined,
+      "User",
+      "user-1",
+    );
   });
 
   it("returns 500 update error", async () => {
@@ -74,6 +83,45 @@ describe("PATCH /auth/status", () => {
       .patch("/auth/status")
       .set("x-test-user-id", "user-1");
 
+    expect(res.status).toBe(500);
+  });
+});
+
+describe("POST /auth/sync", () => {
+  it("returns 401 no user ID", async () => {
+    const res = await request(app).post("/auth/sync");
+
+    expect(res.status).toBe(401);
+  });
+
+  it("returns 400 missing email", async () => {
+    const res = await request(app)
+      .post("/auth/sync")
+      .set("x-test-user-id", "user-1");
+
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 200 success", async () => {
+    mockPrisma.user.upsert.mockResolvedValue({
+      id: "user-1",
+      email: "user-1@email.com",
+    } as any);
+
+    const res = await request(app)
+      .post("/auth/sync")
+      .set("x-test-user-id", "user-1")
+      .set("x-test-email", "user-1@email.com");
+    expect(res.status).toBe(200);
+  });
+
+  it("returns 500 on upsert error", async () => {
+    mockPrisma.user.upsert.mockRejectedValue(new Error("DB down"));
+
+    const res = await request(app)
+      .post("/auth/sync")
+      .set("x-test-user-id", "user-1")
+      .set("x-test-email", "user-1@email.com");
     expect(res.status).toBe(500);
   });
 });

@@ -1,51 +1,9 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
-interface Application {
-  id: string;
-  role: string;
-  company: string;
-  status: string;
-  appliedDate: string;
-  notes: string | null;
-  jobUrl: string | null;
-}
+import ApplicationCard from "./ApplicationCard";
+import useApplicationsList from "../../hooks/useApplicationsList";
 
 export default function ApplicationList() {
-  const navigate = useNavigate();
-  const [applications, setApplications] = useState<Application[]>([]);
-  const [error, setError] = useState("");
-  const { getToken } = useAuth();
-
-  useEffect(() => {
-    const appUrl = import.meta.env.VITE_SERVER_URL;
-
-    const getApplications = async () => {
-      try {
-        const token = await getToken();
-        const response = await fetch(`${appUrl}/applications`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          setError("Failed to retrieve applications");
-          return;
-        }
-
-        const data: Application[] = await response.json();
-        setApplications(data);
-      } catch {
-        setError("Failed to retrieve applications");
-      }
-    };
-
-    getApplications();
-  }, [getToken]);
+  const { applications, error } = useApplicationsList();
 
   const statusCounts = applications.reduce(
     (acc, application) => {
@@ -54,7 +12,7 @@ export default function ApplicationList() {
     },
     {} as Record<string, number>,
   );
-  const totalApplications = applications.length;
+  const totalApplications = applications!.length;
   const appliedCount = statusCounts.APPLIED ?? 0;
   const interviewCount = statusCounts.INTERVIEW ?? 0;
   const offerCount = statusCounts.OFFER ?? 0;
@@ -198,75 +156,16 @@ export default function ApplicationList() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
                   {applications.map((application) => (
-                    <div
+                    <ApplicationCard
                       key={application.id}
-                      className="card bg-base-100 shadow-md border border-base-200 hover:shadow-lg hover:cursor-pointer transition-shadow"
-                      onClick={() =>
-                        navigate(`/applications/${application.id}`)
-                      }
-                    >
-                      <div className="card-body gap-3">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="min-w-0">
-                            <h2 className="card-title text-lg wrap-break-word">
-                              {application.role}
-                            </h2>
-                            <p className="text-base-content/70 font-medium truncate">
-                              {application.company}
-                            </p>
-                          </div>
-                          <div
-                            className={`badge badge-soft shrink-0 ${
-                              application.status === "APPLIED"
-                                ? "badge-info"
-                                : application.status === "INTERVIEW"
-                                  ? "badge-warning"
-                                  : application.status === "OFFER"
-                                    ? "badge-success"
-                                    : application.status === "REJECTED"
-                                      ? "badge-error"
-                                      : "badge-neutral"
-                            }`}
-                          >
-                            {application.status}
-                          </div>
-                        </div>
-
-                        <div className="divider my-0" />
-
-                        <div className="flex flex-col gap-1 text-sm text-base-content/70">
-                          <p>
-                            ⏰ Applied:{" "}
-                            <span className="text-base-content font-medium">
-                              {new Date(
-                                application.appliedDate,
-                              ).toLocaleDateString()}
-                            </span>
-                          </p>
-                          {application.notes && (
-                            <p>
-                              📖{" "}
-                              <span className="text-base-content">
-                                {application.notes}
-                              </span>
-                            </p>
-                          )}
-                        </div>
-
-                        {application.jobUrl && (
-                          <div className="card-actions justify-end mt-1">
-                            <a
-                              href={application.jobUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="btn btn-soft btn-primary btn-sm"
-                            >
-                              View Job →
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                      id={application.id}
+                      role={application.role}
+                      company={application.company}
+                      status={application.status}
+                      appliedDate={application.appliedDate}
+                      notes={application.notes}
+                      jobUrl={application.jobUrl}
+                    />
                   ))}
                 </div>
               </div>

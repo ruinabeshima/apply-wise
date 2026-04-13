@@ -10,6 +10,7 @@ export type ResumeSuggestions = {
   weak: string[];
 };
 
+// Retrieve application details to send to OpenAI prompt
 export async function getApplicationInfo(
   applicationId: string,
   userId: string,
@@ -56,6 +57,7 @@ export async function getApplicationInfo(
   }
 }
 
+// Retrieve resume text from the database to send to OpenAI prompt
 export async function getResumeText(userId: string): Promise<string | null> {
   try {
     const resume = await prisma.resume.findUnique({
@@ -79,6 +81,7 @@ export async function getResumeText(userId: string): Promise<string | null> {
   }
 }
 
+// Retrieve resume suggestions using OpenAI
 export async function getResumeSuggestions(
   applicationInfo: string[],
   resumeText: string,
@@ -150,6 +153,7 @@ Return ONLY this JSON structure:
   }
 }
 
+// Generated tailored resume text using OpenAI
 export async function generateTailoredResume(
   resumeText: string,
   resumeSuggestions: ResumeSuggestions,

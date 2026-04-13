@@ -1,43 +1,60 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./useAuth";
+import type { OnboardingStatusResponse } from "@apply-wise/shared";
+import useApiClient from "../lib/useApiClient";
 
+// Fetches user's onboarding status
 export default function useOnboardingStatus() {
   const navigate = useNavigate();
   const [error, setError] = useState<null | string>(null);
   const [loading, setLoading] = useState(true);
-  const appUrl = import.meta.env.VITE_SERVER_URL;
-  const { getToken } = useAuth();
+  const [loadingMessage, setLoadingMessage] = useState(
+    "Checking your onboarding status...",
+  );
+  const api = useApiClient();
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
+      setLoading(true);
+
       try {
-        const token = await getToken();
-        const response = await fetch(`${appUrl}/auth/status`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          setError("Failed to get onboarding status");
-          return;
-        }
-
-        const data = await response.json();
+        const data: OnboardingStatusResponse = await api.get("/auth/status");
         if (!data.onboardingComplete) {
           navigate("/onboarding");
+        } else {
+          navigate("/dashboard");
         }
-      } catch {
-        setError("Failed to get onboarding status");
+      } catch (error) {
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Failed to get onboarding status",
+        );
       } finally {
         setLoading(false);
       }
     };
 
     checkOnboardingStatus();
-  }, [getToken, navigate, appUrl]);
+  }, [navigate, api]);
 
-  return { loading, error };
+  const updateOnboarding = async () => {
+    setLoading(true);
+    setLoadingMessage("Updating your onboarding status ...");
+
+    try {
+      await api.patch("/auth/status");
+      navigate("/dashboard");
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to update onboarding status",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { updateOnboarding, loading, error, loadingMessage };
 }

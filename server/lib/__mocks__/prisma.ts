@@ -21,10 +21,12 @@ export const prisma = {
   tailoredResume: {
     findMany: jest.fn(),
     findFirst: jest.fn(),
+    findUnique: jest.fn(),
   },
   tailoringSession: {
     create: jest.fn(),
     findUnique: jest.fn(),
+    findFirst: jest.fn(),
     update: jest.fn(),
     count: jest.fn(),
   },

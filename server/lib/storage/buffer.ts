@@ -3,6 +3,7 @@ import { logger } from "../monitoring/logger";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { r2 } from "./r2";
 
+// Fetch user's resume file from R2 storage and return as a Node.js buffer
 export default async function getResumeBuffer(
   userId: string,
 ): Promise<Buffer | null> {
@@ -25,6 +26,7 @@ export default async function getResumeBuffer(
       }),
     );
 
+    // Body file is returned as a stream. Each chunk is added to an array and then concatenated
     const chunks: Uint8Array[] = [];
     for await (const chunk of response.Body as AsyncIterable<Uint8Array>) {
       chunks.push(chunk);

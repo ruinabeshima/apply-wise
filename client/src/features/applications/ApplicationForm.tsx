@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import useApplicationForm from "../../hooks/useApplicationForm";
+import useApplicationSubmit from "../../hooks/useApplicationSubmit";
 
 type ApplicationFormProps = {
   isOnboarding?: boolean;
@@ -16,158 +15,8 @@ type ApplicationFormProps = {
 };
 
 export default function ApplicationForm(props: ApplicationFormProps) {
-  const { getToken } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const handleEditApplication = () => {
-      if (!props.isEdit) return;
-
-      setRole(props.role ?? "");
-      setCompany(props.company ?? "");
-      setStatus(props.status ?? "APPLIED");
-      setAppliedDate(
-        props.appliedDate
-          ? new Date(props.appliedDate).toISOString().slice(0, 16)
-          : "",
-      );
-      setNotes(props.notes ?? "");
-      setLink(props.jobUrl ?? "");
-    };
-
-    handleEditApplication();
-  }, [
-    props.isEdit,
-    props.role,
-    props.company,
-    props.status,
-    props.appliedDate,
-    props.notes,
-    props.jobUrl,
-  ]);
-
-  const [role, setRole] = useState("");
-  const [company, setCompany] = useState("");
-  const [status, setStatus] = useState("APPLIED");
-  const [appliedDate, setAppliedDate] = useState("");
-  const [notes, setNotes] = useState("");
-  const [link, setLink] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const buildPayload = () => {
-    const normalizedAppliedDate = appliedDate
-      ? new Date(appliedDate).toISOString()
-      : undefined;
-    const normalizedNotes = notes.trim() ? notes.trim() : undefined;
-    const normalizedJobUrl = link.trim() ? link.trim() : undefined;
-
-    return {
-      role,
-      company,
-      status: status.toUpperCase(),
-      ...(normalizedAppliedDate ? { appliedDate: normalizedAppliedDate } : {}),
-      ...(normalizedNotes ? { notes: normalizedNotes } : {}),
-      ...(normalizedJobUrl ? { jobUrl: normalizedJobUrl } : {}),
-    };
-  };
-
-  const handleSubmit = async (event: { preventDefault: () => void }) => {
-    event.preventDefault();
-
-    if (props.isEdit) {
-      await handleEditSubmit();
-    } else {
-      await handleAddSubmit();
-    }
-  };
-
-  const handleAddSubmit = async () => {
-    const token = await getToken();
-    const appUrl = import.meta.env.VITE_SERVER_URL;
-
-    setLoading(true);
-
-    try {
-      const addResponse = await fetch(`${appUrl}/applications/add`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(buildPayload()),
-      });
-
-      if (!addResponse.ok) {
-        const data = await addResponse.json();
-        setError(data.message);
-        return;
-      }
-
-      const statusResponse = await fetch(`${appUrl}/auth/status`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!statusResponse.ok) {
-        setError("Failed to retreive onboarding data");
-        return;
-      }
-
-      const { onboardingComplete } = await statusResponse.json();
-      if (onboardingComplete) {
-        navigate("/dashboard");
-      } else {
-        const updateStatusResponse = await fetch(`${appUrl}/auth/status`, {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!updateStatusResponse.ok) {
-          setError("Failed to update onboarding status");
-        }
-      }
-
-      navigate("/dashboard");
-    } catch {
-      setError("Error: Could not create application");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEditSubmit = async () => {
-    const token = await getToken();
-    const appUrl = import.meta.env.VITE_SERVER_URL;
-
-    setLoading(true);
-
-    try {
-      const response = await fetch(`${appUrl}/applications/${props.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(buildPayload()),
-      });
-
-      if (!response.ok) {
-        setError("Failed to edit application");
-        return;
-      }
-
-      navigate(`/applications/${props.id}`);
-    } catch {
-      setError("Error: Could not edit application");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { fields, setters, buildPayload } = useApplicationForm(props);
+  const { loading, error, handleSubmit } = useApplicationSubmit(props);
 
   return (
     <div className="card card-border bg-base-100 w-full max-w-3xl">
@@ -185,7 +34,10 @@ export default function ApplicationForm(props: ApplicationFormProps) {
           </p>
         </div>
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form
+          className="space-y-6"
+          onSubmit={(event) => handleSubmit(event, buildPayload())}
+        >
           <div className="grid gap-4 md:grid-cols-2">
             <fieldset className="fieldset">
               <legend className="fieldset-legend">Role</legend>
@@ -194,9 +46,9 @@ export default function ApplicationForm(props: ApplicationFormProps) {
                 type="text"
                 className="input w-full"
                 placeholder="e.g. Sales Assistant"
-                value={role}
+                value={fields.role}
                 onChange={(event) => {
-                  setRole(event.target.value);
+                  setters.setRole(event.target.value);
                 }}
               />
               <p className="label">Required</p>
@@ -209,9 +61,9 @@ export default function ApplicationForm(props: ApplicationFormProps) {
                 type="text"
                 className="input w-full"
                 placeholder="e.g. Acme Company Inc"
-                value={company}
+                value={fields.company}
                 onChange={(event) => {
-                  setCompany(event.target.value);
+                  setters.setCompany(event.target.value);
                 }}
               />
               <p className="label">Required</p>
@@ -223,8 +75,8 @@ export default function ApplicationForm(props: ApplicationFormProps) {
               <legend className="fieldset-legend">Application Status</legend>
               <select
                 className="select w-full"
-                value={status}
-                onChange={(event) => setStatus(event.target.value)}
+                value={fields.status}
+                onChange={(event) => setters.setStatus(event.target.value)}
               >
                 <option value="APPLIED">Applied</option>
                 <option value="INTERVIEW">Interview</option>
@@ -239,9 +91,9 @@ export default function ApplicationForm(props: ApplicationFormProps) {
               <input
                 type="datetime-local"
                 className="input w-full"
-                value={appliedDate}
+                value={fields.appliedDate}
                 onChange={(event) => {
-                  setAppliedDate(event.target.value);
+                  setters.setAppliedDate(event.target.value);
                 }}
               />
               <p className="label">Optional</p>
@@ -254,9 +106,9 @@ export default function ApplicationForm(props: ApplicationFormProps) {
               <textarea
                 className="textarea h-24 w-full"
                 placeholder="e.g. On-site, Internship"
-                value={notes}
+                value={fields.notes}
                 onChange={(event) => {
-                  setNotes(event.target.value);
+                  setters.setNotes(event.target.value);
                 }}
               ></textarea>
               <div className="label">Optional</div>
@@ -284,9 +136,9 @@ export default function ApplicationForm(props: ApplicationFormProps) {
                 <input
                   type="url"
                   placeholder="https://"
-                  value={link}
+                  value={fields.link}
                   onChange={(event) => {
-                    setLink(event.target.value);
+                    setters.setLink(event.target.value);
                   }}
                   pattern="^(https?://)?([a-zA-Z0-9]([a-zA-Z0-9\-].*[a-zA-Z0-9])?\.)+[a-zA-Z].*$"
                   title="Must be valid URL"

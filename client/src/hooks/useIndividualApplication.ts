@@ -1,52 +1,52 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./useAuth";
-
-interface Application {
-  id: string;
-  role: string;
-  company: string;
-  status: string;
-  appliedDate: string;
-  notes: string | null;
-  jobUrl: string | null;
-}
+import type { ApplicationResponse } from "@apply-wise/shared";
+import useApiClient from "../lib/useApiClient";
 
 export default function useIndividualApplication(id: string) {
   const navigate = useNavigate();
   const [error, setError] = useState<null | string>(null);
   const [loading, setLoading] = useState(true);
-  const [application, setApplication] = useState<Application | null>(null);
-  const appUrl = import.meta.env.VITE_SERVER_URL;
-  const { getToken } = useAuth();
+  const [application, setApplication] = useState<ApplicationResponse | null>(
+    null,
+  );
+  const api = useApiClient();
 
   useEffect(() => {
     const getIndividualApplication = async () => {
+      setLoading(true);
+
       try {
-        const token = await getToken();
-        const response = await fetch(`${appUrl}/applications/${id}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          setError("Failed to retrieve application");
-          return;
-        }
-
-        const data = await response.json();
+        const data: ApplicationResponse = await api.get(`/applications/${id}`);
         setApplication(data);
-      } catch {
-        setError("Failed to retrieve applications");
+      } catch (error) {
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Failed to retrieve user application",
+        );
       } finally {
         setLoading(false);
       }
     };
 
     getIndividualApplication();
-  }, [getToken, id, appUrl, navigate]);
+  }, [id, navigate, api]);
 
-  return { application, loading, error };
+  const handleApplicationDelete = async () => {
+    setLoading(true);
+
+    try {
+      await api.delete(`/applications/${id}`);
+      navigate("/dashboard");
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to delete application",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { application, loading, error, handleApplicationDelete };
 }

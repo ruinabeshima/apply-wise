@@ -3,10 +3,12 @@ import createApp from "../../app";
 import { prisma } from "../../lib/prisma";
 import { r2 } from "../../lib/storage/r2";
 import parsePDF from "../../lib/storage/parse";
+import logAudit from "../../lib/monitoring/audit";
 
 // Mocks
 jest.mock("../../lib/prisma");
 jest.mock("../../lib/monitoring/audit");
+const mockLogAudit = jest.mocked(logAudit);
 jest.mock("../../lib/storage/r2", () => ({ r2: { send: jest.fn() } }));
 jest.mock("@aws-sdk/s3-request-presigner", () => ({
   getSignedUrl: jest
@@ -94,7 +96,7 @@ describe("GET /resumes/tailored/:id", () => {
   });
 
   it("returns 404 no tailored resume", async () => {
-    mockPrisma.tailoredResume.findFirst.mockResolvedValue(null);
+    mockPrisma.tailoredResume.findUnique.mockResolvedValue(null);
 
     const res = await request(app)
       .get("/resumes/tailored/resume-1")
@@ -105,7 +107,7 @@ describe("GET /resumes/tailored/:id", () => {
   });
 
   it("returns 200 signed URL", async () => {
-    mockPrisma.tailoredResume.findFirst.mockResolvedValue({
+    mockPrisma.tailoredResume.findUnique.mockResolvedValue({
       key: "tailored-pdf-key",
     } as any);
 
@@ -118,7 +120,9 @@ describe("GET /resumes/tailored/:id", () => {
   });
 
   it("returns 500 error", async () => {
-    mockPrisma.tailoredResume.findFirst.mockRejectedValue(new Error("DB down"));
+    mockPrisma.tailoredResume.findUnique.mockRejectedValue(
+      new Error("DB down"),
+    );
 
     const res = await request(app)
       .get("/resumes/tailored/resume-1")
@@ -174,6 +178,13 @@ describe("POST /resumes/upload", () => {
       id: "resume-1",
       message: "File sent successfully",
     });
+    expect(mockLogAudit).toHaveBeenCalledWith(
+      "user-1",
+      "RESUME_UPLOADED",
+      "Initial upload",
+      "Resume",
+      "resume-1",
+    );
   });
 
   it("returns 500 db failure and cleans up uploaded file", async () => {
