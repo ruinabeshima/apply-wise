@@ -20,7 +20,7 @@ export default function Onboarding() {
         };
 
   const { updateOnboarding, loading, error, loadingMessage } =
-    useOnboardingStatus();
+    useOnboardingStatus({ redirectIfComplete: true });
 
   return (
     <div className="flex flex-col w-full min-h-screen gap-5">

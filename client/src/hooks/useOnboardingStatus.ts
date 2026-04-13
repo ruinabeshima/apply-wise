@@ -3,8 +3,16 @@ import { useNavigate } from "react-router-dom";
 import type { OnboardingStatusResponse } from "@apply-wise/shared";
 import useApiClient from "../lib/useApiClient";
 
+type UseOnboardingStatusOptions = {
+  redirectIfComplete?: boolean;
+  redirectIfIncomplete?: boolean;
+};
+
 // Fetches user's onboarding status
-export default function useOnboardingStatus() {
+export default function useOnboardingStatus({
+  redirectIfComplete = false,
+  redirectIfIncomplete = true,
+}: UseOnboardingStatusOptions = {}) {
   const navigate = useNavigate();
   const [error, setError] = useState<null | string>(null);
   const [loading, setLoading] = useState(true);
@@ -19,9 +27,11 @@ export default function useOnboardingStatus() {
 
       try {
         const data: OnboardingStatusResponse = await api.get("/auth/status");
-        if (!data.onboardingComplete) {
+        if (!data.onboardingComplete && redirectIfIncomplete) {
           navigate("/onboarding");
-        } else {
+        }
+
+        if (data.onboardingComplete && redirectIfComplete) {
           navigate("/dashboard");
         }
       } catch (error) {
@@ -36,7 +46,7 @@ export default function useOnboardingStatus() {
     };
 
     checkOnboardingStatus();
-  }, [navigate, api]);
+  }, [navigate, api, redirectIfComplete, redirectIfIncomplete]);
 
   const updateOnboarding = async () => {
     setLoading(true);
